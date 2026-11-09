@@ -3,6 +3,9 @@
 <p align="center">
   <img src="Capture.PNG" alt="AetherCraft Architecture & Dashboard" width="100%">
 </p>
+<p align="center">
+  <img src="Capture10.PNG" alt="AetherCraft Architecture & Dashboard" width="100%">
+</p>
 
 > 🛡️ **Développé et audité avec [AetherScope SAST 150 CWE MCP](https://github.com/maxxwwim/AetherScope-SAST-150-CWE-MCP)** — Moteur d'intelligence architecturale, pare-feu IA temps réel (< 50 ms) et gouvernance automatisée 150+ règles CWE / OWASP.
 
