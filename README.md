@@ -335,5 +335,4 @@ Le fichier `server/plugins/AetherVisuals.jar` sera immédiatement recompilé et 
 ## 📜 Licence & Crédits
 
 - Développé et audité avec [AetherScope SAST 150 CWE MCP](https://github.com/maxxwwim/AetherScope-SAST-150-CWE-MCP).
-- Suite logicielle développée par l'équipe **AetherCraft**.
 - Distribué sous licence **MIT**.
