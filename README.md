@@ -6,7 +6,7 @@
 
 > 🛡️ **Développé et audité avec [AetherScope SAST 150 CWE MCP](https://github.com/maxxwwim/AetherScope-SAST-150-CWE-MCP)** — Moteur d'intelligence architecturale, pare-feu IA temps réel (< 50 ms) et gouvernance automatisée 150+ règles CWE / OWASP.
 
-> 🌐 **Démo en ligne (GitHub Pages) :** [https://maxxwwim.github.io/TEST-Minecraft-Server-Paper-Aethercraft-DB-Web-Server-Personnal-Mode-/](https://maxxwwim.github.io/TEST-Minecraft-Server-Paper-Aethercraft-DB-Web-Server-Personnal-Mode-/)
+> 🌐 **Démo en ligne (GitHub Pages) :** [https://maxxwwim.github.io/AetherCraft-Plateforme-MMORPG-Minecraft-Paper-Web-Control-Planel/](https://maxxwwim.github.io/AetherCraft-Plateforme-MMORPG-Minecraft-Paper-Web-Control-Planel/)
 
 
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-Paper_1.21.1-brightgreen.svg)](https://papermc.io/)
@@ -16,7 +16,7 @@
 [![Database](https://img.shields.io/badge/Database-SQLite_3-lightgrey.svg)](https://www.sqlite.org/)
 [![Runner](https://img.shields.io/badge/Runner-Rust_Tokio_Async-red.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Demo-GitHub_Pages-blueviolet.svg)](https://maxxwwim.github.io/TEST-Minecraft-Server-Paper-Aethercraft-DB-Web-Server-Personnal-Mode-/)
+[![Live Demo](https://img.shields.io/badge/Demo-GitHub_Pages-blueviolet.svg)](https://maxxwwim.github.io/AetherCraft-Plateforme-MMORPG-Minecraft-Paper-Web-Control-Planel/)
 
 ---
 
