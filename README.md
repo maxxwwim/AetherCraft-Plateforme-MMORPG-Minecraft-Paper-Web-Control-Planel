@@ -19,7 +19,6 @@
 [![Database](https://img.shields.io/badge/Database-SQLite_3-lightgrey.svg)](https://www.sqlite.org/)
 [![Runner](https://img.shields.io/badge/Runner-Rust_Tokio_Async-red.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Live Demo](https://img.shields.io/badge/Demo-GitHub_Pages-blueviolet.svg)](https://maxxwwim.github.io/AetherCraft-Plateforme-MMORPG-Minecraft-Paper-Web-Control-Planel/)
 
 ---
 
