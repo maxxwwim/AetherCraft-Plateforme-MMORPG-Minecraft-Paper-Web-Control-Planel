@@ -1,0 +1,21 @@
+# --------------------------------------------------- #
+#     MapBrowser Configuration — AetherCraft Phone    #
+# --------------------------------------------------- #
+
+jcef:
+  custom-install-path: ""
+  mirror: "https://github.com/Steve3184/mb_jcefbuild/releases/download/v1/"
+  skip-download: true
+
+browser:
+  enable-sound: false
+  user-data-dir: "userdata"
+  remote-debugging:
+    enabled: false
+    port: 9222
+  user-agent: "AetherPhone/2.1 (Paper 1.21.1; Mobile WebDisplay)"
+  chrome-log-output: "file"
+  custom-chrome-args:
+    - "--disable-gpu-compositing"
+    - "--disable-gpu-vsync"
+    - "--no-sandbox"

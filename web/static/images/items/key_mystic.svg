@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="mysticGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#c084fc" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#7e22ce" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="mysticGold" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fdf4ff"/>
+      <stop offset="40%" stop-color="#c084fc"/>
+      <stop offset="100%" stop-color="#6b21a8"/>
+    </linearGradient>
+    <linearGradient id="shaftGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#e9d5ff"/>
+      <stop offset="50%" stop-color="#a855f7"/>
+      <stop offset="100%" stop-color="#581c87"/>
+    </linearGradient>
+    <filter id="shadowKey" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#a855f7" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Glow -->
+  <circle cx="200" cy="200" r="180" fill="url(#mysticGlow)"/>
+
+  <!-- Key Group rotated 45 deg -->
+  <g transform="rotate(-45 200 200)" filter="url(#shadowKey)">
+    <!-- Key Bow / Handle (Star & Rings) -->
+    <circle cx="200" cy="110" r="50" fill="none" stroke="url(#mysticGold)" stroke-width="8"/>
+    <circle cx="200" cy="110" r="32" fill="#1e1035" stroke="#e9d5ff" stroke-width="2"/>
+    
+    <!-- Amethyst Heart Gem -->
+    <polygon points="200,85 220,110 200,135 180,110" fill="url(#mysticGold)" stroke="#fdf4ff" stroke-width="2"/>
+
+    <!-- Key Shaft -->
+    <rect x="194" y="160" width="12" height="150" rx="6" fill="url(#shaftGrad)" stroke="#fdf4ff" stroke-width="1.5"/>
+
+    <!-- Key Teeth / Bits -->
+    <path d="M206 250 L235 250 L235 265 L218 265 L218 280 L242 280 L242 300 L206 300 Z" 
+          fill="url(#mysticGold)" stroke="#fdf4ff" stroke-width="1.5"/>
+
+    <!-- Key Collar & Runes -->
+    <rect x="190" y="165" width="20" height="10" rx="3" fill="#fdf4ff"/>
+    <circle cx="200" cy="210" r="4" fill="#fdf4ff"/>
+  </g>
+
+  <!-- Orbiting Rune Flares -->
+  <polygon points="200,50 203,62 215,65 203,68 200,80 197,68 185,65 197,62" fill="#fdf4ff"/>
+  <polygon points="90,300 93,310 103,312 93,314 90,324 87,314 77,312 87,310" fill="#c084fc"/>
+  <polygon points="310,120 312,128 320,130 312,132 310,140 308,132 300,130 308,128" fill="#c084fc"/>
+</svg>

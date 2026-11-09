@@ -1,0 +1,361 @@
+{% extends "base.html" %}
+
+{% block title %}Bourse des Minerais & Hôtel des Ventes — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6">
+
+  <!-- Header Bourse & Troc -->
+  <div class="glass-panel p-8 rounded-3xl border border-amber-500/20 shadow-2xl relative overflow-hidden mb-10">
+    <div class="absolute -top-24 -right-24 w-60 h-60 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6">
+      <div>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/10 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold mb-3">
+          <img src="/static/images/extracted_textures/diamond.png" class="w-4 h-4 object-contain inline-block" alt="Agora"> COURS EN DIRECT // PLACE DE L'AGORA
+        </div>
+        <h1 class="text-3xl sm:text-4xl font-black font-crest text-white">
+          BOURSE DES MINERAIS & MARCHÉ DU TROC
+        </h1>
+        <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1">
+          Vendez vos filons de minerais aux PNJ marchands contre des <strong class="text-amber-400">Aether Coins</strong>, 
+          ou déposez vos objets et reliques rares à l'Hôtel des Ventes pour troquer librement entre joueurs.
+        </p>
+      </div>
+
+      <!-- Balance Joueur -->
+      {% if current_user %}
+        <div class="bg-obsidian-900/90 p-4 rounded-2xl border border-amber-500/30 flex items-center gap-4 shadow-xl">
+          <img src="{{ current_user.avatar_url }}" class="w-10 h-10 rounded-xl border border-white/20">
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase font-gaming">Votre Solde Actuel</p>
+            <p class="text-xl font-black font-mono text-amber-400">{{ player_stats.balance|int if player_stats else 1000 }} ⛁ Coins</p>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- Section 1 : Bourse Officielle des Minerais (Vente/Achat PNJ) -->
+  <div class="mb-14">
+    <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="text-xl font-black font-crest text-white flex items-center gap-2">
+          <img src="/static/images/extracted_textures/netherite_pickaxe.png" class="w-5 h-5 object-contain inline-block" alt="Bourse"> COURS OFFICIEL DES MINERAIS & MÉTAUX
+        </h2>
+        <p class="text-xs text-slate-400">Rachat garanti 24/7 par les marchands PNJ de l'Agora Céleste</p>
+      </div>
+      <span class="text-xs font-mono text-emerald-400 flex items-center gap-1.5">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        Cours Actualisé
+      </span>
+    </div>
+
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {% for ore in ores %}
+        <div class="glass-panel p-5 rounded-3xl border border-white/10 hover:border-amber-500/40 transition group spotlight-card relative overflow-hidden flex flex-col justify-between">
+          <div>
+            <!-- Visuel 3D Isométrique du Minerai (Item Frame Minecraft) -->
+            <div class="mc-item-frame w-full h-36 flex items-center justify-center p-3 mb-4 transition group-hover:border-amber-500/50">
+              <div class="absolute inset-0 bg-radial-at-c from-amber-500/10 to-transparent pointer-events-none"></div>
+              {% if ore.image_url %}
+                <img src="{{ ore.image_url }}" alt="{{ ore.name }}" class="max-h-28 max-w-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.7)] group-hover:scale-110 transition transform duration-300">
+              {% else %}
+                <span class="text-4xl filter drop-shadow-md">{{ ore.icon }}</span>
+              {% endif %}
+              
+              <!-- Badge Rareté -->
+              <span class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded text-[9px] font-gaming font-black uppercase tracking-wider 
+                {% if ore.rarity == 'MYTHIQUE' %}bg-purple-950/90 text-purple-300 border border-purple-700
+                {% elif ore.rarity == 'LÉGENDAIRE' %}bg-amber-950/90 text-amber-300 border border-amber-700
+                {% elif ore.rarity == 'ÉPIQUE' %}bg-sky-950/90 text-sky-300 border border-sky-700
+                {% else %}bg-slate-900/90 text-slate-300 border border-slate-700{% endif %}">
+                {{ ore.rarity }}
+              </span>
+
+              <!-- Badge Hotbar Stack Minecraft Réel x64 -->
+              <span class="mc-stack-badge">x64</span>
+            </div>
+
+            <h3 class="font-gaming font-bold text-base text-white group-hover:text-amber-300 transition">{{ ore.name }}</h3>
+            <p class="text-[11px] text-slate-400 mb-3">{{ ore.category }}</p>
+          </div>
+
+          <div>
+            <div class="p-2.5 rounded-xl bg-obsidian-900/90 border border-white/5 flex items-center justify-between text-xs font-mono mb-3">
+              <span class="text-slate-400">Cours Unité :</span>
+              <span class="text-amber-400 font-black text-sm">{{ "%.1f"|format(ore.current_price) }} ⛁ Coins</span>
+            </div>
+
+            <div class="text-[10px] text-slate-400 flex items-center justify-between border-t border-white/5 pt-2 font-mono">
+              <span>Échangés : {{ ore.total_traded }} u</span>
+              <span class="text-emerald-400 font-gaming">Rachat Immédiat</span>
+            </div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+  <!-- Section 2 : Hôtel des Ventes & Troc Joueur à Joueur -->
+  <div>
+    <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-6">
+      <div>
+        <h2 class="text-xl font-black font-crest text-white flex items-center gap-2">
+          <img src="/static/images/extracted_textures/beacon.png" class="w-5 h-5 object-contain inline-block" alt="Encan"> HÔTEL DES VENTES & TROC ENTRE JOUEURS
+        </h2>
+        <p class="text-xs text-slate-400">Échanges directs réels P2P (Objets rares, Minerais enchantés, Familiers) • Connecté en direct à la base de données</p>
+      </div>
+      <div class="flex flex-wrap items-center gap-3">
+        <span class="px-3 py-1.5 rounded-xl bg-white/5 border border-white/10 font-gaming text-xs text-slate-300">EN JEU : <strong>/marche sell &lt;prix&gt;</strong></span>
+        {% if current_user %}
+          <button onclick="openDepositModal()" class="px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-gaming font-black text-xs shadow-lg shadow-amber-500/20 active:scale-95 transition flex items-center gap-2">
+            <span>➕</span> <span>DÉPOSER UN OBJET</span>
+          </button>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if listings and listings|length > 0 %}
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for item in listings %}
+          <div class="glass-panel p-5 rounded-2xl border border-white/10 hover:border-amber-500/40 transition flex items-center gap-4 group">
+            <!-- Vitrine Vrai Bloc 3D Isométrique du Jeu Minecraft -->
+            <div class="mc-item-frame w-20 h-20 rounded-2xl bg-gradient-to-br from-obsidian-900 to-obsidian-950 border border-amber-500/30 flex items-center justify-center p-2 shadow-inner group-hover:border-amber-400 transition flex-shrink-0 relative">
+              <img src="/api/minecraft/block-icon/{{ (item.material_id or item.item_name)|lower }}.png"
+                   alt="{{ item.item_name }}"
+                   class="w-14 h-14 object-contain filter drop-shadow-[0_6px_12px_rgba(0,0,0,0.85)] group-hover:scale-110 transition transform duration-300">
+              <span class="mc-stack-badge">x{{ item.quantity }}</span>
+            </div>
+
+            <div class="flex-1">
+              <div class="flex items-center justify-between gap-2">
+                <div>
+                  <h3 class="font-gaming font-bold text-sm text-white">{{ item.item_name }}</h3>
+                  <span class="inline-block mt-0.5 px-2 py-0.5 rounded bg-sky-950/80 border border-sky-500/30 text-[10px] font-mono font-bold text-sky-300">
+                    🧱 BLOC DU JEU : {{ item.material_id or 'DIAMOND_BLOCK' }}
+                  </span>
+                </div>
+                <span class="px-2 py-0.5 rounded text-[10px] font-mono font-bold {% if item.is_troc %}bg-purple-950 text-purple-300 border border-purple-800{% else %}bg-emerald-950 text-emerald-300 border border-emerald-800{% endif %}">
+                  {{ 'TROC D’OBJET' if item.is_troc else 'VENTE EN PIÈCES' }}
+                </span>
+              </div>
+
+              <p class="text-xs text-slate-400 mt-1.5 flex items-center gap-2 font-mono text-[11px]">
+                <span>Vendeur : <strong class="text-slate-200">{{ item.seller_username }}</strong></span>
+                <span>•</span>
+                <span>Lot : x{{ item.quantity }}</span>
+              </p>
+
+              <div class="mt-2.5 flex items-center justify-between pt-2 border-t border-white/5">
+                {% if item.is_troc %}
+                  <span class="text-xs text-purple-300 font-mono font-semibold">Demande : {{ item.wanted_item }}</span>
+                {% else %}
+                  <span class="text-sm font-black font-mono text-amber-400">{{ item.price_coins|int }} ⛁ Coins</span>
+                {% endif %}
+
+                {% if current_user and current_user.minecraft_username != item.seller_username and not item.is_troc %}
+                  <button onclick="buyMarketListing('{{ item.id }}', '{{ item.item_name }}', {{ item.price_coins|int }})"
+                          class="px-3 py-1 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-obsidian-950 font-gaming font-black text-[11px] shadow-lg shadow-emerald-500/20 active:scale-95 transition flex items-center gap-1.5">
+                    <img src="/static/images/extracted_textures/tripwire_hook.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Acheter"> <span>ACHETER</span>
+                  </button>
+                {% else %}
+                  <span class="text-[11px] font-gaming text-emerald-400 font-bold bg-emerald-950/60 px-2 py-0.5 rounded border border-emerald-800">
+                    DISPONIBLE EN JEU (/AH)
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-amber-500/25 text-center max-w-3xl mx-auto shadow-2xl">
+        <!-- Vitrine des Vrais Blocs 3D du Jeu Minecraft -->
+        <div class="flex flex-wrap items-center justify-center gap-3 mb-5">
+          {% for blk, lbl in [('diamond_block', 'Bloc de Diamant'), ('ancient_debris', 'Débris Antiques'), ('emerald_block', 'Bloc Émeraude'), ('amethyst_block', 'Bloc Améthyste'), ('crying_obsidian', 'Aetherite'), ('grass_block', 'Bloc Herbe')] %}
+          <div class="mc-item-frame w-16 h-16 rounded-2xl bg-obsidian-950 border border-white/15 flex flex-col items-center justify-center p-1.5 shadow-lg" title="{{ lbl }}">
+            <img src="/api/minecraft/block-icon/{{ blk }}.png" alt="{{ lbl }}" class="w-11 h-11 object-contain filter drop-shadow">
+          </div>
+          {% endfor %}
+        </div>
+        <h3 class="text-xl font-black font-crest text-white mb-2">Comptoir Libre aux Joueurs — Rendu Vrai Bloc 3D du Jeu</h3>
+        <p class="text-xs sm:text-sm text-slate-300 mb-6 leading-relaxed max-w-xl mx-auto">
+          Chaque bloc ou ressource mis en vente via <code class="text-amber-400 font-mono">/marche sell &lt;prix&gt;</code> en jeu ou via le bouton ci-dessous affiche automatiquement son <strong>vrai bloc 3D isométrique Minecraft</strong> dans l'Hôtel des Ventes et dans l'hologramme 3D <code class="text-sky-400 font-mono">/ah</code> !
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+          {% if current_user %}
+            <button onclick="openDepositModal()" class="px-5 py-2.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-gaming font-black text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition">
+              ➕ DÉPOSER UN BLOC / OBJET EN 3D
+            </button>
+          {% else %}
+            <a href="/connexion" class="px-5 py-2.5 rounded-xl bg-amber-500 text-obsidian-950 font-gaming font-bold text-xs hover:bg-amber-400 transition shadow">
+              Se Connecter pour Déposer
+            </a>
+          {% endif %}
+          <div class="px-4 py-2 rounded-xl bg-obsidian-900 border border-white/10 text-slate-300 font-mono text-xs">
+            En jeu : <strong class="text-amber-400">/marche sell &lt;prix&gt;</strong> (prend le bloc tenu en main)
+          </div>
+        </div>
+      </div>
+    {% endif %}
+  </div>
+
+</div>
+
+<!-- Modal Dépôt d'Objet Joueur avec Aperçu Vrai Bloc 3D -->
+<div id="deposit-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4">
+  <div class="glass-panel-gold rounded-3xl p-6 sm:p-8 max-w-md w-full border border-amber-500/40 shadow-2xl relative">
+    <button onclick="closeDepositModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white font-mono text-lg">✖</button>
+    <div class="flex items-center gap-4 mb-5">
+      <div class="mc-item-frame w-16 h-16 rounded-2xl bg-obsidian-950 border border-amber-500/40 flex items-center justify-center p-2 shrink-0">
+        <img id="dep-block-preview" src="/api/minecraft/block-icon/diamond_block.png" alt="Aperçu Bloc 3D" class="w-12 h-12 object-contain filter drop-shadow">
+      </div>
+      <div>
+        <h3 class="text-lg font-black font-crest text-white">Déposer un Bloc / Objet à l'Encan</h3>
+        <p class="text-[11px] text-slate-400">Aperçu 3D temps réel du vrai bloc Minecraft synchronisé SQLite</p>
+      </div>
+    </div>
+
+    <form id="deposit-form" onsubmit="submitDeposit(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-gaming text-slate-300 mb-1">Bloc du Jeu Minecraft (Rendu 3D)</label>
+        <select id="dep-material-id" onchange="updateDepositBlockPreview()"
+                class="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-white/10 text-white text-xs font-mono focus:border-amber-400 focus:outline-none">
+          <option value="DIAMOND_BLOCK">🧱 DIAMOND_BLOCK — Bloc de Diamant</option>
+          <option value="NETHERITE_BLOCK">🧱 NETHERITE_BLOCK — Bloc de Netherite</option>
+          <option value="ANCIENT_DEBRIS">🧱 ANCIENT_DEBRIS — Débris Antiques</option>
+          <option value="CRYING_OBSIDIAN">🧱 CRYING_OBSIDIAN — Bloc d'Aetherite</option>
+          <option value="EMERALD_BLOCK">🧱 EMERALD_BLOCK — Bloc d'Émeraude</option>
+          <option value="GOLD_BLOCK">🧱 GOLD_BLOCK — Bloc d'Or Royal</option>
+          <option value="IRON_BLOCK">🧱 IRON_BLOCK — Bloc de Fer</option>
+          <option value="AMETHYST_BLOCK">🧱 AMETHYST_BLOCK — Bloc d'Améthyste</option>
+          <option value="COPPER_BLOCK">🧱 COPPER_BLOCK — Bloc de Cuivre</option>
+          <option value="LAPIS_BLOCK">🧱 LAPIS_BLOCK — Bloc de Lapis-Lazuli</option>
+          <option value="QUARTZ_BLOCK">🧱 QUARTZ_BLOCK — Bloc de Quartz Céleste</option>
+          <option value="GRASS_BLOCK">🧱 GRASS_BLOCK — Bloc d'Herbe</option>
+          <option value="OAK_LOG">🧱 OAK_LOG — Bûche de Chêne</option>
+          <option value="COBBLESTONE">🧱 COBBLESTONE — Pierre Taillée</option>
+          <option value="OBSIDIAN">🧱 OBSIDIAN — Obsidienne Pure</option>
+          <option value="BEACON">🧱 BEACON — Balise Astrale</option>
+          <option value="ENDER_CHEST">🧱 ENDER_CHEST — Coffre de l'Ender</option>
+          <option value="SHROOMLIGHT">🧱 SHROOMLIGHT — Champilampe</option>
+          <option value="SEA_LANTERN">🧱 SEA_LANTERN — Lanterne Aquatique</option>
+        </select>
+      </div>
+
+      <div>
+        <label class="block text-xs font-gaming text-slate-300 mb-1">Nom de l'Annonce</label>
+        <input type="text" id="dep-item-name" oninput="updateDepositBlockPreview()" required placeholder="Ex: Lot de Blocs de Diamant, Débris Antiques..."
+               class="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-white/10 text-white text-xs focus:border-amber-400 focus:outline-none">
+      </div>
+
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-gaming text-slate-300 mb-1">Quantité</label>
+          <input type="number" id="dep-qty" min="1" max="64" value="1" required
+                 class="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-white/10 text-white text-xs focus:border-amber-400 focus:outline-none">
+        </div>
+        <div>
+          <label class="block text-xs font-gaming text-slate-300 mb-1">Prix demandé (Coins)</label>
+          <input type="number" id="dep-price" min="1" step="1" value="150" required
+                 class="w-full px-4 py-2.5 rounded-xl bg-obsidian-900 border border-white/10 text-white text-xs focus:border-amber-400 focus:outline-none">
+        </div>
+      </div>
+
+      <button type="submit" class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-gaming font-black text-xs uppercase tracking-wider shadow-lg shadow-amber-500/25 active:scale-95 transition mt-2">
+        Mettre en Vente avec Bloc 3D
+      </button>
+    </form>
+  </div>
+</div>
+
+<script>
+  function updateDepositBlockPreview() {
+    const sel = document.getElementById("dep-material-id");
+    const img = document.getElementById("dep-block-preview");
+    if (sel && img) {
+      img.src = "/api/minecraft/block-icon/" + sel.value.toLowerCase() + ".png";
+    }
+  }
+
+  function openDepositModal() {
+    const m = document.getElementById("deposit-modal");
+    if (m) {
+      m.classList.remove("hidden");
+      m.classList.add("flex");
+      updateDepositBlockPreview();
+    }
+  }
+
+  function closeDepositModal() {
+    const m = document.getElementById("deposit-modal");
+    if (m) {
+      m.classList.add("hidden");
+      m.classList.remove("flex");
+    }
+  }
+
+  function submitDeposit(e) {
+    e.preventDefault();
+    const itemName = document.getElementById("dep-item-name").value.trim();
+    const materialId = document.getElementById("dep-material-id").value;
+    const qty = document.getElementById("dep-qty").value;
+    const price = document.getElementById("dep-price").value;
+
+    if (!itemName) return;
+    if (window.AudioSys) AudioSys.playClick();
+
+    const form = new FormData();
+    form.append("item_name", itemName);
+    form.append("material_id", materialId);
+    form.append("quantity", qty);
+    form.append("price", price);
+
+    fetch("/api/market/sell", {
+      method: "POST",
+      body: form
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === "ok") {
+        if (window.AudioSys) AudioSys.playSuccess();
+        alert("🎉 " + data.message + "\nVotre annonce est enregistrée dans la base de données et diffusée sur le serveur !");
+        closeDepositModal();
+        window.location.reload();
+      } else {
+        alert("❌ " + (data.message || "Erreur de mise en vente."));
+      }
+    })
+    .catch(err => alert("Erreur réseau : " + err));
+  }
+
+  function buyMarketListing(listingId, itemName, price) {
+    if (!confirm(`Confirmer l'achat de "${itemName}" pour ${price} ⛁ Aether Coins ?`)) {
+      return;
+    }
+    if (window.AudioSys) AudioSys.playClick();
+
+    const form = new FormData();
+    form.append("listing_id", listingId);
+
+    fetch("/api/market/buy", {
+      method: "POST",
+      body: form
+    })
+    .then(r => r.json())
+    .then(data => {
+      if (data.status === "ok") {
+        if (window.AudioSys) AudioSys.playSuccess();
+        alert("🎉 " + data.message + "\nL'annonce a été actualisée et la transaction diffusée in-game !");
+        window.location.reload();
+      } else {
+        alert("❌ " + (data.message || "Erreur lors de l'achat."));
+      }
+    })
+    .catch(err => {
+      alert("Erreur de communication : " + err);
+    });
+  }
+</script>
+{% endblock %}

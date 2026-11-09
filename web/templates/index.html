@@ -1,0 +1,999 @@
+{% extends "base.html" %}
+
+{% block title %}AetherCraft — Serveur Survie & Donjons Célestes (1.20 - 1.21.x){% endblock %}
+
+{% block content %}
+<!-- ========================================================
+     HERO SECTION CINÉMATIQUE ÉPURÉE (STYLE PRÉSENTATION)
+     ======================================================== -->
+<section id="hero" class="relative min-h-[92vh] sm:min-h-screen -mt-[98px] pt-[98px] flex items-center justify-center overflow-hidden">
+
+  <!-- Image de fond : archipel céleste (portail, château, îles flottantes) -->
+  <div id="hero-bg-layer" class="hero-art absolute inset-0 pointer-events-none" style="background-image: url('/static/images/hero-bg.jpg');">
+    <!-- Dégradés assortis : légers au sommet pour laisser voir l'image, transition fluide vers l'obsidienne en bas -->
+    <div class="absolute inset-0" style="background: linear-gradient(to bottom, rgba(6,7,20,0.35) 0%, rgba(6,7,20,0) 25%);"></div>
+    <div class="absolute inset-0" style="background: linear-gradient(to right, rgba(6,7,16,0.75) 0%, rgba(6,7,16,0.3) 50%, rgba(6,7,16,0) 80%);"></div>
+    <div class="absolute inset-x-0 bottom-0 h-[45%]" style="background: linear-gradient(to top, #06070b 0%, rgba(8,8,24,0.85) 20%, rgba(24,14,60,0.35) 60%, transparent 100%);"></div>
+    <div class="absolute -top-20 left-1/3 w-[620px] h-[320px] rounded-full blur-[140px]" style="background: rgba(139,92,246,0.22)"></div>
+    <div class="absolute top-1/3 right-10 w-[460px] h-[460px] rounded-full blur-[150px]" style="background: rgba(34,211,238,0.14)"></div>
+  </div>
+
+  <!-- Conteneur Présentation Épuré (Cible du Scroll Fou Disparition) -->
+  <div id="hero-content-wrapper" class="max-w-6xl mx-auto px-6 py-16 sm:py-24 relative z-10 w-full transition-all duration-75 ease-out will-change-transform text-center lg:text-left">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+      
+      <!-- Colonne Principale (8 Cols) : Présentation Typographique & IP Capsule -->
+      <div class="lg:col-span-8 space-y-6">
+        
+        <!-- Badge de Présentation Épuré -->
+        <div class="inline-flex items-center gap-3 px-4 py-2 rounded-full glass-panel border border-amber-500/30 text-xs font-gaming tracking-wider shadow-2xl backdrop-blur-xl">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+          <span class="text-amber-300 font-bold uppercase">AETHERCRAFT // SAISON 4 PRIMORDIALE</span>
+          <span class="text-rose-400 font-mono text-[11px] border-l border-white/10 pl-2">PAPER 1.21.1</span>
+        </div>
+
+        <!-- Titre Monumental Style Présentation -->
+        <div class="space-y-3">
+          <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black font-gaming tracking-tight text-white leading-none drop-shadow-2xl">
+            L'ARCHIPEL CÉLESTE. <br>
+            <span class="bg-gradient-to-r from-amber-300 via-yellow-200 to-purple-400 bg-clip-text text-transparent">
+              REDÉFINI POUR L'ÉLITE.
+            </span>
+          </h1>
+          <p class="text-base sm:text-lg text-slate-200 max-w-2xl leading-relaxed font-normal drop-shadow pt-2">
+            Un écosystème Minecraft survie et donjons instanciés d'une pureté absolue. 
+            <strong>100% sans mods</strong>, <strong>économie réelle</strong> et <strong>20.0 TPS imperturbables</strong> propulsés par le runner natif Tokio.
+          </p>
+        </div>
+
+        <!-- Capsule IP Épurée & Minimaliste -->
+        <div class="p-3 sm:p-4 rounded-3xl glass-panel max-w-lg mx-auto lg:mx-0 shadow-2xl border border-white/15 spotlight-card backdrop-blur-2xl">
+          <div class="flex flex-col sm:flex-row items-center gap-2.5">
+            <div class="flex-1 w-full flex items-center justify-between bg-black/60 border border-white/10 rounded-2xl px-4 py-3 text-sm font-mono text-emerald-300 font-bold select-all">
+              <span class="flex items-center gap-2">
+                <span class="text-emerald-400">⚡</span>
+                <span id="hero-ip-text">{{ server_status.ip }}</span>
+              </span>
+              <span class="inline-flex items-center text-[10px] text-emerald-400 bg-emerald-950/80 px-2.5 py-0.5 rounded-full border border-emerald-800 font-mono">
+                {{ server_status.players_online }} EN LIGNE
+              </span>
+            </div>
+
+            <button onclick="copyServerIp()" 
+                    class="w-full sm:w-auto px-6 py-3 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-obsidian-950 font-gaming font-black text-xs whitespace-nowrap shadow-xl shadow-amber-500/25 transition active:scale-95 flex items-center justify-center gap-2">
+              <span>📋</span> <span>COPIER</span>
+            </button>
+          </div>
+          
+          <div class="mt-2.5 px-2 flex items-center justify-between text-[11px] text-slate-400">
+            <span>Minecraft Java <strong>1.20 à 1.21.1</strong></span>
+            <span class="text-amber-400 font-mono font-semibold">{{ server_status.ping_ms }} ms (Paris)</span>
+          </div>
+        </div>
+
+        <!-- Boutons d'Action Rapide -->
+        <div class="flex flex-wrap items-center justify-center lg:justify-start gap-4 pt-2">
+          <a href="/boutique" onclick="AudioSys.playClick()" 
+             class="px-8 py-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-obsidian-950 font-gaming font-black text-xs tracking-wider shadow-2xl shadow-amber-500/30 transition flex items-center gap-2.5 active:scale-95">
+            <span>👑</span> BOUTIQUE DU SERVEUR
+          </a>
+          <a href="#presentation" onclick="AudioSys.playClick()" 
+             class="px-8 py-4 rounded-2xl glass-panel hover:bg-white/10 border border-white/20 text-white font-gaming font-bold text-xs tracking-wider transition flex items-center gap-2 active:scale-95">
+            <span>🧭</span> EXPLORER L'EXPÉRIENCE ↓
+          </a>
+        </div>
+
+      </div>
+
+      <!-- Colonne Droite (4 Cols) : Capsule Champion Dynamique (sans mock static) -->
+      <div class="lg:col-span-4 hidden lg:flex justify-end">
+        <div class="relative w-full max-w-xs">
+          <!-- Halo Rubis & Ambre -->
+          <div class="absolute inset-0 bg-gradient-to-tr from-amber-500/20 via-purple-600/20 to-amber-500/20 rounded-3xl blur-2xl transform scale-110 pointer-events-none"></div>
+
+          <!-- Carte Flottante Épurée -->
+          <div class="relative glass-panel rounded-3xl p-6 shadow-2xl border border-white/15 overflow-hidden animate-float spotlight-card">
+            <div class="flex items-center justify-between pb-3 border-b border-white/10">
+              <span class="text-[10px] font-gaming font-bold text-slate-300 uppercase tracking-widest">
+                {{ 'MON PERSONNAGE' if current_user else 'CHAMPION DU ROYAUME' }}
+              </span>
+              <span class="px-2 py-0.5 rounded text-[9px] font-gaming font-black bg-amber-950 text-amber-300 border border-amber-800">
+                {{ top_player.rank if top_player else 'AVENTURIER' }}
+              </span>
+            </div>
+
+            <!-- Skin 3D Render Dynamique -->
+            <div class="py-4 flex justify-center items-center relative">
+              <img src="https://mc-heads.net/body/{{ current_user.minecraft_username if current_user else (top_player.username if top_player else 'Steve') }}/right" 
+                   alt="Minecraft Skin 3D" 
+                   class="h-56 object-contain filter drop-shadow-[0_20px_25px_rgba(0,0,0,0.9)] animate-glow">
+              
+              <div class="absolute bottom-2 left-2 glass-panel px-3 py-1 rounded-xl border border-amber-500/40 text-[10px] font-mono font-bold text-amber-300 shadow-lg">
+                ⚔️ {{ current_user.minecraft_username if current_user else (top_player.username if top_player else 'Aventurier') }}
+              </div>
+            </div>
+
+            <!-- Quick Stats Dynamiques -->
+            <div class="grid grid-cols-2 gap-2 text-center text-xs pt-3 border-t border-white/10">
+              <div class="bg-black/40 p-2 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block font-gaming">FRAGS</span>
+                <span class="font-mono font-bold text-rose-400 text-sm">{{ top_player.kills if top_player else 0 }}</span>
+              </div>
+              <div class="bg-black/40 p-2 rounded-xl border border-white/5">
+                <span class="text-[10px] text-slate-400 block font-gaming">FORTUNE</span>
+                <span class="font-mono font-bold text-amber-300 text-sm">{{ "{:,}".format(top_player.balance|int if top_player else 0).replace(',', ' ') }} 🪙</span>
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Scroll Indicator Arrow -->
+    <div class="text-center pt-10">
+      <div class="inline-flex flex-col items-center gap-1.5 text-slate-400/80 animate-bounce cursor-pointer" 
+           onclick="document.getElementById('presentation').scrollIntoView({ behavior: 'smooth' })">
+        <span class="text-[10px] font-gaming uppercase tracking-widest text-amber-400">Défiler pour la présentation</span>
+        <span class="text-base text-amber-400">↓</span>
+      </div>
+    </div>
+  </div>
+
+</section>
+<!-- ========================================================
+     JAUGE MONDIALE DE COOPÉRATION (SOCIABILITÉ & ÉCHANGE)
+     ======================================================== -->
+<section id="presentation" class="py-8 bg-obsidian-950 relative z-20 px-6">
+  <div class="max-w-6xl mx-auto">
+    <div class="glass-panel p-6 sm:p-8 rounded-3xl border border-amber-500/30 shadow-2xl relative overflow-hidden spotlight-card">
+      <div class="absolute -top-16 -right-16 w-44 h-44 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-6 mb-6">
+        <div>
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 text-xs font-mono font-bold mb-2">
+            <span>🪐</span> OBJECTIF COOPÉRATIF DU SERVEUR
+          </div>
+          <h2 class="text-2xl sm:text-3xl font-black font-crest text-white">
+            {{ community_goal.title if community_goal and community_goal.title else 'Éclosion de l’Arbre Primordial des Cieux' }}
+          </h2>
+          <p class="text-xs sm:text-sm text-slate-300 max-w-2xl mt-1 leading-relaxed">
+            {{ community_goal.description if community_goal and community_goal.description else "Chaque minerai troqué ou livré à l'Agora alimente la jauge mondiale. Débloquez ensemble le Sanctuaire des Animaux et les auras partagées !" }}
+          </p>
+        </div>
+
+        <div class="flex flex-wrap items-center gap-3">
+          <a href="/marche" class="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-black font-gaming tracking-wide text-xs shadow-lg shadow-amber-500/25 active:scale-95 transition flex items-center gap-2">
+            <span>⛏️</span> <span>BOURSE DES MINERAIS</span>
+          </a>
+          <a href="/animaux" class="px-5 py-3 rounded-xl bg-purple-600/20 hover:bg-purple-600/30 border border-purple-500/40 text-purple-200 font-bold font-gaming text-xs active:scale-95 transition flex items-center gap-2">
+            <span>🐾</span> <span>FAUNE MYSTIQUE</span>
+          </a>
+        </div>
+      </div>
+
+      <!-- Barre de Progression Mondiale Liée à la DB -->
+      <div class="space-y-2">
+        <div class="flex items-center justify-between text-xs font-mono">
+          <span class="text-amber-400 font-bold flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-pulse"></span>
+            Progression Collective : {{ community_goal.percent if community_goal else 0 }}%
+          </span>
+          <span class="text-slate-300 font-bold">{{ community_goal.current_amount if community_goal else 0 }} / {{ community_goal.target_amount if community_goal else 50000 }} Minerais Célestes</span>
+        </div>
+
+        <div class="w-full h-4 rounded-full bg-obsidian-900 border border-white/10 p-0.5 overflow-hidden shadow-inner">
+          <div class="h-full rounded-full bg-gradient-to-r from-amber-500 via-purple-500 to-emerald-400 shadow-lg shadow-amber-500/50 transition-all duration-1000"
+               style="width: {{ community_goal.percent if community_goal else 0 }}%;"></div>
+        </div>
+
+        <!-- Paliers dynamiques (25% / 50% / 75% / 100%) -->
+        {% set tree_pct = community_goal.percent if community_goal else 0 %}
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-3 text-[11px] font-gaming">
+          <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' if tree_pct >= 25 else 'bg-obsidian-950/60 border-white/10 text-slate-400' }}">
+            <span>{{ '✅' if tree_pct >= 25 else '🔒' }}</span> <span>25% : +15k Coins & 50 Pts</span>
+          </div>
+          <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' if tree_pct >= 50 else 'bg-obsidian-950/60 border-white/10 text-slate-400' }}">
+            <span>{{ '✅' if tree_pct >= 50 else '🔒' }}</span> <span>50% : +40k Coins & 120 Pts</span>
+          </div>
+          <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' if tree_pct >= 75 else 'bg-obsidian-950/60 border-white/10 text-slate-400' }}">
+            <span>{{ '✅' if tree_pct >= 75 else '🔒' }}</span> <span>75% : +90k Coins & 260 Pts</span>
+          </div>
+          <div class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl border {{ 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400' if tree_pct >= 100 else 'bg-obsidian-950/60 border-white/10 text-slate-400' }}">
+            <span>{{ '✅' if tree_pct >= 100 else '🔒' }}</span> <span>100% : +200k Coins & 600 Pts</span>
+          </div>
+        </div>
+
+        <!-- Système de Distribution Anti-Cheat & Top Donateurs -->
+        <div class="mt-3 pt-3 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-2 text-[11px] text-slate-300">
+          <div class="flex items-center gap-1.5">
+            <span class="px-2 py-0.5 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-300 font-bold text-[10px] uppercase">Distribution Anti-Cheat</span>
+            <span>Récompenses selon votre <strong>% de don</strong> (Cap Solo 35% / Duo 45% • Formule 70% Don + 30% √Don)</span>
+          </div>
+          {% if community_goal and community_goal.donors %}
+          <div class="flex items-center gap-2 text-[10px] font-mono text-emerald-300">
+            <span>Top Donateurs :</span>
+            {% for donor in community_goal.donors[:3] %}
+              <span class="px-2 py-0.5 rounded-lg bg-white/5 border border-white/10">{{ donor.username }} ({{ donor.share_pct }}%)</span>
+            {% endfor %}
+          </div>
+          {% else %}
+          <div class="text-[10px] font-mono text-slate-400">
+            Arbre réinitialisé à 0/50 000 • Donnez vos minerais via <span class="text-amber-300 font-bold">/menu</span> ou la Bourse !
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     BANDE DE TÉLÉMÉTRIE ÉPURÉE & SPÉCIFICATIONS
+     ======================================================== -->
+<section class="py-10 border-y border-white/10 bg-obsidian-950 relative z-20">
+  <div class="max-w-6xl mx-auto px-6">
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-6 reveal-on-scroll">
+      
+      <div class="glass-panel p-6 rounded-3xl border border-white/10 text-center spotlight-card">
+        <div class="text-3xl sm:text-4xl font-black text-emerald-400 font-mono tracking-tight">20.0</div>
+        <div class="text-xs font-gaming font-bold text-white uppercase tracking-wider mt-1">TPS Constant</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">Zéro lag • Moteur Tokio</div>
+      </div>
+
+      <div class="glass-panel p-6 rounded-3xl border border-white/10 text-center delay-100 spotlight-card">
+        <div class="text-3xl sm:text-4xl font-black text-white font-mono tracking-tight">1.21.1</div>
+        <div class="text-xs font-gaming font-bold text-white uppercase tracking-wider mt-1">Version Serveur</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">Compatible 1.20 à 1.21.x</div>
+      </div>
+
+      <div class="glass-panel p-6 rounded-3xl border border-white/10 text-center delay-200 spotlight-card">
+        <div class="text-3xl sm:text-4xl font-black text-rose-400 font-mono tracking-tight">&lt; 15 ms</div>
+        <div class="text-xs font-gaming font-bold text-white uppercase tracking-wider mt-1">Latence Réseau</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">Datacenter Paris (Fibre 10Gbps)</div>
+      </div>
+
+      <div class="glass-panel p-6 rounded-3xl border border-white/10 text-center delay-300 spotlight-card">
+        <div class="text-3xl sm:text-4xl font-black text-amber-400 font-mono tracking-tight">0 MOD</div>
+        <div class="text-xs font-gaming font-bold text-white uppercase tracking-wider mt-1">100% Vanilla</div>
+        <div class="text-[10px] text-slate-400 mt-0.5">Pack automatique intégré</div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+
+<!-- ========================================================
+     INTERFACE HUD MMORPG & CODEX CÉLESTE // COCKPIT JOUEUR (/menu)
+     ======================================================== -->
+<section id="cockpit-voxel" class="py-24 bg-obsidian-950 relative z-20 px-6 overflow-hidden border-b border-white/10">
+  
+  <!-- Halos Décoratifs Émeraude & Veines Sanglantes (Aura hero-cube.jpg) -->
+  <div class="absolute -top-32 -left-32 w-96 h-96 bg-emerald-500/15 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="absolute -bottom-32 -right-32 w-96 h-96 bg-rose-600/15 rounded-full blur-[140px] pointer-events-none"></div>
+  <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-emerald-500/5 rounded-full blur-[160px] pointer-events-none"></div>
+
+  <div class="max-w-6xl mx-auto">
+    
+    <!-- En-tête de Section MMORPG -->
+    <div class="text-center max-w-3xl mx-auto mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-emerald-950/80 border border-emerald-500/40 text-emerald-400 text-xs font-gaming tracking-wider mb-3 shadow-lg shadow-emerald-500/10">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>⚔️ HUD MMORPG // ARCHIPEL PRIMORDIAL</span>
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-black font-gaming text-white tracking-tight leading-tight">
+        Le Tableau de Bord <br>
+        <span class="bg-gradient-to-r from-emerald-400 via-teal-300 to-rose-400 bg-clip-text text-transparent">
+          Éther Vital & Veines de Sang
+        </span>
+      </h2>
+      <p class="text-xs sm:text-sm text-slate-300 mt-3 font-normal max-w-2xl mx-auto leading-relaxed">
+        Votre cockpit d'aventurier synchronisé en direct entre le web et le serveur Minecraft via <strong class="text-emerald-400 font-mono">/menu</strong> ou <strong class="text-emerald-400 font-mono">/ah</strong>.
+        Bourse de minerais, familiers mystiques, quiz du Sphinx et donjons réunis dans un HUD d'élite.
+      </p>
+    </div>
+
+    <!-- Layout MMORPG : Console de Commande & Codex Gauche + Moniteur Holographique Droite -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+      
+      <!-- Colonne Gauche (7 Cols) : Cadre de Personnage MMO & Grille des Modules -->
+      <div class="lg:col-span-7 space-y-5">
+        
+        <!-- 1. Player Unit Frame MMO (Cadre de Statut Aventurier) -->
+        <div class="glass-panel p-5 rounded-3xl border border-emerald-500/30 bg-obsidian-900/90 shadow-2xl relative overflow-hidden backdrop-blur-xl">
+          <!-- Effet Veine de Sang en bordure supérieure -->
+          <div class="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-emerald-500 via-rose-500 to-emerald-500"></div>
+
+          <div class="flex flex-col sm:flex-row items-center sm:items-start gap-4">
+            
+            <!-- Avatar Voxel & Médaille de Niveau -->
+            <div class="relative shrink-0">
+              <div class="w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-gradient-to-br from-emerald-900/80 via-obsidian-950 to-rose-950/80 border-2 border-emerald-400/60 p-1 shadow-xl flex items-center justify-center text-4xl group">
+                {% if current_user or top_player %}
+                <img src="https://mc-heads.net/avatar/{{ current_user.minecraft_username if current_user else top_player.username }}/64" 
+                     alt="Avatar" class="w-12 h-12 rounded-xl object-contain group-hover:scale-110 transition-transform">
+                {% else %}
+                <span class="transform transition group-hover:scale-110">👑</span>
+                {% endif %}
+              </div>
+              <div class="absolute -bottom-2 -right-2 px-2 py-0.5 rounded-md bg-amber-500 text-obsidian-950 font-gaming font-black text-[10px] tracking-wider border border-amber-300 shadow-lg">
+                {{ 'MOI' if current_user else 'MVP' }}
+              </div>
+            </div>
+
+            <!-- Infos Joueur & Jauges MMORPG (Vitalité & Éther) -->
+            <div class="flex-1 w-full text-center sm:text-left">
+              <div class="flex flex-wrap items-center justify-center sm:justify-between gap-2 mb-2">
+                <div>
+                  <h3 class="text-base font-black font-gaming text-white tracking-wide flex items-center gap-2 justify-center sm:justify-start">
+                    <span>{{ current_user.minecraft_username if current_user else (top_player.username if top_player else 'Aucun Joueur') }}</span>
+                    <span class="text-[10px] px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-mono font-bold">{{ top_player.rank if top_player else 'JOUEUR' }}</span>
+                  </h3>
+                  <p class="text-[11px] text-slate-400 font-mono">Archipel Céleste • Guilde: {{ top_player.guild if top_player else 'Aventurier' }}</p>
+                </div>
+                <div class="flex items-center gap-1.5 text-[11px] font-mono {% if (current_user and current_user.is_online) or (top_player and top_player.is_online) %}text-emerald-400 bg-emerald-950/60 border-emerald-800{% else %}text-slate-400 bg-slate-900/60 border-slate-700{% endif %} px-2.5 py-1 rounded-lg border">
+                  <span class="w-2 h-2 rounded-full {% if (current_user and current_user.is_online) or (top_player and top_player.is_online) %}bg-emerald-400 animate-pulse{% else %}bg-slate-500{% endif %}"></span>
+                  <span>{% if (current_user and current_user.is_online) or (top_player and top_player.is_online) %}EN LIGNE{% else %}HORS LIGNE{% endif %}</span>
+                </div>
+              </div>
+
+              <!-- Barres de Vitalité et d'Éther -->
+              <div class="space-y-2 mt-3">
+                <!-- Barre Vitalité -->
+                <div>
+                  <div class="flex justify-between text-[10px] font-mono mb-1">
+                    <span class="text-rose-400 font-bold flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-rose-500 animate-ping"></span>
+                      VITALITÉ (HP)
+                    </span>
+                    <span class="text-rose-300 font-bold">{{ (top_player.kills * 20 + 100) if top_player else 100 }} / {{ (top_player.kills * 20 + 100) if top_player else 100 }} <span class="text-slate-500">(100%)</span></span>
+                  </div>
+                  <div class="w-full h-3 bg-black/70 rounded-full p-0.5 border border-rose-500/30 overflow-hidden shadow-inner">
+                    <div class="h-full bg-gradient-to-r from-rose-700 via-rose-500 to-red-400 rounded-full transition-all duration-700 shadow-lg shadow-rose-500/30" style="width: 100%;"></div>
+                  </div>
+                </div>
+
+                <!-- Barre Éther -->
+                <div>
+                  <div class="flex justify-between text-[10px] font-mono mb-1">
+                    <span class="text-emerald-400 font-bold flex items-center gap-1">
+                      <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                      RÉSERVOIR D'ÉTHER (MP)
+                    </span>
+                    <span class="text-emerald-300 font-bold">{{ (top_player.hours_played * 10 + 50) if top_player else 50 }} / {{ (top_player.hours_played * 10 + 50) if top_player else 50 }} <span class="text-slate-500">(100%)</span></span>
+                  </div>
+                  <div class="w-full h-3 bg-black/70 rounded-full p-0.5 border border-emerald-500/30 overflow-hidden shadow-inner">
+                    <div class="h-full bg-gradient-to-r from-emerald-700 via-emerald-500 to-teal-400 rounded-full transition-all duration-700 shadow-lg shadow-emerald-500/30" style="width: 100%;"></div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Solde Portefeuille MMO In-Game & Web -->
+              <div class="grid grid-cols-3 gap-2 mt-3 pt-3 border-t border-white/5 text-center">
+                <div class="bg-black/40 rounded-xl p-2 border border-amber-500/20">
+                  <span class="text-[10px] text-amber-400 font-mono block">⛁ AETHER COINS</span>
+                  <span class="text-xs sm:text-sm font-black font-mono text-white">{{ "{:,}".format(top_player.balance|int if top_player else 0).replace(',', ' ') }}</span>
+                </div>
+                <div class="bg-black/40 rounded-xl p-2 border border-sky-500/20">
+                  <span class="text-[10px] text-sky-400 font-mono block">⏳ TEMPS DE JEU</span>
+                  <span class="text-xs sm:text-sm font-black font-mono text-white">{{ top_player.hours_played if top_player else 0 }}h</span>
+                </div>
+                <div class="bg-black/40 rounded-xl p-2 border border-emerald-500/20">
+                  <span class="text-[10px] text-emerald-400 font-mono block">⚔️ FRAGS / KILLS</span>
+                  <span class="text-xs sm:text-sm font-black font-mono text-emerald-300 font-bold">{{ top_player.kills if top_player else 0 }}</span>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+
+        <!-- 2. Grille des 6 Piliers MMORPG (Cartes d'Élite Runic & Voxel) -->
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-3">
+          
+          <!-- Carte 1 : Hôtel des Ventes (/ah) -->
+          <button onclick="selectVoxelModule('ah')" id="btn-mod-ah" class="mmo-card group text-left p-4 rounded-2xl bg-obsidian-900/90 border border-amber-500/30 hover:border-amber-400 hover:bg-amber-950/20 transition-all duration-200 shadow-xl relative overflow-hidden active:scale-95">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl group-hover:scale-110 transition-transform">🤝</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/40 font-bold">[H]</span>
+            </div>
+            <div class="text-xs font-gaming font-black text-white group-hover:text-amber-300 transition-colors">L'Encan d'Éther</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Hôtel des Ventes /ah</div>
+          </button>
+
+          <!-- Carte 2 : Bourse des Minerais (/marche) -->
+          <button onclick="selectVoxelModule('admin_shop')" id="btn-mod-admin_shop" class="mmo-card group text-left p-4 rounded-2xl bg-obsidian-900/90 border border-emerald-500/30 hover:border-emerald-400 hover:bg-emerald-950/20 transition-all duration-200 shadow-xl relative overflow-hidden active:scale-95 ring-2 ring-emerald-400 scale-[1.02]">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl group-hover:scale-110 transition-transform">⛏️</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 font-bold">[B]</span>
+            </div>
+            <div class="text-xs font-gaming font-black text-white group-hover:text-emerald-300 transition-colors">Grand Comptoir</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Bourse 8 Minerais /marche</div>
+          </button>
+
+          <!-- Carte 3 : Familiers Mystiques (/pet) -->
+          <button onclick="selectVoxelModule('pets')" id="btn-mod-pets" class="mmo-card group text-left p-4 rounded-2xl bg-obsidian-900/90 border border-purple-500/30 hover:border-purple-400 hover:bg-purple-950/20 transition-all duration-200 shadow-xl relative overflow-hidden active:scale-95">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl group-hover:scale-110 transition-transform">🐾</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-purple-500/20 text-purple-300 border border-purple-500/40 font-bold">[P]</span>
+            </div>
+            <div class="text-xs font-gaming font-black text-white group-hover:text-purple-300 transition-colors">Sanctuaire Faune</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Auras de Groupe /pet</div>
+          </button>
+
+          <!-- Carte 4 : Trivia Quiz Sphinx (/quiz) -->
+          <button onclick="selectVoxelModule('quiz')" id="btn-mod-quiz" class="mmo-card group text-left p-4 rounded-2xl bg-obsidian-900/90 border border-teal-500/30 hover:border-teal-400 hover:bg-teal-950/20 transition-all duration-200 shadow-xl relative overflow-hidden active:scale-95">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl group-hover:scale-110 transition-transform">❓</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-teal-500/20 text-teal-300 border border-teal-500/40 font-bold">[Q]</span>
+            </div>
+            <div class="text-xs font-gaming font-black text-white group-hover:text-teal-300 transition-colors">Sphinx Céleste</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Quiz Chat (+50 ⛃ Pièces)</div>
+          </button>
+
+          <!-- Carte 5 : Boutique & Play-to-Earn (/store) -->
+          <button onclick="selectVoxelModule('store')" id="btn-mod-store" class="mmo-card group text-left p-4 rounded-2xl bg-obsidian-900/90 border border-sky-500/30 hover:border-sky-400 hover:bg-sky-950/20 transition-all duration-200 shadow-xl relative overflow-hidden active:scale-95">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl group-hover:scale-110 transition-transform">👑</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/40 font-bold">[S]</span>
+            </div>
+            <div class="text-xs font-gaming font-black text-white group-hover:text-sky-300 transition-colors">Trésorerie Céleste</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Boutique & Magots /store</div>
+          </button>
+
+          <!-- Carte 6 : Donjons Instanciés (/dungeon) -->
+          <button onclick="selectVoxelModule('dungeons')" id="btn-mod-dungeons" class="mmo-card group text-left p-4 rounded-2xl bg-obsidian-900/90 border border-rose-500/30 hover:border-rose-400 hover:bg-rose-950/20 transition-all duration-200 shadow-xl relative overflow-hidden active:scale-95">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-2xl group-hover:scale-110 transition-transform">⚔️</span>
+              <span class="text-[9px] font-mono px-1.5 py-0.5 rounded bg-rose-500/20 text-rose-300 border border-rose-500/40 font-bold">[D]</span>
+            </div>
+            <div class="text-xs font-gaming font-black text-white group-hover:text-rose-300 transition-colors">Donjons & Raids</div>
+            <div class="text-[10px] text-slate-400 font-mono mt-0.5">Boss & Pillage /dungeon</div>
+          </button>
+
+        </div>
+
+        <!-- 3. Action Bar MMORPG (Barre de Sorts & Hotkeys en Bas) -->
+        <div class="bg-black/70 p-3 rounded-2xl border border-white/10 flex items-center justify-between gap-1 select-none">
+          <div class="flex items-center gap-1.5 overflow-x-auto py-0.5">
+            <button onclick="selectVoxelModule('profile')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-emerald-500/50 hover:border-emerald-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Mon Profil (/menu)">
+              <span>📜</span>
+              <span class="text-[8px] font-mono text-emerald-400 font-bold leading-none">M</span>
+            </button>
+            <button onclick="selectVoxelModule('ah')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-amber-500/50 hover:border-amber-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Hôtel des Ventes (/ah)">
+              <span>🤝</span>
+              <span class="text-[8px] font-mono text-amber-400 font-bold leading-none">H</span>
+            </button>
+            <button onclick="selectVoxelModule('admin_shop')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-emerald-500/50 hover:border-emerald-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Bourse des Minerais (/marche)">
+              <span>⛏️</span>
+              <span class="text-[8px] font-mono text-emerald-400 font-bold leading-none">B</span>
+            </button>
+            <button onclick="selectVoxelModule('pets')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-purple-500/50 hover:border-purple-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Familiers Mystiques (/pet)">
+              <span>🐾</span>
+              <span class="text-[8px] font-mono text-purple-400 font-bold leading-none">P</span>
+            </button>
+            <button onclick="selectVoxelModule('quiz')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-teal-500/50 hover:border-teal-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Quiz Sphinx (/quiz)">
+              <span>❓</span>
+              <span class="text-[8px] font-mono text-teal-400 font-bold leading-none">Q</span>
+            </button>
+            <button onclick="selectVoxelModule('dungeons')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-rose-500/50 hover:border-rose-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Donjons Instanciés (/dungeon)">
+              <span>⚔️</span>
+              <span class="text-[8px] font-mono text-rose-400 font-bold leading-none">D</span>
+            </button>
+            <button onclick="selectVoxelModule('store')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-sky-500/50 hover:border-sky-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Boutique & Magots (/store)">
+              <span>👑</span>
+              <span class="text-[8px] font-mono text-sky-400 font-bold leading-none">S</span>
+            </button>
+            <button onclick="selectVoxelModule('spawn')" class="mmo-slot w-10 h-10 rounded-xl bg-obsidian-950 border border-white/20 hover:border-teal-300 flex flex-col items-center justify-center text-sm shadow transition relative active:scale-95" title="Téléportation Agora Spawn (/spawn)">
+              <span>🪐</span>
+              <span class="text-[8px] font-mono text-slate-400 font-bold leading-none">SP</span>
+            </button>
+          </div>
+          <span class="text-[10px] text-slate-400 font-mono hidden sm:inline-block">⚡ HOTKEYS MMORPG</span>
+        </div>
+
+      </div>
+
+      <!-- Colonne Droite (5 Cols) : Moniteur Holographique Interactif & Simulation Console -->
+      <div class="lg:col-span-5">
+        <div id="voxel-detail-card" class="glass-panel p-6 sm:p-8 rounded-3xl border border-emerald-500/40 bg-obsidian-900/95 shadow-2xl relative overflow-hidden transition-all duration-300">
+          
+          <!-- Runic Glow Effect -->
+          <div class="absolute -right-16 -top-16 w-40 h-40 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+          <div class="flex items-center gap-4 mb-4 relative z-10">
+            <div id="vmod-icon" class="w-16 h-16 rounded-2xl bg-black/70 border border-emerald-500/50 flex items-center justify-center text-4xl shadow-inner shadow-emerald-500/20">
+              ⛏️
+            </div>
+            <div>
+              <span id="vmod-badge" class="px-2.5 py-0.5 rounded text-[10px] font-gaming font-black uppercase tracking-wider bg-emerald-950 text-emerald-300 border border-emerald-700">
+                ADMIN SHOP & BOURSE
+              </span>
+              <h3 id="vmod-title" class="text-xl sm:text-2xl font-black font-gaming text-white mt-1">
+                Le Grand Comptoir de l'Agora
+              </h3>
+            </div>
+          </div>
+
+          <p id="vmod-desc" class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal mb-5 min-h-[70px] relative z-10">
+            Rachat garanti 24/7 de vos minerais par les marchands PNJ. Le cours de l'Étherium, de l'Orbe de Sang et du Diamant fluctue en direct selon l'offre et la demande !
+          </p>
+
+          <!-- Simulation Live & Données In-Game -->
+          <div class="bg-black/80 p-3 rounded-2xl border border-white/10 mb-4 font-mono text-[11px] space-y-1.5 relative z-10">
+            <div class="flex justify-between text-slate-400">
+              <span>Synchronisation :</span>
+              <span class="text-emerald-400 font-bold flex items-center gap-1">
+                <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Paper 1.21.1 & SQLite Direct
+              </span>
+            </div>
+            <div class="flex justify-between text-slate-400">
+              <span>Portée Réseau :</span>
+              <span class="text-white">Web 127.0.0.1:5000 ⇄ RCON 25575</span>
+            </div>
+          </div>
+
+          <!-- Commande In-Game à Copier -->
+          <div class="bg-black/60 p-3.5 rounded-2xl border border-emerald-500/30 flex items-center justify-between mb-4 relative z-10">
+            <div class="flex items-center gap-2">
+              <span class="text-xs text-slate-400 font-mono">Commande :</span>
+              <span id="vmod-cmd" class="text-sm font-mono font-black text-emerald-300">/marche</span>
+            </div>
+            <button onclick="copyVoxelCmd()" class="px-3 py-1.5 rounded-xl bg-emerald-500/20 hover:bg-emerald-500/30 border border-emerald-500/40 text-emerald-300 text-xs font-mono font-bold transition flex items-center gap-1 active:scale-95 shadow">
+              <span>📋</span> <span>Copier</span>
+            </button>
+          </div>
+
+          <!-- Lien vers le module web correspondant -->
+          <a id="vmod-link" href="/marche" class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-obsidian-950 font-gaming font-black text-xs uppercase tracking-wider text-center shadow-xl shadow-emerald-500/25 transition flex items-center justify-center gap-2 active:scale-95 relative z-10">
+            <span>🚀</span> <span id="vmod-btn-text">CONSULTER LA BOURSE</span>
+          </a>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<script>
+  const VOXEL_MODULES = {
+    profile: {
+      icon: "📜",
+      badge: "PROFIL JOUEUR",
+      title: "Le Grimoire du Voyageur",
+      desc: "Affiche votre grade actif, votre solde d'Aether Coins, vos Pièces et Magots accumulés, vos succès royaux et vos donjons primordiaux en temps réel.",
+      cmd: "/menu",
+      link: "/mon-compte",
+      btnText: "ACCÉDER À MON PROFIL"
+    },
+    ah: {
+      icon: "🤝",
+      badge: "HÔTEL DES VENTES",
+      title: "L'Encan d'Éther",
+      desc: "Le marché aux enchères des explorateurs de l'Archipel. Achetez et vendez vos reliques, armes enchantées et armures forgées contre des Aether Coins.",
+      cmd: "/ah",
+      link: "/marche",
+      btnText: "VOIR L'HÔTEL DES VENTES"
+    },
+    admin_shop: {
+      icon: "⛏️",
+      badge: "ADMIN SHOP & BOURSE",
+      title: "Le Grand Comptoir de l'Agora",
+      desc: "Rachat garanti 24/7 de vos minerais par les marchands PNJ. Le cours de l'Étherium, de l'Orbe de Sang et du Diamant fluctue en direct selon l'offre et la demande !",
+      cmd: "/marche",
+      link: "/marche",
+      btnText: "CONSULTER LA BOURSE"
+    },
+    pets: {
+      icon: "🐾",
+      badge: "FAUNE MYSTIQUE",
+      title: "Sanctuaire des Compagnons",
+      desc: "Invoquez vos animaux célestes (Dragoneau d'Éther, Capybara, Phénix). Leurs auras de groupe permanentes procurent des bonus passifs à vous et à vos alliés.",
+      cmd: "/pet dragon",
+      link: "/animaux",
+      btnText: "DÉCOUVRIR LES COMPAGNONS"
+    },
+    quiz: {
+      icon: "❓",
+      badge: "CHAT TRIVIA QUIZ",
+      title: "Le Sphinx Céleste",
+      desc: "Toutes les 30 à 60 minutes, une question sur Minecraft et l'Aether est posée dans le chat. Le premier joueur qui tape la bonne réponse remporte +50 ⛃ Pièces !",
+      cmd: "/quiz",
+      link: "/boutique",
+      btnText: "VOIR LE QUIZ & LA TRÉSORERIE"
+    },
+    store: {
+      icon: "👑",
+      badge: "PLAY-TO-EARN GRATUIT",
+      title: "Boutique & Trésorerie Céleste",
+      desc: "Monnaie unique en Pièces (⛃). Récupérez votre coffre de fidélité gratuit toutes les 30 minutes (+50 ⛃ Pièces) pour débloquer des clés, grades et magots sans payer.",
+      cmd: "/store",
+      link: "/boutique",
+      btnText: "OUVRIR LA BOUTIQUE"
+    },
+    dungeons: {
+      icon: "⚔️",
+      badge: "EXPÉDITIONS INSTANCIÉES",
+      title: "Donjons Primordiaux",
+      desc: "Affrontez les boss instanciés de l'Archipel : Sanctuaire de l'Aetherite, Citadelle du Titan et Faille du Dragon Ancien avec butins et artefacts exclusifs.",
+      cmd: "/dungeon",
+      link: "/mon-compte",
+      btnText: "VOIR LES DONJONS"
+    },
+    spawn: {
+      icon: "🪐",
+      badge: "SPAWN DE L'ARCHIPEL",
+      title: "L'Agora Céleste (Y=120)",
+      desc: "Téléportation immédiate sur la place centrale de l'Agora à Y=120, au cœur des temples dorés, des caisses d'étoiles et des marchands PNJ.",
+      cmd: "/spawn",
+      link: "/",
+      btnText: "RETOURNER AU SPAWN"
+    },
+    compass: {
+      icon: "🧭",
+      badge: "NAVIGATION STELLAIRE",
+      title: "Boussole des Mondes",
+      desc: "Orientez-vous à travers l'Archipel Céleste, repérez les coordonnées des donjons et des biomes mystiques de la dimension d'Aether.",
+      cmd: "/aether",
+      link: "/",
+      btnText: "DÉCOUVRIR LA CARTE"
+    }
+  };
+
+  function selectVoxelModule(key) {
+    const mod = VOXEL_MODULES[key];
+    if (!mod) return;
+    if (window.AudioSys) AudioSys.playClick();
+
+    document.getElementById("vmod-icon").textContent = mod.icon;
+    document.getElementById("vmod-badge").textContent = mod.badge;
+    document.getElementById("vmod-title").textContent = mod.title;
+    document.getElementById("vmod-desc").textContent = mod.desc;
+    document.getElementById("vmod-cmd").textContent = mod.cmd;
+    document.getElementById("vmod-link").href = mod.link;
+    document.getElementById("vmod-btn-text").textContent = mod.btnText;
+
+    // Highlight carte active
+    document.querySelectorAll(".mmo-card").forEach(el => {
+      el.classList.remove("ring-2", "ring-emerald-400", "scale-[1.02]");
+    });
+    const activeBtn = document.getElementById("btn-mod-" + key);
+    if (activeBtn) {
+      activeBtn.classList.add("ring-2", "ring-emerald-400", "scale-[1.02]");
+    }
+
+    const card = document.getElementById("voxel-detail-card");
+    card.classList.add("scale-[1.02]", "border-emerald-300");
+    setTimeout(() => {
+      card.classList.remove("scale-[1.02]", "border-emerald-300");
+    }, 200);
+  }
+
+  function copyVoxelCmd() {
+    const cmd = document.getElementById("vmod-cmd").textContent;
+    navigator.clipboard.writeText(cmd).then(() => {
+      if (window.AudioSys) AudioSys.playSuccess();
+      alert("Commande " + cmd + " copiée dans le presse-papier !");
+    });
+  }
+</script>
+
+
+<!-- ========================================================
+     PRÉSENTATION DES 3 GRANDS PILIERS (STYLE TRIPTYQUE ÉPURÉ)
+     ======================================================== -->
+<section id="presentation" class="py-24 bg-obsidian-900/40 relative z-20">
+  <div class="max-w-6xl mx-auto px-6">
+    
+    <!-- En-tête de Section -->
+    <div class="text-center max-w-2xl mx-auto mb-16 reveal-on-scroll">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-950/80 border border-emerald-800 text-emerald-400 text-xs font-gaming tracking-wide mb-3">
+        <span>💎</span> L'EXPÉRIENCE EN 3 ACTES
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-black font-gaming text-white tracking-tight">
+        Conçu Sans Concession.
+      </h2>
+      <p class="text-sm text-slate-400 mt-3 font-normal leading-relaxed">
+        Trois piliers fondamentaux garantissent une aventure équilibrée, immersive et techniquement irréprochable.
+      </p>
+    </div>
+
+    <!-- Triptyque de Présentation (3 Grands Blocs) -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      <!-- Pilier 1 : Survie Primordiale -->
+      <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 hover:border-emerald-500/40 transition duration-300 flex flex-col justify-between spotlight-card reveal-on-scroll">
+        <div class="space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-emerald-950/80 border border-emerald-800 flex items-center justify-center text-2xl text-emerald-400 shadow-inner">
+            ⚔️
+          </div>
+          <h3 class="text-xl font-bold font-gaming text-white">Survie & Territoires</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+            Revendiquez votre domaine en toute sécurité grâce au système de claims automatique. Vos coffres, spawners et cultures sont protégés des pillages non autorisés.
+          </p>
+          <ul class="space-y-2 text-xs text-slate-400 pt-2 border-t border-white/5">
+            <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Biomes féeriques sculptés à la main</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Monde Minage renouvelé chaque semaine</li>
+            <li class="flex items-center gap-2"><span class="text-emerald-400">✓</span> Économie réelle 100% régulée par les joueurs</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Pilier 2 : Donjons Sanglants & Boss -->
+      <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 hover:border-rose-500/40 transition duration-300 flex flex-col justify-between spotlight-card reveal-on-scroll delay-100">
+        <div class="space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-rose-950/80 border border-rose-800 flex items-center justify-center text-2xl text-rose-400 shadow-inner">
+            🗝️
+          </div>
+          <h3 class="text-xl font-bold font-gaming text-white">Donjons & Boss Célestes</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+            Pénétrez en escouade dans les failles de l'Aether. Affrontez des boss légendaires aux paternes dynamiques et récupérez des armes enchantées Tier 5 exclusives.
+          </p>
+          <ul class="space-y-2 text-xs text-slate-400 pt-2 border-t border-white/5">
+            <li class="flex items-center gap-2"><span class="text-rose-400">✓</span> 3 paliers de difficulté (Normal, Héroïque, Mythique+)</li>
+            <li class="flex items-center gap-2"><span class="text-rose-400">✓</span> Compétences d'éclair, vampirisme et téléportation</li>
+            <li class="flex items-center gap-2"><span class="text-rose-400">✓</span> Coffres de fin de raid partagés</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Pilier 3 : Moteur Rust Tokio -->
+      <div class="glass-panel p-8 sm:p-10 rounded-3xl border border-white/10 hover:border-amber-500/40 transition duration-300 flex flex-col justify-between spotlight-card reveal-on-scroll delay-200">
+        <div class="space-y-4">
+          <div class="w-14 h-14 rounded-2xl bg-amber-950/80 border border-amber-800 flex items-center justify-center text-2xl text-amber-400 shadow-inner">
+            🦀
+          </div>
+          <h3 class="text-xl font-bold font-gaming text-white">Moteur Rust Tokio</h3>
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed font-normal">
+            Déploiement et supervision via notre binaire natif compilé en Rust. Vérification continue des checksums SHA-256 et allocation dynamique de la mémoire JVM.
+          </p>
+          <ul class="space-y-2 text-xs text-slate-400 pt-2 border-t border-white/5">
+            <li class="flex items-center gap-2"><span class="text-amber-400">✓</span> Pré-génération Chunky sur 10 000 blocs</li>
+            <li class="flex items-center gap-2"><span class="text-amber-400">✓</span> Garbage Collector G1GC optimisé par profil RAM</li>
+            <li class="flex items-center gap-2"><span class="text-amber-400">✓</span> Synchronisation RCON des achats en &lt; 5 secondes</li>
+          </ul>
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ========================================================
+     COMMENT NOUS REJOINDRE (3 ÉTAPES MINIMALISTES)
+     ======================================================== -->
+<section class="py-20 bg-obsidian-950 border-t border-white/10 relative z-20">
+  <div class="max-w-5xl mx-auto px-6">
+    
+    <div class="text-center mb-16 reveal-on-scroll">
+      <h2 class="text-xs font-gaming font-bold text-emerald-400 tracking-widest uppercase mb-1">Accès Instantané</h2>
+      <h3 class="text-3xl sm:text-4xl font-black font-gaming text-white">Rejoindre en 3 Étapes Simples</h3>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center">
+      
+      <!-- Étape 1 -->
+      <div class="glass-panel p-8 rounded-3xl border border-white/10 spotlight-card reveal-on-scroll">
+        <div class="w-12 h-12 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-black font-gaming text-lg mx-auto flex items-center justify-center mb-4">
+          01
+        </div>
+        <h4 class="font-gaming font-bold text-white text-base mb-2">Lancez Minecraft</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Démarrez Minecraft Java Edition en version officielle ou launcher libre (1.20 à 1.21.1).
+        </p>
+      </div>
+
+      <!-- Étape 2 -->
+      <div class="glass-panel p-8 rounded-3xl border border-white/10 spotlight-card reveal-on-scroll delay-100">
+        <div class="w-12 h-12 rounded-full bg-teal-500/10 border border-teal-500/30 text-teal-400 font-black font-gaming text-lg mx-auto flex items-center justify-center mb-4">
+          02
+        </div>
+        <h4 class="font-gaming font-bold text-white text-base mb-2">Ajoutez l'Adresse</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Dans Multijoueur, cliquez sur « Ajouter un serveur » et entrez <code class="text-emerald-300 font-mono font-bold">{{ server_status.ip }}</code>.
+        </p>
+      </div>
+
+      <!-- Étape 3 -->
+      <div class="glass-panel p-8 rounded-3xl border border-white/10 spotlight-card reveal-on-scroll delay-200">
+        <div class="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 font-black font-gaming text-lg mx-auto flex items-center justify-center mb-4">
+          03
+        </div>
+        <h4 class="font-gaming font-bold text-white text-base mb-2">Entrez dans l'Aether</h4>
+        <p class="text-xs text-slate-400 leading-relaxed">
+          Connectez-vous ! Le pack de ressources se charge automatiquement. L'aventure commence.
+        </p>
+      </div>
+
+    </div>
+
+    <!-- Bannière CTA Centrale -->
+    <div class="mt-14 glass-panel p-8 sm:p-10 rounded-3xl border border-emerald-500/30 text-center relative overflow-hidden spotlight-card">
+      <div class="max-w-2xl mx-auto space-y-4">
+        <h3 class="text-2xl sm:text-3xl font-black font-gaming text-white">
+          Prêt à bâtir votre empire céleste ?
+        </h3>
+        <p class="text-xs sm:text-sm text-slate-300">
+          Rejoignez les pionniers déjà actifs dans les donjons et guildes d'AetherCraft.
+        </p>
+        <div class="pt-2 flex flex-wrap justify-center gap-3">
+          <button onclick="copyServerIp()" 
+                  class="px-8 py-3.5 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-600 to-emerald-600 hover:from-emerald-400 hover:to-teal-500 text-obsidian-950 font-gaming font-black text-xs shadow-xl shadow-emerald-500/30 transition active:scale-95 flex items-center gap-2">
+            <span>📋</span> <span>COPIER {{ server_status.ip }}</span>
+          </button>
+          <a href="/boutique" onclick="AudioSys.playClick()" 
+             class="px-8 py-3.5 rounded-2xl bg-amber-500 hover:bg-amber-400 text-obsidian-950 font-gaming font-black text-xs shadow-xl shadow-amber-500/25 transition active:scale-95 flex items-center gap-2">
+            <span>👑</span> BOUTIQUE OFFICIELLE
+          </a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ========================================================
+     FAQ ÉPURÉE (ACCORDÉON MINIMALISTE)
+     ======================================================== -->
+<section class="py-20 bg-obsidian-950 border-t border-white/10 relative z-20">
+  <div class="max-w-4xl mx-auto px-6">
+    
+    <div class="text-center mb-12 reveal-on-scroll">
+      <h2 class="text-xs font-gaming font-bold text-emerald-400 tracking-wider uppercase mb-1">Assistance</h2>
+      <h3 class="text-3xl font-black font-gaming text-white">Questions Fréquentes</h3>
+    </div>
+
+    <div class="space-y-4">
+      
+      <!-- FAQ 1 -->
+      <div class="glass-panel rounded-3xl border border-white/10 overflow-hidden reveal-on-scroll">
+        <button onclick="toggleFaq(1)" class="w-full p-6 text-left font-gaming font-bold text-sm text-white flex items-center justify-between hover:text-emerald-400 transition">
+          <span>Faut-il installer des mods ou Forge/Fabric pour jouer ?</span>
+          <span id="faq-icon-1" class="text-xl transition transform text-emerald-400">＋</span>
+        </button>
+        <div id="faq-content-1" class="px-6 pb-6 text-xs text-slate-300 hidden leading-relaxed border-t border-white/5 pt-4">
+          Non, aucun mod n'est requis ! Le serveur fonctionne avec le client Minecraft vanilla. Dès votre première connexion, notre resource-pack officiel est téléchargé en quelques secondes pour afficher les modèles 3D d'armes, donjons et cosmétiques.
+        </div>
+      </div>
+
+      <!-- FAQ 2 -->
+      <div class="glass-panel rounded-3xl border border-white/10 overflow-hidden reveal-on-scroll delay-100">
+        <button onclick="toggleFaq(2)" class="w-full p-6 text-left font-gaming font-bold text-sm text-white flex items-center justify-between hover:text-emerald-400 transition">
+          <span>Quelles sont les versions supportées ?</span>
+          <span id="faq-icon-2" class="text-xl transition transform text-emerald-400">＋</span>
+        </button>
+        <div id="faq-content-2" class="px-6 pb-6 text-xs text-slate-300 hidden leading-relaxed border-t border-white/5 pt-4">
+          Vous pouvez vous connecter avec n'importe quel client Minecraft Java de la version <strong>1.20 à 1.21.1</strong>. La version recommandée est la <strong>1.21.1</strong> pour profiter de la totalité des effets de particules et shaders.
+        </div>
+      </div>
+
+      <!-- FAQ 3 -->
+      <div class="glass-panel rounded-3xl border border-white/10 overflow-hidden reveal-on-scroll delay-200">
+        <button onclick="toggleFaq(3)" class="w-full p-6 text-left font-gaming font-bold text-sm text-white flex items-center justify-between hover:text-emerald-400 transition">
+          <span>Comment fonctionnent les commandes de la boutique ?</span>
+          <span id="faq-icon-3" class="text-xl transition transform text-emerald-400">＋</span>
+        </button>
+        <div id="faq-content-3" class="px-6 pb-6 text-xs text-slate-300 hidden leading-relaxed border-t border-white/5 pt-4">
+          La livraison est automatisée par notre passerelle RCON. Dès la confirmation de commande, le grade ou les clés sont instantanément crédités sur votre compte en jeu, même si vous êtes hors-ligne.
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+</section>
+
+<!-- ========================================================
+     SECTION COMMUNAUTÉ DISCORD OFFICIELLE
+     ======================================================== -->
+<section class="py-16 bg-gradient-to-b from-obsidian-950 via-[#5865F2]/5 to-obsidian-950 border-t border-white/10 relative z-20 overflow-hidden">
+  <div class="absolute -top-32 -right-32 w-96 h-96 bg-[#5865F2]/10 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="max-w-5xl mx-auto px-6 relative">
+    
+    <div class="glass-panel rounded-3xl p-8 sm:p-12 border border-[#5865F2]/30 shadow-2xl relative overflow-hidden backdrop-blur-2xl">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        
+        <!-- Colonne Gauche : Logo & Présentation -->
+        <div class="lg:col-span-7 space-y-4 text-center lg:text-left">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#5865F2]/20 border border-[#5865F2]/40 text-[#828cf8] text-[11px] font-gaming tracking-wide">
+            <span>💬</span> <span>DISCORD OFFICIEL AETHERCRAFT</span>
+          </div>
+
+          <h3 class="text-2xl sm:text-4xl font-black font-gaming text-white tracking-tight leading-tight">
+            Rejoignez la Guilde Céleste sur Discord
+          </h3>
+
+          <p class="text-xs sm:text-sm text-slate-300 leading-relaxed max-w-xl">
+            Participez aux tournois PVP, discutez des stratégies de donjons, échangez vos items rares et recevez les annonces de patchs et giveaways en temps réel.
+          </p>
+
+          <!-- Badges Avantages -->
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-left">
+              <div class="text-base mb-1">🎁</div>
+              <div class="text-xs font-bold font-gaming text-white">Giveaways</div>
+              <div class="text-[10px] text-slate-400">Clés de caisses & VIP</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-left">
+              <div class="text-base mb-1">📢</div>
+              <div class="text-xs font-bold font-gaming text-white">Patch Notes</div>
+              <div class="text-[10px] text-slate-400">MAJ & équilibrages</div>
+            </div>
+            <div class="p-3 rounded-2xl bg-white/5 border border-white/10 text-left">
+              <div class="text-base mb-1">🛡️</div>
+              <div class="text-xs font-bold font-gaming text-white">Support 24/7</div>
+              <div class="text-[10px] text-slate-400">Tickets & assistance</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Colonne Droite : Carte Interactive Widget -->
+        <div class="lg:col-span-5 flex flex-col items-center">
+          <div class="w-full max-w-sm rounded-3xl bg-[#1e1f22] border border-[#5865F2]/40 p-6 shadow-2xl text-center space-y-4">
+            
+            <!-- Logo Discord & Pulsation -->
+            <div class="w-16 h-16 rounded-2xl bg-[#5865F2] flex items-center justify-center text-3xl mx-auto shadow-lg shadow-[#5865F2]/40 animate-pulse">
+              <svg class="w-10 h-10 fill-white" viewBox="0 0 24 24">
+                <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028c.462-.63.874-1.295 1.226-1.994.021-.041.001-.09-.041-.106a13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.929 1.793 8.18 1.793 12.061 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.894.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.028zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+              </svg>
+            </div>
+
+            <div>
+              <div class="text-sm font-black font-crest text-white">AETHERCRAFT COMMUNITY</div>
+              <div class="flex items-center justify-center gap-2 mt-1">
+                <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping"></span>
+                <span class="text-xs font-mono font-bold text-emerald-400">
+                  {% if discord_status.presence_online and discord_status.presence_online > 0 %}
+                    {{ discord_status.presence_online }} MEMBRES EN LIGNE
+                  {% else %}
+                    COMMUNAUTÉ ACTIVE EN LIGNE
+                  {% endif %}
+                </span>
+              </div>
+            </div>
+
+            <!-- Bouton d'action Rejoindre -->
+            <a href="{{ discord_status.invite_url }}" target="_blank" onclick="AudioSys.playClick()"
+               class="w-full py-3.5 px-6 rounded-2xl bg-[#5865F2] hover:bg-[#4752c4] text-white font-gaming font-black text-xs uppercase tracking-wider shadow-xl shadow-[#5865F2]/30 transition active:scale-95 flex items-center justify-center gap-2">
+              <span>💬</span> <span>REJOINDRE LE DISCORD</span>
+            </a>
+
+            <div class="text-[10px] text-slate-500 font-sans">
+              Invitation permanente sans expiration • Accès immédiat
+            </div>
+
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- Script FAQ -->
+<script>
+  function toggleFaq(id) {
+    AudioSys.playClick();
+    const content = document.getElementById('faq-content-' + id);
+    const icon = document.getElementById('faq-icon-' + id);
+    if (content.classList.contains('hidden')) {
+      content.classList.remove('hidden');
+      icon.textContent = '✕';
+      icon.classList.add('rotate-90', 'text-rose-400');
+      icon.classList.remove('text-emerald-400');
+    } else {
+      content.classList.add('hidden');
+      icon.textContent = '＋';
+      icon.classList.remove('rotate-90', 'text-rose-400');
+      icon.classList.add('text-emerald-400');
+    }
+  }
+</script>
+{% endblock %}

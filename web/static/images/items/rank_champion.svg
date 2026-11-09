@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="champGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#a855f7" stop-opacity="0.65"/>
+      <stop offset="50%" stop-color="#6366f1" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldCrown" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="35%" stop-color="#f59e0b"/>
+      <stop offset="70%" stop-color="#d97706"/>
+      <stop offset="100%" stop-color="#78350f"/>
+    </linearGradient>
+    <linearGradient id="royalPurple" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#c084fc"/>
+      <stop offset="50%" stop-color="#7e22ce"/>
+      <stop offset="100%" stop-color="#3b0764"/>
+    </linearGradient>
+    <filter id="shadowChamp" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#a855f7" flood-opacity="0.7"/>
+    </filter>
+  </defs>
+
+  <circle cx="200" cy="200" r="185" fill="url(#champGlow)"/>
+
+  <!-- Celestial Astral Crest -->
+  <g filter="url(#shadowChamp)">
+    <!-- Royal Shield Base -->
+    <path d="M200 50 L320 100 L300 270 L200 350 L100 270 L80 100 Z" 
+          fill="url(#royalPurple)" stroke="#f59e0b" stroke-width="4"/>
+    
+    <!-- Gold Inlay Border -->
+    <path d="M200 70 L300 110 L285 255 L200 325 L115 255 L100 110 Z" 
+          fill="none" stroke="#fef08a" stroke-width="2" stroke-opacity="0.8"/>
+
+    <!-- Champion's Grand Crown -->
+    <path d="M130 220 L130 170 L165 200 L200 140 L235 200 L270 170 L270 220 Z" 
+          fill="url(#goldCrown)" stroke="#fef08a" stroke-width="3"/>
+
+    <!-- Crown Jewels -->
+    <circle cx="200" cy="140" r="8" fill="#f43f5e" stroke="#fff" stroke-width="1.5" filter="drop-shadow(0 0 6px #f43f5e)"/>
+    <circle cx="130" cy="170" r="6" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+    <circle cx="270" cy="170" r="6" fill="#38bdf8" stroke="#fff" stroke-width="1.5"/>
+
+    <!-- Golden Laurel Wreath -->
+    <path d="M120 270 C110 240 120 200 140 180" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none"/>
+    <path d="M280 270 C290 240 280 200 260 180" stroke="#f59e0b" stroke-width="4" stroke-linecap="round" fill="none"/>
+
+    <!-- Central Diamond Star of the Realm -->
+    <polygon points="200,240 215,260 240,265 220,285 225,310 200,295 175,310 180,285 160,265 185,260" 
+             fill="#fef08a" stroke="#d97706" stroke-width="2" filter="drop-shadow(0 0 10px #f59e0b)"/>
+  </g>
+
+  <!-- Cosmic Sparks -->
+  <polygon points="200,25 205,38 218,40 206,44 200,56 194,44 182,40 195,38" fill="#fef08a"/>
+  <polygon points="65,70 68,78 76,80 69,82 66,90 63,82 55,80 63,78" fill="#c084fc"/>
+  <polygon points="335,70 338,78 346,80 339,82 336,90 333,82 325,80 333,78" fill="#c084fc"/>
+</svg>

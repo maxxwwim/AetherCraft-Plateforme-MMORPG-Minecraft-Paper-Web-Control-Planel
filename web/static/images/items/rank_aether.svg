@@ -1,0 +1,55 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="aetherGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.55"/>
+      <stop offset="50%" stop-color="#0284c7" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="skyGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0f2fe"/>
+      <stop offset="35%" stop-color="#38bdf8"/>
+      <stop offset="100%" stop-color="#0369a1"/>
+    </linearGradient>
+    <linearGradient id="wingGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#bae6fd"/>
+      <stop offset="60%" stop-color="#0284c7"/>
+      <stop offset="100%" stop-color="#082f49"/>
+    </linearGradient>
+    <filter id="shadowAether" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#38bdf8" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Glow -->
+  <circle cx="200" cy="200" r="185" fill="url(#aetherGlow)"/>
+
+  <!-- Celestial Rings -->
+  <ellipse cx="200" cy="200" rx="160" ry="60" fill="none" stroke="#38bdf8" stroke-width="2.5" stroke-opacity="0.4" transform="rotate(-25 200 200)"/>
+  <ellipse cx="200" cy="200" rx="150" ry="40" fill="none" stroke="#bae6fd" stroke-width="1.5" stroke-opacity="0.6" stroke-dasharray="10 8" transform="rotate(25 200 200)"/>
+
+  <!-- Background Medallion -->
+  <circle cx="200" cy="200" r="130" fill="#081827" stroke="#38bdf8" stroke-width="2" stroke-opacity="0.6"/>
+
+  <!-- Wings of Aether -->
+  <g filter="url(#shadowAether)">
+    <!-- Left Wing -->
+    <path d="M185 200 C150 140 100 130 60 150 C70 175 90 200 120 215 C90 225 75 250 85 270 C110 270 145 250 185 220 Z" 
+          fill="url(#wingGrad)" stroke="#e0f2fe" stroke-width="2"/>
+    <!-- Right Wing -->
+    <path d="M215 200 C250 140 300 130 340 150 C330 175 310 200 280 215 C310 225 325 250 315 270 C290 270 255 250 215 220 Z" 
+          fill="url(#wingGrad)" stroke="#e0f2fe" stroke-width="2"/>
+
+    <!-- Central Stellar Core -->
+    <polygon points="200,105 215,165 275,180 225,215 240,275 200,235 160,275 175,215 125,180 185,165" 
+             fill="url(#skyGrad)" stroke="#ffffff" stroke-width="2.5"/>
+    
+    <!-- Inner Core Orb -->
+    <circle cx="200" cy="200" r="28" fill="#0369a1" stroke="#e0f2fe" stroke-width="3"/>
+    <circle cx="200" cy="200" r="16" fill="#ffffff" filter="drop-shadow(0 0 8px #38bdf8)"/>
+  </g>
+
+  <!-- Sparkles -->
+  <polygon points="200,60 203,72 215,75 203,78 200,90 197,78 185,75 197,72" fill="#ffffff"/>
+  <polygon points="70,110 72,118 80,120 72,122 70,130 68,122 60,120 68,118" fill="#38bdf8"/>
+  <polygon points="330,110 332,118 340,120 332,122 330,130 328,122 320,120 328,118" fill="#38bdf8"/>
+</svg>

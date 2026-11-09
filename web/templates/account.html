@@ -1,0 +1,697 @@
+{% extends "base.html" %}
+
+{% block title %}Mon Compte Céleste — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-6xl mx-auto py-10 px-4 sm:px-6">
+
+  <!-- Header du profil & Avatar 3D -->
+  <div class="glass-panel p-8 rounded-3xl border border-amber-500/20 shadow-2xl relative overflow-hidden mb-8">
+    <div class="absolute -top-24 -right-24 w-52 h-52 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="flex flex-col md:flex-row items-center gap-8">
+      <!-- NPC Skin 3D Render -->
+      <div class="relative group">
+        <div class="w-36 h-56 bg-obsidian-900/90 rounded-2xl border border-white/10 flex items-center justify-center p-3 relative overflow-hidden shadow-xl">
+          <img src="{{ current_user.body_url }}" alt="{{ current_user.minecraft_username }}" 
+               class="max-h-48 filter drop-shadow-[0_12px_24px_rgba(245,158,11,0.3)] animate-float">
+        </div>
+        <span class="absolute -bottom-2 -right-2 px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+          ● En ligne
+        </span>
+      </div>
+
+      <!-- Infos Joueur & Stats -->
+      <div class="flex-1 text-center md:text-left">
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+          <span class="px-2.5 py-0.5 rounded-md text-xs font-black font-gaming uppercase tracking-wider bg-amber-500/20 text-amber-400 border border-amber-500/40">
+            {{ player_stats.rank if player_stats else 'JOUEUR' }}
+          </span>
+          <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            🛡️ ARCHIPEL CÉLESTE ACTIF
+          </span>
+          {% if player_stats and player_stats.rank == 'CHAMPION' %}
+            <span class="px-2.5 py-0.5 rounded-md text-xs font-mono font-bold bg-purple-500/20 text-purple-300 border border-purple-500/40 animate-pulse">
+              👑 CHAMPION DU ROYAUME
+            </span>
+          {% endif %}
+        </div>
+
+        <h1 class="text-3xl font-black font-crest text-white">
+          {{ current_user.minecraft_username }}
+        </h1>
+        <p class="text-xs text-slate-400 mt-1 flex flex-wrap items-center justify-center md:justify-start gap-3">
+          <span>📧 {{ current_user.email }}</span>
+          <span>•</span>
+          <span>📅 Membre depuis {{ current_user.created_at[:10] }}</span>
+        </p>
+
+        <!-- Stats rapides en jeu & Solde Pièces -->
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6">
+          <div class="bg-gradient-to-r from-amber-500/20 to-amber-600/10 p-3 rounded-xl border border-amber-500/50 shadow-md">
+            <p class="text-[10px] text-amber-400 uppercase font-gaming">⛃ Mon Solde de Pièces</p>
+            <p class="text-lg font-black font-mono text-amber-300">{{ player_stats.balance|int if player_stats else (current_user.balance|int if current_user.balance is defined else 1000) }} ⛁</p>
+          </div>
+          <div class="bg-obsidian-900/70 p-3 rounded-xl border border-white/5">
+            <p class="text-[10px] text-slate-400 uppercase font-gaming">Temps de Jeu</p>
+            <p class="text-lg font-black font-mono text-sky-400">{{ player_stats.hours_played if player_stats else 1 }}h</p>
+          </div>
+          <div class="bg-obsidian-900/70 p-3 rounded-xl border border-white/5">
+            <p class="text-[10px] text-slate-400 uppercase font-gaming">Kills / Morts</p>
+            <p class="text-lg font-black font-mono text-purple-400">{{ player_stats.kills if player_stats else 0 }} / {{ player_stats.deaths if player_stats else 0 }}</p>
+          </div>
+          <div class="bg-obsidian-900/70 p-3 rounded-xl border border-white/5">
+            <p class="text-[10px] text-slate-400 uppercase font-gaming">Guilde</p>
+            <p class="text-sm font-bold font-sans text-slate-200 truncate">{{ player_stats.guild if player_stats else 'Ordre d\'Aether' }}</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions Rapides -->
+      <div class="flex flex-col gap-3 w-full md:w-auto">
+        <a href="/boutique" 
+           class="px-5 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-black font-gaming tracking-wide text-xs shadow-lg shadow-amber-500/25 transition text-center flex items-center justify-center gap-2">
+          <span>👑</span> BOUTIQUE DU ROYAUME
+        </a>
+        <a href="/deconnexion" 
+           class="px-5 py-2.5 rounded-xl bg-white/5 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-white/10 hover:border-rose-500/30 text-xs font-bold transition text-center flex items-center justify-center gap-1.5">
+          <span>🚪</span> Se Déconnecter
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Alert / Feedback Banner partagée -->
+  <div id="cosmetic-feedback" class="hidden mb-6 p-4 rounded-2xl border text-xs font-bold font-gaming flex items-center gap-3 shadow-lg"></div>
+
+  <!-- Barre d'Onglets Dynamiques -->
+  <div class="flex flex-wrap items-center gap-2 mb-6 border-b border-white/10 pb-4">
+    <button id="btn-tab-quests" onclick="switchAccountTab('quests')"
+            class="account-tab-btn px-4 py-2.5 rounded-xl text-xs font-gaming font-bold transition flex items-center gap-2 bg-amber-500 text-obsidian-950 shadow-lg shadow-amber-500/30 font-black">
+      <span>📜</span> Quêtes Célestes 
+      <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-black/30 text-white font-mono">{{ quests|length }}</span>
+    </button>
+    <button id="btn-tab-achievements" onclick="switchAccountTab('achievements')"
+            class="account-tab-btn px-4 py-2.5 rounded-xl text-xs font-gaming font-bold transition flex items-center gap-2 bg-white/5 text-slate-300 hover:bg-white/10">
+      <span>🏆</span> Trophées & Succès
+      <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-amber-300 font-mono">{{ achievements|selectattr('unlocked')|list|length }}/{{ achievements|length }}</span>
+    </button>
+    <button id="btn-tab-dungeons" onclick="switchAccountTab('dungeons')"
+            class="account-tab-btn px-4 py-2.5 rounded-xl text-xs font-gaming font-bold transition flex items-center gap-2 bg-white/5 text-slate-300 hover:bg-white/10">
+      <span>⚔️</span> Donjons Instanciés
+      <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-rose-500/20 text-rose-300 font-mono">3 Boss</span>
+    </button>
+    <button id="btn-tab-cosmetics" onclick="switchAccountTab('cosmetics')"
+            class="account-tab-btn px-4 py-2.5 rounded-xl text-xs font-gaming font-bold transition flex items-center gap-2 bg-white/5 text-slate-300 hover:bg-white/10">
+      <span>🐾</span> Mes Familiers & Objets
+      <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-slate-300 font-mono">{{ unlocked_items|length }}</span>
+    </button>
+    <button id="btn-tab-orders" onclick="switchAccountTab('orders')"
+            class="account-tab-btn px-4 py-2.5 rounded-xl text-xs font-gaming font-bold transition flex items-center gap-2 bg-white/5 text-slate-300 hover:bg-white/10">
+      <span>📦</span> Historique Commandes
+      <span class="px-1.5 py-0.2 rounded-full text-[10px] bg-white/10 text-slate-300 font-mono">{{ orders|length }}</span>
+    </button>
+  </div>
+
+  <!-- ONGLET 1: QUÊTES CÉLESTES -->
+  <div id="panel-tab-quests" class="account-tab-content space-y-4">
+    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div>
+          <h2 class="text-xl font-black font-crest text-white flex items-center gap-2">
+            <span>📜</span> QUÊTES DE L'ARCHIPEL CÉLESTE
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Accomplissez vos objectifs in-game et réclamez vos Pièces (⛃) et Artefacts exclusifs !</p>
+        </div>
+        <span class="px-3 py-1 rounded-xl text-xs font-mono font-bold bg-amber-500/10 text-amber-400 border border-amber-500/30">
+          Synchronisé avec Paper 1.21.1
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        {% for q in quests %}
+          <div class="bg-obsidian-900/80 rounded-2xl p-5 border border-white/10 flex flex-col justify-between hover:border-amber-500/40 transition group relative overflow-hidden">
+            {% if q.status == 'RECLAME' %}
+              <div class="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-gaming font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-500/30">
+                ✓ RÉCOMPENSÉ
+              </div>
+            {% elif q.is_claimable %}
+              <div class="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-gaming font-bold bg-amber-500/20 text-amber-300 border border-amber-500/40 animate-pulse">
+                ★ PRÊT À RÉCLAMER
+              </div>
+            {% else %}
+              <div class="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-gaming font-bold bg-slate-800 text-slate-400 border border-white/10">
+                EN COURS
+              </div>
+            {% endif %}
+
+            <div>
+              <div class="flex items-start gap-4">
+                <div class="w-16 h-16 rounded-xl bg-obsidian-950 flex items-center justify-center p-2 border border-white/5 relative overflow-hidden flex-shrink-0">
+                  {% if q.image_url %}
+                    <img src="{{ q.image_url }}" alt="{{ q.title }}" class="w-full h-full object-contain filter drop-shadow group-hover:scale-110 transition duration-300">
+                  {% else %}
+                    <span class="text-3xl">{{ q.icon }}</span>
+                  {% endif %}
+                </div>
+                <div class="flex-1 min-w-0 pr-20">
+                  <span class="px-2 py-0.5 rounded text-[9px] font-gaming uppercase tracking-wider font-bold bg-amber-500/15 text-amber-400 border border-amber-500/30">
+                    {{ q.category }}
+                  </span>
+                  <h3 class="text-base font-black text-white mt-1">{{ q.title }}</h3>
+                  <p class="text-xs text-slate-400 mt-1 leading-relaxed">{{ q.description }}</p>
+                </div>
+              </div>
+
+              <!-- Jauge de progression -->
+              <div class="mt-4 pt-3 border-t border-white/5">
+                <div class="flex justify-between items-center text-xs mb-1.5 font-mono">
+                  <span class="text-slate-400 text-[11px]">Progression :</span>
+                  <span class="font-bold {{ 'text-emerald-400' if q.percent >= 100 else 'text-amber-400' }}">
+                    {{ q.current_count }} / {{ q.target_count }} ({{ q.percent }}%)
+                  </span>
+                </div>
+                <div class="w-full bg-black/60 rounded-full h-2.5 overflow-hidden border border-white/5">
+                  <div class="h-full rounded-full transition-all duration-500 {{ 'bg-gradient-to-r from-emerald-500 to-teal-400' if q.percent >= 100 else 'bg-gradient-to-r from-amber-500 to-amber-400' }}" 
+                       style="width: {{ q.percent }}%"></div>
+                </div>
+              </div>
+
+              <!-- Récompenses -->
+              <div class="mt-3 flex flex-wrap items-center gap-2 text-[11px] font-mono">
+                {% if (q.reward_coins or 0) + (q.reward_points or 0) > 0 %}
+                  <span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                    +{{ ((q.reward_coins or 0) + (q.reward_points or 0))|int }} ⛃ Pièces
+                  </span>
+                {% endif %}
+                {% if q.reward_item_name %}
+                  <span class="px-2 py-0.5 rounded bg-cyan-500/10 text-cyan-300 border border-cyan-500/20 truncate">
+                    🎁 {{ q.reward_item_name }}
+                  </span>
+                {% endif %}
+              </div>
+            </div>
+
+            <!-- Bouton d'action -->
+            <div class="mt-4 pt-3 border-t border-white/5">
+              {% if q.status == 'RECLAME' %}
+                <button disabled 
+                        class="w-full py-2 px-3 rounded-xl bg-white/5 text-slate-500 font-gaming font-bold text-xs cursor-not-allowed text-center">
+                  ✓ Récompense déjà réclamée
+                </button>
+              {% elif q.is_claimable %}
+                <button id="btn-claim-{{ q.id }}" onclick="claimQuest('{{ q.id }}')"
+                        class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-gaming font-black text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-amber-500/25 active:scale-95">
+                  <span>🎁</span> RÉCLAMER MA RÉCOMPENSE
+                </button>
+              {% else %}
+                <div class="w-full py-2 px-3 rounded-xl bg-white/5 text-slate-400 font-gaming text-xs text-center border border-white/5">
+                  ⏳ En cours de réalisation in-game
+                </div>
+              {% endif %}
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLET 2: TROPHÉES & SUCCÈS -->
+  <div id="panel-tab-achievements" class="account-tab-content hidden space-y-4">
+    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div>
+          <h2 class="text-xl font-black font-crest text-white flex items-center gap-2">
+            <span>🏆</span> GALERIE DES TROPHÉES & SUCCÈS ROYAUX
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Marquez l'histoire du serveur et arborez vos distinctions de prestige.</p>
+        </div>
+        <span class="text-xs text-amber-400 font-mono font-bold bg-obsidian-900 px-3 py-1.5 rounded-xl border border-amber-500/30">
+          {{ achievements|selectattr('unlocked')|list|length }} / {{ achievements|length }} Succès Débloqués
+        </span>
+      </div>
+
+      <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {% for ach in achievements %}
+          <div class="rounded-2xl p-5 border flex flex-col justify-between transition group relative {{ 'bg-obsidian-900/90 border-amber-500/40 shadow-lg shadow-amber-500/10' if ach.unlocked else 'bg-obsidian-950/60 border-white/5 opacity-60' }}">
+            
+            <div class="flex items-start gap-4">
+              <div class="w-14 h-14 rounded-xl bg-obsidian-950 flex items-center justify-center p-2 border border-white/5 relative overflow-hidden flex-shrink-0">
+                {% if ach.image_url %}
+                  <img src="{{ ach.image_url }}" alt="{{ ach.title }}" class="w-full h-full object-contain filter drop-shadow {{ 'group-hover:scale-110' if ach.unlocked else 'grayscale' }} transition duration-300">
+                {% else %}
+                  <span class="text-2xl">{{ ach.icon }}</span>
+                {% endif %}
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-1.5 mb-1">
+                  <span class="px-2 py-0.5 rounded text-[9px] font-gaming uppercase tracking-wider font-bold 
+                    {{ 'bg-purple-500/20 text-purple-300 border border-purple-500/40' if ach.rarity == 'MYTHIQUE' else 
+                       'bg-amber-500/20 text-amber-300 border border-amber-500/40' if ach.rarity == 'OR' else 
+                       'bg-sky-500/20 text-sky-300 border border-sky-500/40' if ach.rarity == 'ARGENT' else 
+                       'bg-slate-700/50 text-slate-300 border border-white/10' }}">
+                    {{ ach.rarity }}
+                  </span>
+                  {% if ach.reward_points > 0 %}
+                    <span class="text-[10px] text-amber-400 font-mono font-bold">+{{ ach.reward_points }} ⛃ Pièces</span>
+                  {% endif %}
+                </div>
+                <h3 class="text-sm font-black text-white leading-snug">{{ ach.title }}</h3>
+                <p class="text-xs text-slate-400 mt-1 leading-relaxed">{{ ach.description }}</p>
+              </div>
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-white/5 flex items-center justify-between text-[11px] font-mono">
+              {% if ach.unlocked %}
+                <span class="text-emerald-400 flex items-center gap-1 font-bold">
+                  <span>✓</span> Débloqué le {{ ach.unlocked_at[:10] if ach.unlocked_at else 'Récemment' }}
+                </span>
+                <span class="text-amber-300 font-gaming text-[10px]">Titre: {{ ach.reward_title }}</span>
+              {% else %}
+                <span class="text-slate-500 flex items-center gap-1">
+                  <span>🔒</span> Trophée Verrouillé
+                </span>
+                <span class="text-slate-600 font-gaming text-[10px]">À conquérir</span>
+              {% endif %}
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ONGLET 3: DONJONS INSTANCIÉS -->
+  <div id="panel-tab-dungeons" class="account-tab-content hidden space-y-4">
+    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-6">
+        <div>
+          <h2 class="text-xl font-black font-crest text-white flex items-center gap-2">
+            <span>⚔️</span> DONJONS CÉLESTES INSTANCIÉS
+          </h2>
+          <p class="text-xs text-slate-400 mt-1">Téléportez-vous directement au Portail de l'Agora et affrontez les boss légendaires.</p>
+        </div>
+        <div class="px-3 py-1.5 rounded-xl bg-purple-500/10 text-purple-300 border border-purple-500/30 text-xs font-mono font-bold">
+          ⚡ Portail Agora : (0, 121, 15)
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        {% for d in dungeons %}
+          <div class="bg-obsidian-900/90 rounded-2xl p-5 border border-white/10 hover:border-rose-500/50 transition group flex flex-col justify-between relative overflow-hidden shadow-xl">
+            <div class="absolute -top-12 -right-12 w-28 h-28 bg-rose-500/10 rounded-full blur-2xl pointer-events-none"></div>
+
+            <div>
+              <div class="flex items-center justify-between gap-2 mb-3">
+                <span class="px-2 py-0.5 rounded text-[9px] font-gaming uppercase tracking-wider font-bold 
+                  {{ 'bg-emerald-500/20 text-emerald-300 border border-emerald-500/40' if d.difficulty == 'Normal' else 
+                     'bg-amber-500/20 text-amber-300 border border-amber-500/40' if d.difficulty == 'Héroïque' else 
+                     'bg-rose-500/20 text-rose-300 border border-rose-500/40' }}">
+                  {{ d.difficulty }}
+                </span>
+                <span class="text-xs font-mono text-slate-400">Nv. Requis {{ d.recommended_level }}</span>
+              </div>
+
+              <div class="w-full h-32 rounded-xl bg-obsidian-950 flex items-center justify-center p-3 border border-white/5 relative overflow-hidden mb-3">
+                {% if d.image_url %}
+                  <img src="{{ d.image_url }}" alt="{{ d.name }}" class="max-h-28 object-contain filter drop-shadow group-hover:scale-105 transition duration-300">
+                {% else %}
+                  <span class="text-5xl">{{ d.icon }}</span>
+                {% endif %}
+              </div>
+
+              <h3 class="text-base font-black text-white">{{ d.name }}</h3>
+              <p class="text-xs text-amber-400 font-gaming mt-0.5">{{ d.subtitle }}</p>
+              
+              <div class="mt-3 p-2.5 rounded-xl bg-black/40 border border-white/5 text-xs">
+                <span class="text-slate-400 block text-[10px] font-gaming uppercase">Boss Régnant :</span>
+                <span class="font-bold text-rose-400 flex items-center gap-1 mt-0.5">
+                  <span>💀</span> {{ d.boss_name }}
+                </span>
+              </div>
+
+              <div class="mt-2 p-2.5 rounded-xl bg-black/40 border border-white/5 text-xs">
+                <span class="text-slate-400 block text-[10px] font-gaming uppercase">Butin & Récompenses :</span>
+                <span class="text-amber-300 font-mono text-[11px] block mt-0.5">{{ d.reward_desc }}</span>
+              </div>
+            </div>
+
+            <div class="mt-5 pt-3 border-t border-white/5 space-y-2">
+              <div class="text-[11px] font-mono {{ 'text-emerald-400' if d.can_enter else 'text-amber-400' }}">
+                {{ d.access_reason }}
+              </div>
+
+              {% if d.can_enter %}
+                <button id="btn-dungeon-{{ d.id }}" onclick="enterDungeon('{{ d.id }}')"
+                        class="w-full py-2.5 px-3 rounded-xl bg-gradient-to-r from-rose-600 to-amber-600 hover:from-rose-500 hover:to-amber-500 text-white font-gaming font-black text-xs transition flex items-center justify-center gap-2 shadow-lg shadow-rose-600/30 active:scale-95">
+                  <span>⚔️</span> PARTIR EN EXPÉDITION
+                </button>
+              {% else %}
+                <a href="/boutique" 
+                   class="w-full py-2.5 px-3 rounded-xl bg-white/5 hover:bg-amber-500/20 text-amber-300 border border-amber-500/30 font-gaming font-bold text-xs transition flex items-center justify-center gap-1.5 text-center">
+                  <span>🎟️</span> Acheter un Passe Donjon
+                </a>
+              {% endif %}
+            </div>
+
+          </div>
+        {% endfor %}
+      </div>
+
+      <!-- Historique des Runs -->
+      {% if dungeon_history %}
+        <div class="mt-8 pt-6 border-t border-white/10">
+          <h3 class="text-sm font-black font-gaming text-slate-300 mb-3 flex items-center gap-2">
+            <span>📜</span> Historique de mes Expéditions Récentes
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs font-mono">
+              <thead class="text-[10px] text-slate-400 uppercase font-gaming border-b border-white/10">
+                <tr>
+                  <th class="pb-2">Donjon</th>
+                  <th class="pb-2">Difficulté</th>
+                  <th class="pb-2">Date</th>
+                  <th class="pb-2">Statut</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-white/5 text-slate-300">
+                {% for r in dungeon_history %}
+                  <tr>
+                    <td class="py-2.5 font-bold text-white">{{ r.dungeon_name }}</td>
+                    <td class="py-2.5 text-slate-400">{{ r.difficulty }}</td>
+                    <td class="py-2.5 text-slate-400">{{ r.started_at[:16] }}</td>
+                    <td class="py-2.5">
+                      <span class="px-2 py-0.5 rounded text-[10px] bg-emerald-500/20 text-emerald-300 border border-emerald-500/40">
+                        {{ r.status }}
+                      </span>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      {% endif %}
+
+    </div>
+  </div>
+
+  <!-- ONGLET 4: FAMILIERS & OBJETS DÉBLOQUÉS -->
+  <div id="panel-tab-cosmetics" class="account-tab-content hidden space-y-4">
+    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-xl">
+      <div class="flex flex-wrap items-center justify-between gap-3 mb-4">
+        <div>
+          <h2 class="text-lg font-black font-crest text-white flex items-center gap-2">
+            <span>🐾</span> MES FAMILIERS & OBJETS DÉBLOQUÉS
+          </h2>
+          <p class="text-[11px] text-slate-400">Activez vos cosmétiques et compagnons directement en jeu en un clic.</p>
+        </div>
+        <div class="flex items-center gap-2">
+          <button onclick="togglePlayerAura('clear')" 
+                  class="px-3 py-1 rounded-xl bg-white/5 hover:bg-rose-500/20 text-slate-300 hover:text-rose-300 border border-white/10 text-[10px] font-gaming transition">
+            Désactiver Aura
+          </button>
+          <button onclick="summonPlayerPet('clear')" 
+                  class="px-3 py-1 rounded-xl bg-white/5 hover:bg-slate-700 text-slate-300 border border-white/10 text-[10px] font-gaming transition">
+            Rengainer Familier
+          </button>
+          <span class="text-xs text-amber-400 font-mono font-bold ml-2">{{ unlocked_items|length }} débloqué(s)</span>
+        </div>
+      </div>
+
+      {% if unlocked_items %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          {% for it in unlocked_items %}
+            <div class="bg-obsidian-900/80 rounded-2xl p-4 border border-white/10 flex flex-col justify-between hover:border-amber-500/40 transition group">
+              <div class="flex items-start gap-4">
+                <div class="w-16 h-16 rounded-xl bg-obsidian-950 flex items-center justify-center p-2 border border-white/5 relative overflow-hidden flex-shrink-0">
+                  {% if it.image_url %}
+                    <img src="{{ it.image_url }}" alt="{{ it.item_name }}" class="w-full h-full object-contain filter drop-shadow group-hover:scale-110 transition duration-300">
+                  {% else %}
+                    <img src="/static/images/items/pet_dragon.png" alt="{{ it.item_name }}" class="w-full h-full object-contain filter drop-shadow">
+                  {% endif %}
+                </div>
+                <div class="flex-1 min-w-0">
+                  <span class="px-2 py-0.5 rounded text-[9px] font-gaming uppercase tracking-wider font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                    {{ it.item_category|upper }}
+                  </span>
+                  <h3 class="text-sm font-black text-white truncate mt-1">{{ it.item_name }}</h3>
+                  <p class="text-[10px] text-slate-400 font-mono mt-0.5">Obtenu le {{ it.unlocked_at[:10] }}</p>
+                </div>
+              </div>
+
+              <!-- Boutons d'activation -->
+              <div class="mt-3 pt-2 border-t border-white/5">
+                {% if it.item_category == 'auras' or it.item_id.startswith('aura_') %}
+                  <button onclick="togglePlayerAura('{{ it.item_id.replace('aura_', '') }}')" 
+                          class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-gaming font-bold text-[11px] transition flex items-center justify-center gap-1.5 shadow-md shadow-purple-500/20 active:scale-95">
+                    <img src="/static/images/extracted_textures/beacon.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Aura"> Activer l'Aura
+                  </button>
+                {% elif it.item_id.startswith('pet_') %}
+                  <button onclick="summonPlayerPet('{{ it.item_id.replace('pet_', '') }}')" 
+                          class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white font-gaming font-bold text-[11px] transition flex items-center justify-center gap-1.5 shadow-md shadow-emerald-500/20 active:scale-95">
+                    <img src="/static/images/items/pet_dragon.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Compagnon"> Invoquer le Compagnon
+                  </button>
+                {% elif 'wings' in it.item_id %}
+                  <button onclick="toggleWings()" 
+                          class="w-full py-1.5 px-3 rounded-xl bg-gradient-to-r from-sky-600 to-blue-600 hover:from-sky-500 hover:to-blue-500 text-white font-gaming font-bold text-[11px] transition flex items-center justify-center gap-1.5 shadow-md shadow-sky-500/20 active:scale-95">
+                    <img src="/static/images/items/cosmetic_wings.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Ailes"> Déployer les Ailes
+                  </button>
+                {% else %}
+                  <span class="text-[10px] text-emerald-400 font-mono block text-center py-1">✓ Privilège Prêt en Jeu</span>
+                {% endif %}
+              </div>
+            </div>
+          {% endfor %}
+        </div>
+      {% else %}
+        <div class="py-8 text-center text-slate-400 text-xs bg-obsidian-900/40 rounded-2xl border border-dashed border-white/10">
+          <img src="/static/images/items/pet_dragon.png" class="w-12 h-12 object-contain mx-auto mb-2 opacity-50" alt="Compagnon">
+          <p class="font-bold text-slate-300">Aucun familier ou cosmétique débloqué pour l'instant.</p>
+          <div class="mt-4">
+            <a href="/boutique?cat=pets" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-amber-500/20 text-amber-300 border border-amber-500/40 hover:bg-amber-500/30 font-gaming text-xs font-bold transition">
+              <img src="/static/images/items/pet_dragon.png" class="w-4 h-4 object-contain inline-block" alt="Familiers"> Découvrir les Familiers Célestes
+            </a>
+          </div>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <!-- ONGLET 5: HISTORIQUE DES COMMANDES -->
+  <div id="panel-tab-orders" class="account-tab-content hidden space-y-4">
+    <div class="glass-panel p-6 rounded-3xl border border-white/10 shadow-xl">
+      <div class="flex items-center justify-between mb-4">
+        <h2 class="text-lg font-black font-crest text-white flex items-center gap-2">
+          <span>📦</span> HISTORIQUE DE MES COMMANDES
+        </h2>
+        <span class="text-xs text-slate-400 font-mono">{{ orders|length }} commande(s)</span>
+      </div>
+
+      {% if orders %}
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs font-sans">
+            <thead class="text-[10px] text-slate-400 uppercase font-gaming border-b border-white/10">
+              <tr>
+                <th class="pb-3">N° Commande</th>
+                <th class="pb-3">Date</th>
+                <th class="pb-3">Articles</th>
+                <th class="pb-3">Total</th>
+                <th class="pb-3 text-right">Statut</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-white/5 text-slate-300">
+              {% for o in orders %}
+                <tr class="hover:bg-white/[0.02] transition">
+                  <td class="py-3 font-mono font-bold text-amber-400">{{ o.order_id }}</td>
+                  <td class="py-3 text-slate-400">{{ o.created_at[:16] }}</td>
+                  <td class="py-3">
+                    <div class="flex flex-wrap gap-1">
+                      {% for p in o.products %}
+                        <span class="px-2 py-0.5 rounded bg-white/5 border border-white/10 text-[11px]">
+                          {{ p.name }}
+                        </span>
+                      {% endfor %}
+                    </div>
+                  </td>
+                  <td class="py-3 font-bold font-mono text-white">
+                    {% if o.currency in ['POINTS', 'PIECES'] %}
+                      <span class="text-amber-400">⛃ {{ o.total|int }} Pièces</span>
+                    {% else %}
+                      <span>{{ "%.2f"|format(o.total) }} €</span>
+                    {% endif %}
+                  </td>
+                  <td class="py-3 text-right">
+                    <span class="px-2.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-emerald-500/20 text-emerald-400 border border-emerald-500/40">
+                      LIVRÉ EN JEU
+                    </span>
+                  </td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      {% else %}
+        <div class="py-12 text-center text-slate-400 text-xs">
+          <p class="text-2xl mb-2">🛒</p>
+          <p>Aucun achat pour le moment.</p>
+        </div>
+      {% endif %}
+    </div>
+  </div>
+
+</div>
+
+<script>
+function showFeedback(msg, isSuccess = true) {
+  const el = document.getElementById('cosmetic-feedback');
+  if (!el) return;
+  el.classList.remove('hidden', 'bg-emerald-950/80', 'border-emerald-500/40', 'text-emerald-300', 'bg-rose-950/80', 'border-rose-500/40', 'text-rose-300');
+  if (isSuccess) {
+    el.classList.add('bg-emerald-950/80', 'border-emerald-500/40', 'text-emerald-300');
+    el.innerHTML = `<span>✨</span> <span>${msg}</span>`;
+  } else {
+    el.classList.add('bg-rose-950/80', 'border-rose-500/40', 'text-rose-300');
+    el.innerHTML = `<span>⚠️</span> <span>${msg}</span>`;
+  }
+  el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  setTimeout(() => el.classList.add('hidden'), 5000);
+}
+
+function switchAccountTab(tabName) {
+  if (window.AudioSys) AudioSys.playClick();
+  document.querySelectorAll('.account-tab-btn').forEach(btn => {
+    btn.classList.remove('bg-amber-500', 'text-obsidian-950', 'shadow-amber-500/30', 'font-black');
+    btn.classList.add('bg-white/5', 'text-slate-300', 'hover:bg-white/10');
+  });
+  const activeBtn = document.getElementById('btn-tab-' + tabName);
+  if (activeBtn) {
+    activeBtn.classList.remove('bg-white/5', 'text-slate-300', 'hover:bg-white/10');
+    activeBtn.classList.add('bg-amber-500', 'text-obsidian-950', 'shadow-amber-500/30', 'font-black');
+  }
+
+  document.querySelectorAll('.account-tab-content').forEach(panel => {
+    panel.classList.add('hidden');
+  });
+  const activePanel = document.getElementById('panel-tab-' + tabName);
+  if (activePanel) {
+    activePanel.classList.remove('hidden');
+  }
+}
+
+function claimQuest(questId) {
+  if (window.AudioSys) AudioSys.playClick();
+  const btn = document.getElementById('btn-claim-' + questId);
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⏳</span> Réclamation...';
+  }
+
+  fetch('/api/quests/claim', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ quest_id: questId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (window.AudioSys) AudioSys.playReward();
+      showFeedback(`🎉 Quête terminée ! Vous avez reçu +${data.reward_coins} ⛃ Pièces !`, true);
+      setTimeout(() => location.reload(), 1500);
+    } else {
+      showFeedback(data.error || "Impossible de réclamer la quête.", false);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>🎁</span> Réclamer';
+      }
+    }
+  })
+  .catch(err => {
+    showFeedback("Erreur de connexion au serveur.", false);
+    if (btn) btn.disabled = false;
+  });
+}
+
+function enterDungeon(dungeonId) {
+  if (window.AudioSys) AudioSys.playClick();
+  const btn = document.getElementById('btn-dungeon-' + dungeonId);
+  if (btn) {
+    btn.disabled = true;
+    btn.innerHTML = '<span>⚔️</span> Téléportation...';
+  }
+
+  fetch('/api/dungeons/enter', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ dungeon_id: dungeonId })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.success) {
+      if (window.AudioSys) AudioSys.playReward();
+      showFeedback(`🔥 Expédition lancée pour ${data.dungeon.name} ! Vous avez été téléporté au portail in-game.`, true);
+      setTimeout(() => location.reload(), 2000);
+    } else {
+      showFeedback(data.error || "Impossible de lancer le donjon.", false);
+      if (btn) {
+        btn.disabled = false;
+        btn.innerHTML = '<span>⚔️</span> Partir en Expédition';
+      }
+    }
+  })
+  .catch(err => {
+    showFeedback("Erreur de communication avec le serveur.", false);
+    if (btn) btn.disabled = false;
+  });
+}
+
+function togglePlayerAura(auraType) {
+  if (window.AudioSys) AudioSys.playClick();
+  const formData = new FormData();
+  formData.append('aura_type', auraType);
+
+  fetch('/api/auras/toggle', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'ok') {
+      showFeedback(data.message, true);
+    } else {
+      showFeedback(data.message || "Erreur lors de l'activation de l'aura.", false);
+    }
+  })
+  .catch(err => {
+    showFeedback("Erreur de communication avec le serveur.", false);
+  });
+}
+
+function summonPlayerPet(petType) {
+  if (window.AudioSys) AudioSys.playClick();
+  const formData = new FormData();
+  formData.append('pet_type', petType);
+
+  fetch('/api/pets/summon', {
+    method: 'POST',
+    body: formData
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (data.status === 'ok') {
+      showFeedback(data.message, true);
+    } else {
+      showFeedback(data.message || "Erreur lors de l'invocation du familier.", false);
+    }
+  })
+  .catch(err => {
+    showFeedback("Erreur de communication avec le serveur.", false);
+  });
+}
+
+function toggleWings() {
+  if (window.AudioSys) AudioSys.playClick();
+  showFeedback("🪽 Ailes Quantiques activées en jeu ! Utilisez /cosmetics wings pour rengainer.", true);
+}
+</script>
+{% endblock %}

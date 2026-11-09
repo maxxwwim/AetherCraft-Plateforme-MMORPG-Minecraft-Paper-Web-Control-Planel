@@ -1,0 +1,23 @@
+{
+  "name": "aethercraft-load-testing",
+  "version": "1.0.0",
+  "description": "50-player concurrent load testing suite for AetherCraft Minecraft 1.21.1",
+  "main": "load_test_50.js",
+  "scripts": {
+    "start": "node load_test_50.js",
+    "check": "node -c load_test_50.js",
+    "test": "node load_test_50.js --dry-run"
+  },
+  "keywords": [
+    "minecraft",
+    "load-test",
+    "paper",
+    "benchmark",
+    "stress-test"
+  ],
+  "author": "AetherCraft Core Team",
+  "license": "ISC",
+  "dependencies": {
+    "minecraft-protocol": "^1.47.0"
+  }
+}

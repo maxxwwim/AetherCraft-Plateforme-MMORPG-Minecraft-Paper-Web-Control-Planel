@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "block/raw_gold_block"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 6003
+      },
+      "model": "item/magot_sac_pieces"
+    }
+  ]
+}

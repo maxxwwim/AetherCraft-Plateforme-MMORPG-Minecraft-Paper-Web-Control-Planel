@@ -1,0 +1,66 @@
+<div class="glass-panel border border-white/10 rounded-3xl p-6 shadow-2xl relative overflow-hidden">
+  
+  <div class="flex flex-col sm:flex-row items-center gap-6">
+    <!-- Skin 3D Render with Perspective Aura -->
+    <div class="w-36 h-64 flex-shrink-0 flex items-center justify-center bg-black/40 rounded-2xl border border-white/10 p-2 relative shadow-inner">
+      <div class="absolute inset-0 bg-amber-500/15 rounded-2xl filter blur-xl"></div>
+      <img src="https://mc-heads.net/body/{{ player.username }}/right" 
+           alt="{{ player.username }} Skin 3D" 
+           class="h-full object-contain filter drop-shadow-[0_12px_15px_rgba(0,0,0,0.8)] hover:scale-105 transition transform relative z-10">
+    </div>
+
+    <!-- Info & Stats -->
+    <div class="flex-1 w-full space-y-4">
+      <div>
+        <div class="flex items-center gap-2 mb-1">
+          <span class="w-2.5 h-2.5 rounded-full {% if player.is_online %}bg-emerald-400 animate-ping{% else %}bg-slate-600{% endif %}"></span>
+          <span class="text-[11px] font-gaming font-bold {% if player.is_online %}text-emerald-400{% else %}text-slate-500{% endif %}">
+            {% if player.is_online %}ACTUELLEMENT EN JEU{% else %}HORS-LIGNE{% endif %}
+          </span>
+        </div>
+        <h2 class="text-2xl font-black font-gaming text-white tracking-wide">
+          {{ player.username }}
+        </h2>
+        <div class="flex items-center gap-2 mt-1.5">
+          <span class="px-2.5 py-0.5 rounded text-[10px] font-gaming font-black uppercase tracking-wider
+            {% if player.rank_color == 'amber' %}bg-amber-950 text-amber-400 border border-amber-800
+            {% elif player.rank_color == 'sky' %}bg-amber-950 text-amber-300 border border-amber-800
+            {% elif player.rank_color == 'emerald' %}bg-emerald-950 text-emerald-400 border border-emerald-800
+            {% elif player.rank_color == 'rose' %}bg-rose-950 text-rose-400 border border-rose-800
+            {% else %}bg-slate-800 text-slate-300 border border-slate-700{% endif %}">
+            {{ player.rank }}
+          </span>
+          <span class="text-xs text-slate-400 font-medium">Guilde: {{ player.guild }}</span>
+        </div>
+      </div>
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-2 gap-2 text-xs">
+        <div class="bg-black/40 p-2.5 rounded-xl border border-white/5">
+          <span class="text-slate-400 block text-[10px] font-gaming">FORTUNE</span>
+          <span class="text-amber-300 font-mono font-bold">{{ "{:,}".format(player.balance).replace(',', ' ') }} 🪙</span>
+        </div>
+        <div class="bg-black/40 p-2.5 rounded-xl border border-white/5">
+          <span class="text-slate-400 block text-[10px] font-gaming">TEMPS DE JEU</span>
+          <span class="text-amber-400 font-mono font-bold">{{ player.hours_played }} h</span>
+        </div>
+        <div class="bg-black/40 p-2.5 rounded-xl border border-white/5">
+          <span class="text-slate-400 block text-[10px] font-gaming">FRAGS (KILLS)</span>
+          <span class="text-rose-400 font-mono font-bold">{{ player.kills }}</span>
+        </div>
+        <div class="bg-black/40 p-2.5 rounded-xl border border-white/5">
+          <span class="text-slate-400 block text-[10px] font-gaming">MORTS</span>
+          <span class="text-slate-400 font-mono font-bold">{{ player.deaths }}</span>
+        </div>
+      </div>
+
+      <div class="pt-1">
+        <a href="/boutique" onclick="AudioSys.playClick()" 
+           class="block w-full text-center py-2.5 px-3 rounded-xl bg-amber-500/15 hover:bg-amber-500 text-amber-300 hover:text-obsidian-950 text-xs font-gaming font-bold border border-amber-500/30 hover:border-amber-400 transition shadow">
+          🎁 OFFRIR UN GRADE / CADEAU
+        </a>
+      </div>
+    </div>
+  </div>
+
+</div>

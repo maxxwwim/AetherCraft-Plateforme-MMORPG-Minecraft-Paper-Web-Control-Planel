@@ -1,0 +1,82 @@
+<div>
+  <div class="flex items-center justify-between border-b border-white/10 pb-3 mb-4">
+    <div class="flex items-center gap-2">
+      <img src="/static/images/items/crate_chest_celestial.png" class="w-6 h-6 object-contain inline-block" alt="Panier">
+      <h3 class="font-gaming font-bold text-white text-base">VOTRE PANIER</h3>
+    </div>
+    <span class="px-2.5 py-0.5 rounded-full bg-amber-950 text-amber-400 text-xs font-mono font-bold border border-amber-800">
+      {{ cart|length }}
+    </span>
+  </div>
+
+  {% if order_success %}
+  <div class="p-4 rounded-2xl bg-emerald-950/90 border border-emerald-700 text-emerald-200 text-xs mb-4 shadow-xl">
+    <div class="font-gaming font-bold text-sm text-emerald-300 mb-1 flex items-center gap-1.5">
+      <img src="/static/images/extracted_textures/beacon.png" class="w-4 h-4 object-contain inline-block" alt="Succès"> COMMANDE VALIDÉE !
+    </div>
+    <p class="text-[11px] leading-relaxed">Commande <strong>#{{ order_success.order_id }}</strong> attribuée au joueur <strong>{{ order_success.username }}</strong>.</p>
+    <div class="mt-2 text-[10px] font-gaming text-emerald-400 uppercase tracking-wider">Commandes RCON exécutées :</div>
+    <ul class="list-disc list-inside font-mono text-[10px] mt-1 space-y-0.5 text-emerald-300/80">
+      {% for cmd in order_success.command_to_run %}
+      <li><code>{{ cmd }}</code></li>
+      {% endfor %}
+    </ul>
+  </div>
+  {% endif %}
+
+  {% if cart %}
+  <div class="space-y-2.5 mb-4 max-h-64 overflow-y-auto pr-1">
+    {% for item in cart %}
+    <div class="flex items-center justify-between p-3 rounded-2xl bg-black/40 border border-white/5 text-xs">
+      <div class="flex items-center gap-2.5">
+        <img src="{{ item.image_url }}" class="w-7 h-7 object-contain inline-block filter drop-shadow" alt="{{ item.name }}">
+        <div>
+          <span class="font-gaming font-bold text-white block text-xs">{{ item.name }}</span>
+          <span class="text-slate-400 font-mono text-[11px]">{{ "%.2f"|format(item.price) }} €</span>
+        </div>
+      </div>
+      <form hx-post="/api/store/cart/remove" hx-target="#cart-container" onclick="AudioSys.playClick()">
+        <input type="hidden" name="item_id" value="{{ item.id }}">
+        <button type="submit" class="text-slate-500 hover:text-rose-400 p-1.5 transition text-xs font-bold" title="Supprimer">
+          ✕
+        </button>
+      </form>
+    </div>
+    {% endfor %}
+  </div>
+
+  <!-- Total -->
+  <div class="border-t border-white/10 pt-3 mb-4 flex justify-between items-center">
+    <span class="text-xs font-gaming text-slate-400">TOTAL TTC :</span>
+    <span class="text-2xl font-black text-amber-300 font-mono">{{ "%.2f"|format(cart_total) }} €</span>
+  </div>
+
+  <!-- Checkout Form -->
+  <form hx-post="/api/store/checkout" hx-target="#cart-container" class="space-y-3" onsubmit="AudioSys.playSuccess()">
+    <div>
+      <label class="block text-[11px] font-gaming font-bold text-slate-300 mb-1 uppercase tracking-wider">Pseudo Minecraft Exact :</label>
+      <input type="text" name="username" placeholder="ex: Notch, Alex, Steve" required
+             class="w-full bg-black/50 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-amber-500">
+      <span class="text-[10px] text-slate-500 mt-1 block">💡 Le grade ou item sera envoyé en jeu à ce pseudo.</span>
+    </div>
+
+    <button type="submit" 
+            class="w-full py-3.5 px-4 rounded-xl font-gaming font-black text-xs bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 shadow-xl shadow-amber-500/25 transition active:scale-95 flex items-center justify-center gap-2 tracking-wide">
+      <img src="/static/images/extracted_textures/nether_star.png" class="w-4 h-4 object-contain inline-block" alt="Commander"> <span>COMMANDER MAINTENANT</span>
+    </button>
+  </form>
+
+  <form hx-post="/api/store/cart/clear" hx-target="#cart-container" class="mt-2" onclick="AudioSys.playClick()">
+    <button type="submit" class="w-full text-center text-[10px] text-slate-500 hover:text-slate-300 transition py-1">
+      Vider le panier
+    </button>
+  </form>
+
+  {% else %}
+  <div class="py-10 text-center text-slate-500 text-xs">
+    <img src="/static/images/items/crate_chest_celestial.png" class="w-12 h-12 object-contain mx-auto mb-2 opacity-40 filter grayscale">
+    <p class="font-gaming">Votre panier est vide</p>
+    <p class="text-[10px] text-slate-600 mt-1">Cliquez sur "Ajouter au Panier" sur n'importe quel grade.</p>
+  </div>
+  {% endif %}
+</div>

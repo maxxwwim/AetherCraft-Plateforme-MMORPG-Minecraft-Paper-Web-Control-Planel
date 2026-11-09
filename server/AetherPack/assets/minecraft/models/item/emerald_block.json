@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "block/emerald_block"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 6006
+      },
+      "model": "item/magot_bloc_emeraude"
+    }
+  ]
+}

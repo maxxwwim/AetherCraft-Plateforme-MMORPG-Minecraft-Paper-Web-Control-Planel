@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "block/gold_block"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 6005
+      },
+      "model": "item/magot_bloc_or"
+    }
+  ]
+}

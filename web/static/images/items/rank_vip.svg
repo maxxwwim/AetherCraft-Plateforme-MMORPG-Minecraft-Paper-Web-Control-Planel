@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="vipGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.45"/>
+      <stop offset="60%" stop-color="#059669" stop-opacity="0.15"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="40%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <linearGradient id="emeraldGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#047857"/>
+    </linearGradient>
+    <filter id="shadowVip" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-color="#f59e0b" flood-opacity="0.4"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Glow -->
+  <circle cx="200" cy="200" r="180" fill="url(#vipGlow)"/>
+
+  <!-- Outer Astral Ring -->
+  <circle cx="200" cy="200" r="160" fill="none" stroke="#10b981" stroke-width="2" stroke-opacity="0.3" stroke-dasharray="8 6"/>
+  <circle cx="200" cy="200" r="140" fill="#0b131e" fill-opacity="0.85" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.4"/>
+
+  <!-- Crown Base & Spikes -->
+  <g filter="url(#shadowVip)">
+    <path d="M100 250 L115 150 L160 205 L200 120 L240 205 L285 150 L300 250 Z" 
+          fill="url(#goldGrad)" stroke="#fef08a" stroke-width="3" stroke-linejoin="round"/>
+    
+    <!-- Crown Base Band -->
+    <rect x="95" y="240" width="210" height="30" rx="8" fill="#1e1b18" stroke="#f59e0b" stroke-width="2"/>
+    <path d="M100 255 L300 255" stroke="#fef08a" stroke-width="1.5" stroke-opacity="0.6"/>
+
+    <!-- Emerald Gemstones -->
+    <circle cx="200" cy="120" r="12" fill="url(#emeraldGrad)" stroke="#a7f3d0" stroke-width="2"/>
+    <circle cx="115" cy="150" r="9" fill="url(#emeraldGrad)" stroke="#a7f3d0" stroke-width="2"/>
+    <circle cx="285" cy="150" r="9" fill="url(#emeraldGrad)" stroke="#a7f3d0" stroke-width="2"/>
+
+    <!-- Base Gems -->
+    <polygon points="140,250 148,255 140,260 132,255" fill="url(#emeraldGrad)"/>
+    <polygon points="200,248 210,255 200,262 190,255" fill="url(#emeraldGrad)"/>
+    <polygon points="260,250 268,255 260,260 252,255" fill="url(#emeraldGrad)"/>
+
+    <!-- Center Emblem -->
+    <circle cx="200" cy="210" r="16" fill="#06070b" stroke="#fef08a" stroke-width="2"/>
+    <path d="M195 202 L205 202 L200 218 Z" fill="#f59e0b"/>
+  </g>
+
+  <!-- Stars & Flares -->
+  <polygon points="200,85 203,98 216,101 203,104 200,117 197,104 184,101 197,98" fill="#fef08a"/>
+  <polygon points="85,190 87,196 93,198 87,200 85,206 83,200 77,198 83,196" fill="#6ee7b7"/>
+  <polygon points="315,190 317,196 323,198 317,200 315,206 313,200 307,198 313,196" fill="#6ee7b7"/>
+</svg>

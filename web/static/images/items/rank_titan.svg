@@ -1,0 +1,52 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="titanGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f97316" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#dc2626" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="fireGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="30%" stop-color="#f59e0b"/>
+      <stop offset="70%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#7f1d1d"/>
+    </linearGradient>
+    <linearGradient id="shieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#451a03"/>
+      <stop offset="50%" stop-color="#1c1917"/>
+      <stop offset="100%" stop-color="#0c0a09"/>
+    </linearGradient>
+    <filter id="shadowTitan" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="14" flood-color="#ea580c" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <!-- Ambient Hellfire Glow -->
+  <circle cx="200" cy="200" r="185" fill="url(#titanGlow)"/>
+
+  <!-- Titan Shield -->
+  <g filter="url(#shadowTitan)">
+    <path d="M200 60 L310 110 L290 270 L200 340 L110 270 L90 110 Z" 
+          fill="url(#shieldGrad)" stroke="#f59e0b" stroke-width="4"/>
+    
+    <!-- Shield Border Inlay -->
+    <path d="M200 80 L290 120 L275 255 L200 315 L125 255 L110 120 Z" 
+          fill="none" stroke="#ea580c" stroke-width="2" stroke-opacity="0.6"/>
+
+    <!-- Fiery Titan Crest & Horns -->
+    <path d="M200 100 C230 140 270 150 260 210 C240 200 230 210 220 230 C210 190 190 190 180 230 C170 210 160 200 140 210 C130 150 170 140 200 100 Z" 
+          fill="url(#fireGrad)" stroke="#fef08a" stroke-width="2.5"/>
+
+    <!-- Lightning Bolts Crossing -->
+    <polygon points="175,170 210,140 195,190 225,190 185,250 195,205 170,205" fill="#fef08a" stroke="#f59e0b" stroke-width="1.5"/>
+
+    <!-- Core Magma Sphere -->
+    <circle cx="200" cy="275" r="22" fill="#7f1d1d" stroke="#f59e0b" stroke-width="3"/>
+    <circle cx="200" cy="275" r="12" fill="#fef08a" filter="drop-shadow(0 0 8px #ea580c)"/>
+  </g>
+
+  <!-- Sparks & Runes -->
+  <polygon points="200,30 204,45 218,48 204,51 200,66 196,51 182,48 196,45" fill="#fef08a"/>
+  <polygon points="75,80 77,88 85,90 77,92 75,100 73,92 65,90 73,88" fill="#f59e0b"/>
+  <polygon points="325,80 327,88 335,90 327,92 325,100 323,92 315,90 323,88" fill="#f59e0b"/>
+</svg>

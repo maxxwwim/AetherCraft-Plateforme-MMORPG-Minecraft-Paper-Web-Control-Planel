@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+
+{% block title %}Sanctuaire des Animaux Célestes — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto py-12 px-4 sm:px-6">
+
+  <!-- Header Sanctuaire -->
+  <div class="glass-panel p-8 rounded-3xl border border-purple-500/25 shadow-2xl relative overflow-hidden mb-10">
+    <div class="absolute -top-24 -right-24 w-60 h-60 bg-purple-600/15 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="text-center max-w-3xl mx-auto">
+      <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-mono font-bold mb-3">
+        <img src="/static/images/items/pet_dragon.png" class="w-5 h-5 object-contain inline-block" alt="Compagnons"> FAUNE MYSTIQUE & FAMILIERS COOPÉRATIFS
+      </div>
+      <h1 class="text-3xl sm:text-5xl font-black font-crest text-white">
+        LE SANCTUAIRE DES ANIMAUX CÉLESTES
+      </h1>
+      <p class="text-xs sm:text-sm text-slate-300 mt-2">
+        Sur AetherCraft, vos animaux ne sont pas de simples décorations. Ils possèdent des 
+        <strong class="text-amber-400">Auras de Groupe</strong> qui confèrent des bonus passifs permanents 
+        à tous les membres de votre guilde et à vos compagnons d'exploration réunis autour de vous.
+      </p>
+    </div>
+  </div>
+
+  <!-- Grille des Nouveaux Animaux & Familiers Célestes avec Rendu 3D -->
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-14">
+    {% for pet in pets %}
+      <div class="glass-panel p-6 rounded-3xl border border-white/10 hover:border-purple-500/40 transition group spotlight-card relative flex flex-col justify-between">
+        
+        <div>
+          <!-- Vitrine 3D Volumétrique Haute Définition du Familier -->
+          <div class="relative w-full h-60 rounded-2xl bg-gradient-to-b from-purple-950/40 via-obsidian-900 to-obsidian-950 border border-purple-500/30 flex items-center justify-center p-3 mb-5 overflow-hidden group-hover:border-amber-400/60 transition shadow-inner">
+            <div class="absolute inset-0 bg-radial-at-c from-purple-500/15 to-transparent pointer-events-none"></div>
+            {% if pet.image_url %}
+              <img src="{{ pet.image_url }}?v=3d2" alt="{{ pet.name }}" class="max-h-52 max-w-full object-contain filter drop-shadow-[0_14px_24px_rgba(168,85,247,0.45)] group-hover:scale-110 transition transform duration-300">
+            {% else %}
+              <img src="/static/images/items/pet_dragon.png?v=3d2" alt="{{ pet.name }}" class="max-h-52 max-w-full object-contain filter drop-shadow-[0_14px_24px_rgba(168,85,247,0.45)] group-hover:scale-110 transition transform duration-300">
+            {% endif %}
+            <span class="absolute bottom-2.5 right-3 px-2 py-0.5 rounded bg-amber-500/20 border border-amber-400/40 text-[9px] font-mono font-bold text-amber-300">
+              ✦ MODÈLE 3D MULTI-BLOCS ARTICULÉ
+            </span>
+
+            <!-- Rareté Badge (Haut Gauche) -->
+            <span class="absolute top-3 left-3 px-2.5 py-0.5 rounded-md text-[9px] font-gaming font-black uppercase tracking-wider
+              {% if pet.rarity == 'MYTHIQUE' %}bg-purple-950/90 text-purple-300 border border-purple-700
+              {% elif pet.rarity == 'ÉPIQUE' %}bg-sky-950/90 text-sky-300 border border-sky-700
+              {% else %}bg-amber-950/90 text-amber-300 border border-amber-700{% endif %}">
+              {{ pet.rarity }}
+            </span>
+
+            <!-- Bonus Social Badge (Haut Droite) -->
+            <span class="absolute top-3 right-3 px-2 py-0.5 rounded-md text-[9px] font-mono font-bold bg-obsidian-900/90 text-slate-300 border border-white/10">
+              {{ pet.social_bonus }}
+            </span>
+          </div>
+
+          <h3 class="font-gaming font-black text-xl text-white group-hover:text-amber-300 transition">
+            {{ pet.name }}
+          </h3>
+          <p class="text-xs text-purple-300 font-mono font-semibold mb-4">{{ pet.species }}</p>
+
+          <!-- Boîte d'Aura de Groupe -->
+          <div class="p-3.5 rounded-2xl bg-obsidian-900/90 border border-purple-500/20 mb-4 space-y-1">
+            <p class="text-[10px] font-gaming font-black text-amber-400 uppercase tracking-wide flex items-center gap-1.5">
+              <img src="/static/images/extracted_textures/beacon.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Aura"> {{ pet.aura_name }}
+            </p>
+            <p class="text-xs text-slate-300 leading-relaxed font-sans">
+              {{ pet.aura_desc }}
+            </p>
+          </div>
+        </div>
+
+        <!-- Prix & Adoption -->
+        <div class="pt-4 border-t border-white/10 flex items-center justify-between">
+          <div>
+            <p class="text-[10px] text-slate-400 uppercase font-gaming">Prix In-Game / Boutique</p>
+            <p class="text-base font-black font-mono text-amber-400">{{ pet.price_coins|int }} ⛁ Coins</p>
+          </div>
+
+          {% if unlocked_pet_ids and pet.id in unlocked_pet_ids %}
+            <span class="px-3 py-1.5 rounded-xl bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 text-xs font-gaming font-bold transition flex items-center gap-1.5 shadow-sm">
+              <span>✓</span> DÉBLOQUÉ
+            </span>
+          {% else %}
+            <a href="/boutique?cat=pets" class="px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 text-xs font-gaming font-black transition flex items-center gap-1.5 shadow-md shadow-amber-500/20">
+              <img src="/static/images/items/crate_chest_celestial.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Boutique"> BOUTIQUE
+            </a>
+          {% endif %}
+        </div>
+
+      </div>
+    {% endfor %}
+  </div>
+
+  <!-- Guide Sociabilité & Système d'Auras -->
+  <div class="glass-panel p-8 rounded-3xl border border-white/10 shadow-xl">
+    <h2 class="text-xl font-black font-crest text-white mb-4 flex items-center gap-2">
+      <img src="/static/images/extracted_textures/allay.png" class="w-6 h-6 object-contain inline-block" alt="Sociabilité"> COMMENT FONCTIONNE LA SOCIABILITÉ DES ANIMAUX ?
+    </h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-xs text-slate-300 leading-relaxed">
+      <div class="bg-obsidian-900/60 p-4 rounded-2xl border border-white/5 space-y-2">
+        <h4 class="font-gaming font-bold text-sm text-amber-400">1. Auras Cumulables</h4>
+        <p>Si deux joueurs d'un même groupe amènent des animaux différents (ex: Mini-Dragon + Capybara), l'ensemble du groupe bénéficie à la fois du buff de minage et de la régénération passive.</p>
+      </div>
+      <div class="bg-obsidian-900/60 p-4 rounded-2xl border border-white/5 space-y-2">
+        <h4 class="font-gaming font-bold text-sm text-sky-400">2. Enclos et Troc de Familiers</h4>
+        <p>À la Réserve de l'Agora, les éleveurs peuvent faire reproduire leurs animaux avec des <em>Baies Astrales</em> et troquer leurs portées à d'autres joueurs via la commande <code>/trade</code>.</p>
+      </div>
+      <div class="bg-obsidian-900/60 p-4 rounded-2xl border border-white/5 space-y-2">
+        <h4 class="font-gaming font-bold text-sm text-purple-400">3. 100% Compatible Vanilla</h4>
+        <p>Aucun mod à installer côté client ! Les animaux utilisent les entités Display et les modèles d'armure natifs de Minecraft 1.21.1 pour un rendu fluide et sans lag.</p>
+      </div>
+    </div>
+  </div>
+
+</div>
+{% endblock %}

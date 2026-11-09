@@ -1,0 +1,711 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}AetherCraft — L'Archipel Céleste. Redéfini pour l'Élite.{% endblock %}</title>
+  
+  <!-- Polices Gaming Haut de Gamme (Cinzel, Plus Jakarta Sans & Chakra Petch) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@500;600;700;800&family=Cinzel:wght@700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  
+  <!-- Tailwind CSS & HTMX -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'system-ui', 'sans-serif'],
+            gaming: ['"Chakra Petch"', 'sans-serif'],
+            crest: ['"Cinzel"', 'serif'],
+            mono: ['ui-monospace', 'SFMono-Regular', 'Menlo', 'monospace'],
+          },
+          colors: {
+            obsidian: {
+              800: '#141824',
+              850: '#0f131d',
+              900: '#0a0d15',
+              950: '#06070b',
+            },
+            gold: {
+              400: '#fbbf24',
+              500: '#f59e0b',
+              600: '#d97706',
+            },
+            amethyst: {
+              400: '#c084fc',
+              500: '#a855f7',
+              600: '#8b5cf6',
+              700: '#7c3aed',
+            }
+          },
+          animation: {
+            'float': 'float 4s ease-in-out infinite',
+            'glow': 'glow 2.5s ease-in-out infinite alternate',
+          },
+          keyframes: {
+            float: {
+              '0%, 100%': { transform: 'translateY(0px)' },
+              '50%': { transform: 'translateY(-10px)' },
+            },
+            glow: {
+              '0%': { filter: 'drop-shadow(0 0 15px rgba(245, 158, 11, 0.2))' },
+              '100%': { filter: 'drop-shadow(0 0 30px rgba(168, 85, 247, 0.45))' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    /* Scrollbar discrète et élégante */
+    ::-webkit-scrollbar { width: 7px; }
+    ::-webkit-scrollbar-track { background: #06070b; }
+    ::-webkit-scrollbar-thumb { background: #1e2538; border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: #d97706; }
+
+    /* Fond Céleste Immersif Minecraft sur Toutes les Pages */
+    body {
+      background-color: #06070b;
+      background-image: 
+        radial-gradient(circle at 50% 5%, rgba(20, 16, 36, 0.45) 0%, rgba(6, 7, 11, 0.82) 50%, #06070b 100%),
+        url('/static/images/hero-bg.jpg');
+      background-size: cover;
+      background-position: center top;
+      background-attachment: fixed;
+      background-repeat: no-repeat;
+    }
+
+    /* Panneaux de verre dépoli fluide (Style Evolucraft / Hyping) */
+    .glass-panel {
+      background: rgba(10, 13, 21, 0.72);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      box-shadow: 0 15px 35px -5px rgba(0, 0, 0, 0.5);
+    }
+    .glass-panel-gold {
+      background: rgba(22, 18, 12, 0.7);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(245, 158, 11, 0.25);
+      box-shadow: 0 15px 35px -5px rgba(245, 158, 11, 0.12);
+    }
+    .glass-card-hover {
+      transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .glass-card-hover:hover {
+      transform: translateY(-5px);
+      border-color: rgba(245, 158, 11, 0.4);
+      box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.7), 0 0 30px rgba(245, 158, 11, 0.15);
+    }
+
+    /* Masque fluide d'image Hero (dégradé sans coupure) */
+    .fluid-hero-banner {
+      position: absolute;
+      inset: 0;
+      background-image: url('/static/images/hero-bg.jpg');
+      background-size: cover;
+      background-position: center 25%;
+      mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.7) 75%, transparent 100%);
+      -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1) 0%, rgba(0,0,0,1) 50%, rgba(0,0,0,0.7) 75%, transparent 100%);
+    }
+
+    /* Scroll Reveal & Disparition */
+    .reveal-on-scroll {
+      opacity: 0;
+      transform: translateY(40px) scale(0.98);
+      filter: blur(4px);
+      transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  transform 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                  filter 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+      will-change: opacity, transform, filter;
+    }
+    .reveal-on-scroll.is-revealed {
+      opacity: 1;
+      transform: translateY(0) scale(1);
+      filter: blur(0);
+    }
+    .delay-100 { transition-delay: 100ms; }
+    .delay-200 { transition-delay: 200ms; }
+    .delay-300 { transition-delay: 300ms; }
+    .delay-400 { transition-delay: 400ms; }
+
+    /* Header Scrolled */
+    header.navbar-scrolled {
+      background: rgba(6, 7, 11, 0.95) !important;
+      border-bottom: 1px solid rgba(245, 158, 11, 0.2) !important;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Spotlight Card Effect */
+    .spotlight-card {
+      position: relative;
+      overflow: hidden;
+    }
+    .spotlight-card::before {
+      content: '';
+      position: absolute;
+      top: var(--mouse-y, -1000px);
+      left: var(--mouse-x, -1000px);
+      width: 480px;
+      height: 480px;
+      transform: translate(-50%, -50%);
+      background: radial-gradient(circle, rgba(245, 158, 11, 0.12), transparent 65%);
+      pointer-events: none;
+      z-index: 1;
+      transition: opacity 0.25s ease;
+      opacity: 0;
+    }
+    .spotlight-card:hover::before {
+      opacity: 1;
+    }
+
+    /* Hero Background & Art Styling */
+    .hero-art {
+      background-size: cover;
+      background-position: center top;
+      background-repeat: no-repeat;
+      transform-origin: center top;
+    }
+
+    /* =========================================================
+       MINECRAFT AUTHENTIC UI SYSTEM (ITEM FRAMES & TOOLTIPS)
+       ========================================================= */
+    .mc-item-frame {
+      position: relative;
+      background: radial-gradient(circle at 50% 50%, #151322 0%, #090812 100%);
+      border: 3px solid #2d2638;
+      box-shadow: 
+        inset 0 0 10px rgba(0, 0, 0, 0.8),
+        inset 2px 2px 0px rgba(255, 255, 255, 0.1),
+        inset -2px -2px 0px rgba(0, 0, 0, 0.6),
+        0 8px 20px rgba(0, 0, 0, 0.6);
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .mc-item-frame-gold {
+      border: 3px solid #784d16;
+      background: radial-gradient(circle at 50% 50%, #20170e 0%, #0a0704 100%);
+      box-shadow: 
+        inset 0 0 12px rgba(245, 158, 11, 0.15),
+        inset 2px 2px 0px rgba(251, 191, 36, 0.25),
+        inset -2px -2px 0px rgba(0, 0, 0, 0.8),
+        0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    .mc-item-frame-amethyst {
+      border: 3px solid #4a1d70;
+      background: radial-gradient(circle at 50% 50%, #1d102e 0%, #0a0412 100%);
+      box-shadow: 
+        inset 0 0 14px rgba(168, 85, 247, 0.2),
+        inset 2px 2px 0px rgba(192, 132, 252, 0.3),
+        inset -2px -2px 0px rgba(0, 0, 0, 0.8),
+        0 10px 25px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Badge de Quantité Hotbar Minecraft Réelle */
+    .mc-stack-badge {
+      position: absolute;
+      bottom: 8px;
+      right: 12px;
+      font-family: 'Chakra Petch', monospace;
+      font-size: 15px;
+      font-weight: 900;
+      color: #ffffff;
+      text-shadow: 
+        2px 2px 0px #2a2a2a,
+        -1px -1px 0px #000000,
+        1px -1px 0px #000000,
+        -1px 1px 0px #000000,
+        1px 1px 0px #000000;
+      pointer-events: none;
+      letter-spacing: -0.5px;
+      z-index: 5;
+    }
+
+    /* Infobulle / Lore Minecraft Authentique */
+    .mc-lore-box {
+      background: rgba(16, 2, 27, 0.94);
+      border: 2px solid #28084a;
+      box-shadow: 
+        inset 0 0 4px #53128f,
+        0 12px 30px rgba(0, 0, 0, 0.9);
+      border-radius: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    /* Scintillement d'Enchantement Minecraft */
+    @keyframes mc-enchant-glint {
+      0% { filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.3)) hue-rotate(0deg); }
+      50% { filter: drop-shadow(0 0 16px rgba(147, 51, 234, 0.6)) hue-rotate(20deg); }
+      100% { filter: drop-shadow(0 0 8px rgba(192, 132, 252, 0.3)) hue-rotate(0deg); }
+    }
+
+    .mc-enchanted {
+      animation: mc-enchant-glint 3s ease-in-out infinite alternate;
+    }
+  </style>
+</head>
+<body class="bg-obsidian-950 text-slate-100 min-h-screen flex flex-col font-sans selection:bg-amber-500 selection:text-black relative overflow-x-hidden">
+
+  <!-- Interactive Particles Canvas -->
+  <canvas id="particles-canvas" class="fixed inset-0 pointer-events-none z-0 opacity-40"></canvas>
+
+  <!-- Ambient Fluid Glows (Warm Gold & Mystic Amethyst) -->
+  <div class="fixed top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px] bg-gradient-to-b from-amber-500/10 via-purple-600/10 to-transparent blur-[140px] pointer-events-none -z-10"></div>
+  <div class="fixed bottom-0 right-0 w-[500px] h-[400px] bg-indigo-600/10 blur-[150px] pointer-events-none -z-10"></div>
+
+  <!-- Top Announcement Bar (Style Evolucraft) -->
+  <div class="bg-obsidian-950/40 backdrop-blur-md border-b border-white/5 text-[11px] py-1.5 px-4 overflow-hidden relative z-50">
+    <div class="max-w-7xl mx-auto flex items-center justify-between">
+      <div class="flex items-center space-x-2 text-slate-400">
+        <span class="inline-flex items-center px-2 py-0.5 rounded bg-amber-500/15 text-amber-400 border border-amber-500/30 text-[10px] font-mono font-bold">
+          ACTUALITÉ
+        </span>
+        <span class="truncate">
+          ✨ Saison 4 Primordiale ouverte ! Nouveaux donjons célestes & hôtel des ventes actif.
+        </span>
+      </div>
+      <div class="hidden sm:flex items-center space-x-4 text-slate-400 text-[11px]">
+        <span>Version recommandée : <strong class="text-white">1.21.1</strong></span>
+        <span class="text-slate-600">•</span>
+        <a href="{{ server_status.discord_url }}" target="_blank" class="hover:text-amber-400 transition flex items-center gap-1 font-semibold">
+          <span>💬</span> Discord (3,400+ membres)
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Navigation Bar (Fluid Glassmorphism) -->
+  <header class="border-b border-white/10 bg-obsidian-950/30 backdrop-blur-xl sticky top-0 z-40 transition-all duration-300">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3.5 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="/" class="flex items-center space-x-3 group" onclick="AudioSys.playClick()">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-amber-500 via-purple-600 to-amber-300 p-[1px] shadow-lg shadow-amber-500/20 group-hover:scale-105 transition transform">
+          <div class="w-full h-full bg-obsidian-950 rounded-[11px] flex items-center justify-center text-xl">
+            🪐
+          </div>
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="font-crest text-xl font-black tracking-wider bg-gradient-to-r from-amber-200 via-amber-400 to-purple-300 bg-clip-text text-transparent">
+              AETHERCRAFT
+            </span>
+            <span class="px-1.5 py-0.2 text-[9px] font-black rounded bg-amber-950 text-amber-400 border border-amber-800 font-mono">
+              V2.4
+            </span>
+          </div>
+          <p class="text-[10px] text-slate-400 tracking-tight font-medium">L'Archipel Céleste • Redéfini pour l'Élite</p>
+        </div>
+      </a>
+
+      <!-- Desktop Nav Tabs -->
+      <nav class="hidden md:flex items-center space-x-1 bg-white/5 p-1 rounded-2xl border border-white/10 text-xs font-bold font-gaming tracking-wide">
+        <a href="/" onclick="AudioSys.playClick()" 
+           class="px-4 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}">
+          <img src="/static/images/extracted_textures/beacon.png" class="w-4 h-4 object-contain inline-block" alt="Accueil"> ACCUEIL
+        </a>
+        <a href="/boutique" onclick="AudioSys.playClick()" 
+           class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/boutique' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}">
+          <img src="/static/images/extracted_textures/golden_helmet.png" class="w-4 h-4 object-contain inline-block" alt="Boutique"> BOUTIQUE
+        </a>
+        <a href="/caisses" onclick="AudioSys.playClick()" 
+           class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/caisses' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}">
+          <img src="/static/images/items/crate_chest_celestial.png" class="w-4 h-4 object-contain inline-block" alt="Caisses"> CAISSES
+        </a>
+        <a href="/marche" onclick="AudioSys.playClick()" 
+           class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/marche' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}">
+          <img src="/static/images/extracted_textures/netherite_pickaxe.png" class="w-4 h-4 object-contain inline-block" alt="Marché"> MARCHÉ
+        </a>
+        <a href="/animaux" onclick="AudioSys.playClick()" 
+           class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/animaux' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}">
+          <img src="/static/images/items/pet_dragon.png" class="w-4 h-4 object-contain inline-block" alt="Animaux"> ANIMAUX
+        </a>
+        <a href="/joueurs" onclick="AudioSys.playClick()" 
+           class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/joueurs' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}text-slate-300 hover:text-white hover:bg-white/5{% endif %}">
+          <img src="/static/images/extracted_textures/diamond.png" class="w-4 h-4 object-contain inline-block" alt="Classements"> CLASSEMENTS
+        </a>
+        {% if current_user and current_user.is_admin %}
+        <a href="/admin" onclick="AudioSys.playClick()" 
+           class="px-3.5 py-2 rounded-xl transition flex items-center gap-1.5 {% if request.path == '/admin' %}bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-black shadow-lg shadow-purple-600/25{% else %}text-amber-400 border border-amber-500/30 hover:bg-amber-500/10{% endif %}">
+          <img src="/static/images/extracted_textures/tripwire_hook.png" class="w-4 h-4 object-contain inline-block" alt="Admin"> CRÉATEUR <span class="text-[9px] px-1 py-0.2 bg-amber-500 text-obsidian-950 rounded font-mono font-bold">ADMIN</span>
+        </a>
+        {% endif %}
+      </nav>
+
+      <!-- Right Desktop: Live Server IP Widget & Auth -->
+      <div class="hidden lg:flex items-center space-x-3">
+        <!-- Live Players Pill -->
+        <div class="flex items-center px-3 py-1.5 rounded-xl bg-emerald-950/60 border border-emerald-800 text-xs text-emerald-400">
+          <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-ping"></span>
+          <span class="font-bold font-mono">{{ server_status.players_online }}</span>&nbsp;/ {{ server_status.players_max }}
+        </div>
+
+        <!-- Copy IP Button (Style Hyping / Evolucraft) -->
+        <button onclick="copyServerIp()" id="btn-copy-ip-desktop" 
+                class="bg-gradient-to-r from-amber-500 via-amber-600 to-amber-700 hover:from-amber-400 hover:to-amber-600 text-obsidian-950 text-xs font-black font-gaming tracking-wide px-3.5 py-2 rounded-xl shadow-lg shadow-amber-500/25 transition active:scale-95 flex items-center gap-2">
+          <img src="/static/images/extracted_textures/map.png" class="w-4 h-4 object-contain inline-block" alt="IP"> <span id="ip-text-desktop">{{ server_status.ip }}</span>
+          {% if server_status.is_local %}
+          <span class="px-1.5 py-0.2 rounded bg-obsidian-950/80 text-amber-300 text-[9px] font-mono font-bold">LOCAL</span>
+          {% endif %}
+        </button>
+
+        {% if current_user %}
+          <!-- Solde Monnaie Unique Pièces (⛃) Badge -->
+          <a href="/boutique" onclick="AudioSys.playClick()" title="Mon Solde de Pièces"
+             class="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/15 hover:bg-amber-500/25 border border-amber-500/40 text-amber-300 font-mono font-bold text-xs transition group shadow-sm">
+            <span class="text-base text-amber-400">⛃</span>
+            <span id="nav-user-points">{{ current_user.balance|int if current_user.balance is defined else (current_user.shop_points or 1000) }}</span>
+            <span class="text-[10px] text-amber-400 font-gaming uppercase tracking-wider">PIÈCES</span>
+          </a>
+
+          <!-- Badge Joueur Connecté avec Skin NPC -->
+          <a href="/mon-compte" onclick="AudioSys.playClick()" 
+             class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-white/5 hover:bg-white/10 border border-amber-500/30 transition group">
+            <img src="{{ current_user.avatar_url }}" alt="{{ current_user.minecraft_username }}" class="w-6 h-6 rounded border border-white/20">
+            <span class="text-xs font-bold font-mono text-amber-300 group-hover:text-amber-200">{{ current_user.minecraft_username }}</span>
+          </a>
+          <a href="/deconnexion" title="Déconnexion" onclick="AudioSys.playClick()" 
+             class="p-2 rounded-xl bg-white/5 hover:bg-rose-500/20 text-slate-400 hover:text-rose-300 border border-white/10 transition">
+            🚪
+          </a>
+        {% else %}
+          <!-- Boutons Connexion / Inscription -->
+          <a href="/connexion" onclick="AudioSys.playClick()" 
+             class="text-xs font-gaming font-bold text-slate-300 hover:text-white px-3 py-2 rounded-xl hover:bg-white/5 transition">
+            CONNEXION
+          </a>
+          <a href="/inscription" onclick="AudioSys.playClick()" 
+             class="text-xs font-gaming font-black px-3.5 py-2 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white shadow-lg shadow-purple-600/25 transition">
+            S'INSCRIRE
+          </a>
+        {% endif %}
+      </div>
+
+      <!-- Mobile Right: Burger Button & IP Quick Copy -->
+      <div class="flex items-center space-x-2 md:hidden">
+        <button onclick="copyServerIp()" class="px-2.5 py-1.5 rounded-lg bg-amber-500/20 border border-amber-500/40 text-amber-400 text-xs font-mono font-bold">
+          IP
+        </button>
+
+        <!-- Hamburger Icon Button -->
+        <button id="btn-burger" onclick="toggleMobileMenu()" 
+                class="p-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/10 text-slate-200 focus:outline-none transition active:scale-95"
+                aria-label="Menu principal">
+          <svg id="burger-icon" class="w-6 h-6 transition transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Mobile Slide-Over Drawer Navigation -->
+  <div id="mobile-drawer-overlay" 
+       class="fixed inset-0 bg-black/80 backdrop-blur-sm z-50 transition-opacity duration-300 opacity-0 pointer-events-none md:hidden"
+       onclick="toggleMobileMenu()">
+  </div>
+
+  <div id="mobile-drawer" 
+       class="fixed top-0 right-0 h-full w-[290px] sm:w-[340px] bg-obsidian-950 border-l border-white/10 z-50 p-6 flex flex-col justify-between transform translate-x-full transition-transform duration-300 ease-out shadow-2xl md:hidden">
+    
+    <div>
+      <!-- Drawer Header -->
+      <div class="flex items-center justify-between pb-6 border-b border-white/10 mb-6">
+        <div class="flex items-center space-x-2.5">
+          <span class="text-2xl">🪐</span>
+          <span class="font-crest font-black text-lg text-amber-400 tracking-wider">AETHERCRAFT</span>
+        </div>
+        <button onclick="toggleMobileMenu()" class="p-2 rounded-xl bg-white/5 text-slate-400 hover:text-white transition">
+          ✕
+        </button>
+      </div>
+
+      <!-- Live Server Status Banner inside Drawer -->
+      <div class="p-3.5 rounded-xl bg-obsidian-900 border border-white/10 mb-6">
+        <div class="flex items-center justify-between mb-2">
+          <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">Statut Serveur</span>
+          <span class="inline-flex items-center text-[10px] font-bold text-emerald-400 bg-emerald-950 px-2 py-0.5 rounded border border-emerald-800">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span> EN LIGNE
+          </span>
+        </div>
+        <div class="font-mono text-sm font-bold text-white flex items-center justify-between">
+          <span>{{ server_status.players_online }} / {{ server_status.players_max }}</span>
+          <span class="text-xs text-amber-400 font-semibold">{{ server_status.ping_ms }} ms</span>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <nav class="space-y-2 font-gaming font-bold text-sm tracking-wide">
+        <a href="/" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/' %}bg-amber-500 text-obsidian-950 font-black{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/extracted_textures/beacon.png" class="w-4 h-4 object-contain inline-block" alt="Accueil"> ACCUEIL</span>
+          <span class="text-xs opacity-60">→</span>
+        </a>
+        <a href="/boutique" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/boutique' %}bg-amber-500 text-obsidian-950 font-black{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/extracted_textures/golden_helmet.png" class="w-4 h-4 object-contain inline-block" alt="Boutique"> BOUTIQUE</span>
+          <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px]">Grades VIP</span>
+        </a>
+        <a href="/caisses" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/caisses' %}bg-amber-500 text-obsidian-950 font-black{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/items/crate_chest_celestial.png" class="w-4 h-4 object-contain inline-block" alt="Caisses"> CAISSES</span>
+          <span class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px]">Clés & Drops</span>
+        </a>
+        <a href="/marche" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/marche' %}bg-amber-500 text-obsidian-950 font-black{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/extracted_textures/netherite_pickaxe.png" class="w-4 h-4 object-contain inline-block" alt="Marché"> MARCHÉ</span>
+          <span class="text-xs opacity-60">→</span>
+        </a>
+        <a href="/animaux" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/animaux' %}bg-amber-500 text-obsidian-950 font-black{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/items/pet_dragon.png" class="w-4 h-4 object-contain inline-block" alt="Animaux"> ANIMAUX</span>
+          <span class="text-xs opacity-60">→</span>
+        </a>
+        <a href="/joueurs" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/joueurs' %}bg-amber-500 text-obsidian-950 font-black{% else %}text-slate-300 hover:bg-white/5 hover:text-white{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/extracted_textures/diamond.png" class="w-4 h-4 object-contain inline-block" alt="Classements"> CLASSEMENTS</span>
+          <span class="text-xs opacity-60">→</span>
+        </a>
+        {% if current_user and current_user.is_admin %}
+        <a href="/admin" onclick="toggleMobileMenu(); AudioSys.playClick();" 
+           class="flex items-center justify-between p-3 rounded-xl transition {% if request.path == '/admin' %}bg-purple-600 text-white font-black{% else %}text-amber-300 bg-amber-500/10 border border-amber-500/30 hover:bg-amber-500/20{% endif %}">
+          <span class="flex items-center gap-3"><img src="/static/images/extracted_textures/tripwire_hook.png" class="w-4 h-4 object-contain inline-block" alt="Admin"> CRÉATEUR</span>
+          <span class="px-2 py-0.5 rounded bg-amber-500 text-obsidian-950 text-[10px] font-mono font-bold">ADMIN</span>
+        </a>
+        {% endif %}
+
+        {% if current_user %}
+          <a href="/mon-compte" onclick="toggleMobileMenu(); AudioSys.playClick();"
+             class="flex items-center justify-between p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300">
+            <span class="flex items-center gap-3">
+              <img src="{{ current_user.avatar_url }}" class="w-5 h-5 rounded">
+              <span>MON COMPTE ({{ current_user.minecraft_username }})</span>
+            </span>
+            <span class="text-xs">→</span>
+          </a>
+          <a href="/deconnexion" onclick="toggleMobileMenu(); AudioSys.playClick();"
+             class="flex items-center justify-between p-3 rounded-xl text-rose-400 hover:bg-rose-500/10 transition">
+            <span class="flex items-center gap-3"><span>🚪</span> DÉCONNEXION</span>
+          </a>
+        {% else %}
+          <div class="grid grid-cols-2 gap-2 pt-2">
+            <a href="/connexion" onclick="toggleMobileMenu(); AudioSys.playClick();"
+               class="p-2.5 rounded-xl bg-white/5 text-center text-xs font-gaming font-bold text-slate-200">
+              CONNEXION
+            </a>
+            <a href="/inscription" onclick="toggleMobileMenu(); AudioSys.playClick();"
+               class="p-2.5 rounded-xl bg-purple-600 text-center text-xs font-gaming font-black text-white shadow-lg shadow-purple-600/30">
+              S'INSCRIRE
+            </a>
+          </div>
+        {% endif %}
+      </nav>
+    </div>
+
+    <!-- Drawer Footer Actions -->
+    <div class="pt-6 border-t border-white/10 space-y-3">
+      <button onclick="copyServerIp()" 
+              class="w-full py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 text-xs font-gaming font-black tracking-wider shadow-lg shadow-amber-500/25 transition active:scale-95 flex items-center justify-center gap-2">
+        <span>📋</span> COPIER L'IP SERVEUR
+      </button>
+
+      <a href="{{ server_status.discord_url }}" target="_blank" 
+         class="w-full py-3 rounded-xl bg-[#5865F2]/20 hover:bg-[#5865F2]/30 border border-[#5865F2]/40 text-[#828cf8] text-xs font-bold text-center block transition">
+        Rejoindre notre Discord
+      </a>
+    </div>
+
+  </div>
+
+  <!-- Body Content -->
+  <main class="flex-1">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- Modern Gaming Footer (Style Evolucraft) -->
+  <footer class="border-t border-white/10 bg-obsidian-950 text-xs text-slate-400 py-12 relative overflow-hidden">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-1 md:grid-cols-4 gap-10">
+      
+      <!-- Col 1 -->
+      <div class="space-y-4">
+        <div class="flex items-center space-x-2.5">
+          <span class="text-2xl">🪐</span>
+          <span class="font-crest font-black text-amber-400 text-lg tracking-wider">AETHERCRAFT</span>
+        </div>
+        <p class="text-slate-400 leading-relaxed text-xs">
+          Le réseau Minecraft haute performance propulsé par l'orchestrateur <strong>Aether-Engine</strong> et un runner asynchrone natif en <strong>Rust (Tokio)</strong>.
+        </p>
+        <div class="flex items-center gap-3 pt-1">
+          <span class="text-[11px] text-slate-500">TPS: <strong class="text-emerald-400">20.0</strong></span>
+          <span class="text-slate-700">•</span>
+          <span class="text-[11px] text-slate-500">Moteur: <strong class="text-amber-400">Paper 1.21.1</strong></span>
+        </div>
+      </div>
+
+      <!-- Col 2 -->
+      <div>
+        <h4 class="font-gaming font-bold text-slate-200 mb-4 uppercase tracking-wider text-xs">Navigation</h4>
+        <ul class="space-y-2.5 text-xs">
+          <li><a href="/" class="hover:text-amber-400 transition flex items-center gap-2"><span>›</span> Accueil & Présentation</a></li>
+          <li><a href="/boutique" class="hover:text-amber-400 transition flex items-center gap-2"><span>›</span> Boutique & Rangs VIP</a></li>
+          <li><a href="/joueurs" class="hover:text-amber-400 transition flex items-center gap-2"><span>›</span> Annuaire Joueurs & Skins</a></li>
+          <li><a href="/admin" class="hover:text-amber-400 transition flex items-center gap-2"><span>›</span> Console Créateur & Manifest</a></li>
+        </ul>
+      </div>
+
+      <!-- Col 3 -->
+      <div>
+        <h4 class="font-gaming font-bold text-slate-200 mb-4 uppercase tracking-wider text-xs">Connexion au Serveur</h4>
+        <div class="bg-obsidian-900 p-3.5 rounded-xl border border-white/10 space-y-2 font-mono text-[11px]">
+          <div class="text-slate-400">Adresse de Connexion :</div>
+          <div class="text-amber-400 font-bold select-all bg-black/40 p-2 rounded border border-white/5 flex items-center justify-between">
+            <span>{{ server_status.ip }}</span>
+            {% if server_status.is_local %}
+            <span class="text-[9px] px-1.5 py-0.5 rounded bg-amber-500/20 text-amber-300 font-sans font-bold">LOCAL</span>
+            {% endif %}
+          </div>
+          <div class="text-slate-400 pt-1">Mode de jeu :</div>
+          <div class="text-slate-200">Survie Hardcore & Donjons</div>
+        </div>
+      </div>
+
+      <!-- Col 4 -->
+      <div>
+        <h4 class="font-gaming font-bold text-slate-200 mb-4 uppercase tracking-wider text-xs">Communauté Discord</h4>
+        <p class="text-xs leading-relaxed text-slate-400 mb-3">
+          Rejoignez plus de 3 400 aventuriers pour participer aux tournois, concours de builds et giveaways mensuels.
+        </p>
+        <a href="{{ server_status.discord_url }}" target="_blank" 
+           class="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#5865F2] hover:bg-[#4752c4] text-white font-bold text-xs shadow-lg shadow-[#5865F2]/20 transition">
+          <span>💬</span> Rejoindre le Discord
+        </a>
+      </div>
+
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 mt-10 pt-6 border-t border-white/5 flex flex-col sm:flex-row items-center justify-between text-slate-500 text-[11px] gap-2">
+      <div>© 2026 AetherCraft. Tous droits réservés. Non affilié à Mojang Studios.</div>
+      <div class="flex items-center gap-4">
+        <span>Politique de Confidentialité</span>
+        <span>•</span>
+        <span>Conditions Générales</span>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Notification Toast -->
+  <div id="toast" class="fixed bottom-6 right-6 z-50 transform translate-y-24 opacity-0 transition-all duration-300 bg-obsidian-900 border border-amber-400 text-white px-5 py-3.5 rounded-2xl shadow-2xl flex items-center space-x-3 pointer-events-none">
+    <span class="text-2xl">✨</span>
+    <div>
+      <div class="text-xs font-gaming font-bold text-amber-400">PRESSE-PAPIER</div>
+      <div id="toast-message" class="text-xs text-slate-200">play.aethercraft.net copié !</div>
+    </div>
+  </div>
+
+  <!-- Audio Feedback & Navigation Scripts -->
+  <script>
+    const AudioSys = {
+      ctx: null,
+      init() {
+        if (!this.ctx && (window.AudioContext || window.webkitAudioContext)) {
+          this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+        }
+      },
+      playClick() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(600, this.ctx.currentTime);
+          osc.frequency.exponentialRampToValueAtTime(800, this.ctx.currentTime + 0.05);
+          gain.gain.setValueAtTime(0.06, this.ctx.currentTime);
+          gain.gain.exponentialRampToValueAtTime(0.001, this.ctx.currentTime + 0.05);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start();
+          osc.stop(this.ctx.currentTime + 0.05);
+        } catch(e) {}
+      },
+      playSuccess() {
+        try {
+          this.init();
+          if (!this.ctx) return;
+          const now = this.ctx.currentTime;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(523.25, now);
+          osc.frequency.setValueAtTime(659.25, now + 0.08);
+          osc.frequency.setValueAtTime(783.99, now + 0.16);
+          gain.gain.setValueAtTime(0.08, now);
+          gain.gain.exponentialRampToValueAtTime(0.001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(now);
+          osc.stop(now + 0.35);
+        } catch(e) {}
+      }
+    };
+
+    function toggleMobileMenu() {
+      const drawer = document.getElementById('mobile-drawer');
+      const overlay = document.getElementById('mobile-drawer-overlay');
+      const isOpen = !drawer.classList.contains('translate-x-full');
+      AudioSys.playClick();
+
+      if (isOpen) {
+        drawer.classList.add('translate-x-full');
+        overlay.classList.add('opacity-0', 'pointer-events-none');
+        overlay.classList.remove('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = '';
+      } else {
+        drawer.classList.remove('translate-x-full');
+        overlay.classList.remove('opacity-0', 'pointer-events-none');
+        overlay.classList.add('opacity-100', 'pointer-events-auto');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    const SERVER_CONNECT_IP = "{{ server_status.ip }}";
+
+    function copyServerIp() {
+      AudioSys.playSuccess();
+      navigator.clipboard.writeText(SERVER_CONNECT_IP);
+      showToast('IP serveur ' + SERVER_CONNECT_IP + ' copiée ! Collez-la dans Minecraft Multijoueur.');
+      
+      const btnText = document.getElementById('ip-text-desktop');
+      if (btnText) {
+        const orig = btnText.textContent;
+        btnText.textContent = 'Copié !';
+        setTimeout(() => { btnText.textContent = orig; }, 2000);
+      }
+    }
+
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      const toastMsg = document.getElementById('toast-message');
+      toastMsg.textContent = msg;
+      toast.classList.remove('translate-y-24', 'opacity-0');
+      toast.classList.add('translate-y-0', 'opacity-100');
+      setTimeout(() => {
+        toast.classList.add('translate-y-24', 'opacity-0');
+        toast.classList.remove('translate-y-0', 'opacity-100');
+      }, 3500);
+    }
+  </script>
+  <script src="/static/scroll_effects.js"></script>
+</body>
+</html>

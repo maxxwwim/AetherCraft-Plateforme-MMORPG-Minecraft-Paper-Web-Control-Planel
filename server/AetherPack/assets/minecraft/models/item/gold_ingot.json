@@ -1,0 +1,14 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/gold_ingot"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 6004
+      },
+      "model": "item/magot_lingot_or"
+    }
+  ]
+}

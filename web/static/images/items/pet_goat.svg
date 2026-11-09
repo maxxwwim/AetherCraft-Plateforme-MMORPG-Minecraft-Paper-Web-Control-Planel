@@ -1,0 +1,71 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="goatGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#bae6fd" stop-opacity="0.6"/>
+      <stop offset="60%" stop-color="#38bdf8" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="cloudWool" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="60%" stop-color="#e2e8f0"/>
+      <stop offset="100%" stop-color="#cbd5e1"/>
+    </linearGradient>
+    <linearGradient id="hornSpiral" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#b45309"/>
+    </linearGradient>
+    <filter id="shadowGoat" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#38bdf8" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <circle cx="200" cy="200" r="185" fill="url(#goatGlow)"/>
+
+  <!-- Cloud Base under Hooves -->
+  <g fill="#ffffff" fill-opacity="0.85" filter="drop-shadow(0 8px 16px rgba(56,189,248,0.4))">
+    <circle cx="150" cy="295" r="30"/>
+    <circle cx="190" cy="285" r="38"/>
+    <circle cx="240" cy="295" r="32"/>
+    <circle cx="280" cy="305" r="22"/>
+    <circle cx="115" cy="305" r="20"/>
+  </g>
+
+  <!-- Cloud Ram Head & Horns -->
+  <g filter="url(#shadowGoat)">
+    <!-- Spiral Horn Left -->
+    <path d="M165 140 C130 110 90 120 75 160 C65 190 90 220 120 220 C105 205 100 180 115 165 C130 150 155 145 165 140 Z" 
+          fill="url(#hornSpiral)" stroke="#fef08a" stroke-width="2"/>
+    <!-- Spiral Horn Right -->
+    <path d="M235 140 C270 110 310 120 325 160 C335 190 310 220 280 220 C295 205 300 180 285 165 C270 150 245 145 235 140 Z" 
+          fill="url(#hornSpiral)" stroke="#fef08a" stroke-width="2"/>
+
+    <!-- Fluffy Ram Head -->
+    <ellipse cx="200" cy="180" rx="48" ry="55" fill="url(#cloudWool)" stroke="#ffffff" stroke-width="2"/>
+    
+    <!-- Snout & Beard -->
+    <polygon points="180,210 220,210 215,245 185,245" fill="#f1f5f9"/>
+    <ellipse cx="190" cy="225" rx="3" ry="5" fill="#475569"/>
+    <ellipse cx="210" cy="225" rx="3" ry="5" fill="#475569"/>
+
+    <!-- Pointy Fluffy Beard -->
+    <polygon points="190,245 210,245 200,265" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+
+    <!-- Cute Eyes -->
+    <ellipse cx="175" cy="170" rx="7" ry="11" fill="#0f172a"/>
+    <circle cx="174" cy="167" r="3.5" fill="#ffffff"/>
+    <ellipse cx="225" cy="170" rx="7" ry="11" fill="#0f172a"/>
+    <circle cx="224" cy="167" r="3.5" fill="#ffffff"/>
+
+    <!-- Forehead Star Cloud -->
+    <circle cx="200" cy="140" r="14" fill="#ffffff" stroke="#e2e8f0" stroke-width="1.5"/>
+    <polygon points="200,132 203,138 209,140 203,142 200,148 197,142 191,140 197,138" fill="#38bdf8"/>
+  </g>
+
+  <!-- Wing Swirls & Jump Sparkles -->
+  <path d="M70 230 Q90 210 110 230 Q120 240 110 250" stroke="#38bdf8" stroke-width="2" fill="none" stroke-linecap="round"/>
+  <path d="M330 230 Q310 210 290 230 Q280 240 290 250" stroke="#38bdf8" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+  <!-- High Jump Arrow Rune -->
+  <polygon points="200,60 215,80 207,80 207,100 193,100 193,80 185,80" fill="#38bdf8" filter="drop-shadow(0 0 6px #38bdf8)"/>
+</svg>

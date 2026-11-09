@@ -1,0 +1,78 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="capyGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#10b981" stop-opacity="0.55"/>
+      <stop offset="60%" stop-color="#047857" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="capyFur" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#b45309"/>
+      <stop offset="40%" stop-color="#78350f"/>
+      <stop offset="100%" stop-color="#451a03"/>
+    </linearGradient>
+    <linearGradient id="lotusGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbcfe8"/>
+      <stop offset="50%" stop-color="#f472b6"/>
+      <stop offset="100%" stop-color="#db2777"/>
+    </linearGradient>
+    <linearGradient id="auraWater" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6ee7b7"/>
+      <stop offset="100%" stop-color="#0284c7"/>
+    </linearGradient>
+    <filter id="shadowCapy" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="12" flood-color="#10b981" flood-opacity="0.5"/>
+    </filter>
+  </defs>
+
+  <circle cx="200" cy="200" r="185" fill="url(#capyGlow)"/>
+
+  <!-- Zen Water Pool -->
+  <ellipse cx="200" cy="305" rx="140" ry="35" fill="url(#auraWater)" fill-opacity="0.25" stroke="#34d399" stroke-width="2" stroke-dasharray="6 4"/>
+  <ellipse cx="200" cy="305" rx="100" ry="22" fill="#064e3b" fill-opacity="0.4"/>
+
+  <!-- Capybara Body & Head -->
+  <g filter="url(#shadowCapy)">
+    <!-- Body -->
+    <path d="M120 280 C110 240 130 200 170 190 L260 190 C290 200 310 240 300 280 Z" 
+          fill="url(#capyFur)" stroke="#fef08a" stroke-width="2"/>
+    
+    <!-- Paws -->
+    <rect x="135" y="275" width="22" height="15" rx="6" fill="#451a03" stroke="#fef08a" stroke-width="1.5"/>
+    <rect x="245" y="275" width="22" height="15" rx="6" fill="#451a03" stroke="#fef08a" stroke-width="1.5"/>
+
+    <!-- Cute Zen Head -->
+    <rect x="150" y="140" width="100" height="75" rx="30" fill="url(#capyFur)" stroke="#fef08a" stroke-width="2.5"/>
+    <!-- Snout -->
+    <rect x="160" y="175" width="80" height="42" rx="18" fill="#5c2607" stroke="#b45309" stroke-width="1.5"/>
+    
+    <!-- Nostrils -->
+    <ellipse cx="185" cy="192" rx="3.5" ry="5" fill="#1c1917"/>
+    <ellipse cx="215" cy="192" rx="3.5" ry="5" fill="#1c1917"/>
+    <path d="M190 204 Q200 210 210 204" stroke="#1c1917" stroke-width="2" fill="none"/>
+
+    <!-- Peaceful Closed Eyes (Zen Meditation) -->
+    <path d="M165 168 Q175 160 185 168" stroke="#fef08a" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M215 168 Q225 160 235 168" stroke="#fef08a" stroke-width="3" fill="none" stroke-linecap="round"/>
+
+    <!-- Cute Ears -->
+    <ellipse cx="148" cy="145" rx="9" ry="7" fill="#451a03" stroke="#fef08a" stroke-width="1.5"/>
+    <ellipse cx="252" cy="145" rx="9" ry="7" fill="#451a03" stroke="#fef08a" stroke-width="1.5"/>
+
+    <!-- Blooming Celestial Lotus on Head -->
+    <g transform="translate(182, 115)">
+      <!-- Petals -->
+      <path d="M18 20 C5 10 0 0 18 -10 C36 0 31 10 18 20 Z" fill="url(#lotusGrad)" stroke="#fdf2f8" stroke-width="1.5"/>
+      <path d="M8 20 C-5 12 -5 2 8 -3 C18 6 18 14 8 20 Z" fill="url(#lotusGrad)" stroke="#fdf2f8" stroke-width="1.5"/>
+      <path d="M28 20 C41 12 41 2 28 -3 C18 6 18 14 28 20 Z" fill="url(#lotusGrad)" stroke="#fdf2f8" stroke-width="1.5"/>
+      <!-- Glowing Lotus Heart -->
+      <circle cx="18" cy="12" r="5" fill="#fef08a" filter="drop-shadow(0 0 6px #10b981)"/>
+    </g>
+  </g>
+
+  <!-- Floating Zen Orbs & Hearts -->
+  <polygon points="200,65 204,77 216,80 204,83 200,95 196,83 184,80 196,77" fill="#6ee7b7"/>
+  <circle cx="95" cy="200" r="8" fill="#34d399" fill-opacity="0.6"/>
+  <circle cx="305" cy="190" r="7" fill="#34d399" fill-opacity="0.6"/>
+  <path d="M110 240 Q115 230 120 240 Q125 230 130 240 Q120 252 110 240 Z" fill="#ec4899" filter="drop-shadow(0 0 5px #f472b6)"/>
+  <path d="M280 230 Q285 220 290 230 Q295 220 300 230 Q290 242 280 230 Z" fill="#ec4899" filter="drop-shadow(0 0 5px #f472b6)"/>
+</svg>

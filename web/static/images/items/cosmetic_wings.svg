@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="wingsGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#6366f1" stop-opacity="0.6"/>
+      <stop offset="50%" stop-color="#4338ca" stop-opacity="0.2"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="featherGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#e0e7ff"/>
+      <stop offset="30%" stop-color="#818cf8"/>
+      <stop offset="70%" stop-color="#4f46e5"/>
+      <stop offset="100%" stop-color="#312e81"/>
+    </linearGradient>
+    <linearGradient id="featherGrad2" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#a5b4fc"/>
+      <stop offset="50%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#1e1b4b"/>
+    </linearGradient>
+    <filter id="shadowWings" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="10" stdDeviation="14" flood-color="#818cf8" flood-opacity="0.6"/>
+    </filter>
+  </defs>
+
+  <circle cx="200" cy="200" r="180" fill="url(#wingsGlow)"/>
+
+  <g filter="url(#shadowWings)">
+    <!-- Left Wing Upper -->
+    <path d="M190 220 C140 120 70 90 30 110 C45 150 75 190 120 220 C70 210 50 240 60 270 C90 280 140 260 190 230 Z" 
+          fill="url(#featherGrad1)" stroke="#e0e7ff" stroke-width="2"/>
+    <!-- Left Wing Lower Tier -->
+    <path d="M180 235 C140 250 90 270 80 305 C110 315 150 290 185 250 Z" 
+          fill="url(#featherGrad2)" stroke="#c7d2fe" stroke-width="1.5"/>
+
+    <!-- Right Wing Upper -->
+    <path d="M210 220 C260 120 330 90 370 110 C355 150 325 190 280 220 C330 210 350 240 340 270 C310 280 260 260 210 230 Z" 
+          fill="url(#featherGrad1)" stroke="#e0e7ff" stroke-width="2"/>
+    <!-- Right Wing Lower Tier -->
+    <path d="M220 235 C260 250 310 270 320 305 C290 315 250 290 215 250 Z" 
+          fill="url(#featherGrad2)" stroke="#c7d2fe" stroke-width="1.5"/>
+
+    <!-- Center Energy Heart -->
+    <circle cx="200" cy="225" r="18" fill="#1e1b4b" stroke="#e0e7ff" stroke-width="2.5"/>
+    <polygon points="200,212 208,225 200,238 192,225" fill="#e0e7ff" filter="drop-shadow(0 0 6px #818cf8)"/>
+  </g>
+
+  <!-- Constellation Stars -->
+  <polygon points="200,70 203,82 215,85 203,88 200,100 197,88 185,85 197,82" fill="#ffffff"/>
+  <polygon points="50,75 52,83 60,85 52,87 50,95 48,87 40,85 48,83" fill="#a5b4fc"/>
+  <polygon points="350,75 352,83 360,85 352,87 350,95 348,87 340,85 348,83" fill="#a5b4fc"/>
+</svg>

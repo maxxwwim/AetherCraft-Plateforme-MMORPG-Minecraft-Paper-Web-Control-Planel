@@ -1,0 +1,82 @@
+name: AetherVisuals
+version: 2.2.0
+main: io.aethercraft.visuals.AetherVisualsPlugin
+api-version: '1.21'
+author: AetherCraft Team
+softdepend: [MapEngine, MapBrowser]
+description: Moteur d'effets visuels 3D, cosmétiques animés, caisses célestes et Smartphone WebDisplay privé par joueur (MapEngine + MapBrowser).
+commands:
+  cosmetics:
+    description: Contrôle des ailes quantiques et du familier dragon.
+  pet:
+    description: Invocation des 5 familiers célestes (dragon, capybara, fox, goat, phoenix).
+  aura:
+    description: Contrôle des auras particulaires de rang VIP, Aether, Titan.
+  booster:
+    description: Gestion des boosters de minage x2.
+    permission: aether.admin
+  crate:
+    description: Gestion et animation d'ouverture des caisses célestes.
+    permission: aether.admin
+  aethertest:
+    description: Attribue tous les items et active tous les cosmétiques.
+    permission: aether.admin
+  store:
+    description: Distribution et attribution d'objets boutique réels in-game.
+  buildspawn:
+    description: Régénère et bâtit le Spawn Céleste de l'Agora à Y=120.
+    permission: aether.admin
+  quest:
+    description: Consultation et progression des Quêtes Célestes.
+    aliases: [quests, quetes]
+  dungeon:
+    description: Expéditions et donjons instanciés de l'Archipel.
+    aliases: [dungeons, donjon]
+  achievement:
+    description: Consultation des succès et trophées royaux.
+    aliases: [achievements, succes]
+  quiz:
+    description: Module de Quiz Trivia interactif avec récompenses en jetons.
+    aliases: [trivia, aetherquiz]
+  webdisplay:
+    description: Déploie un véritable écran UHD 16:9 interactif face à vous lié à la Boutique et l'HDV.
+    aliases: [ecran, screen, webshop]
+  phone:
+    description: Ouvre votre Smartphone iPhone 2026 AetherOS sur votre HUD.
+    aliases: [tel, smartphone, iphone, aetherphone]
+  menu:
+    description: Ouvre l'interface centrale Voxel Primordiale AetherCraft.
+    aliases: [aether, profil, hub]
+  marche:
+    description: Ouvre l'Hôtel des Ventes ou la Bourse des Minerais de l'Agora.
+    aliases: [ah, market, bourse]
+  shop:
+    description: Ouvre l'interface de la Boutique Céleste officielle in-game.
+    aliases: [boutique, magasin]
+  spawn:
+    description: Téléportation instantanée à l'Agora Céleste du Spawn (Y=120).
+    aliases: [agora]
+  survie:
+    description: Téléportation vers votre position de survie ou l'esplanade du portail.
+    aliases: [survival, regensurvie]
+  back:
+    description: Retourne à votre dernier emplacement de survie ou lieu de mort.
+    aliases: [retour]
+  rtp:
+    description: Téléportation aléatoire sur de la terre ferme naturelle.
+    aliases: [wild, aleatoire]
+  spawnmode:
+    description: Change le mode d'ambiance vivante du Spawn Céleste (sanctuary, festival, cyber, aurora, training).
+    aliases: [ambiance, modespawn]
+  banque:
+    description: Ouvre votre Banque Privée (Coffre-fort personnel 36 slots & Livret d'Épargne Coins).
+    aliases: [bank, vault]
+  top:
+    description: Affiche les classements officiels des meilleurs joueurs (fortune, temps de jeu, kills).
+    aliases: [baltop, classement, classements, leaderboards]
+  oneblock:
+    description: Rejoint ou génère votre île OneBlock personnelle infinie.
+    aliases: [ob, island, ile]
+permissions:
+  aether.admin:
+    default: op

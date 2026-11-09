@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aether Minecraft — Orchestrateur & Créateur de Serveurs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/htmx.org@1.9.10"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            aether: {
+              50: '#f0f9ff',
+              500: '#0284c7',
+              600: '#0369a1',
+              700: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased flex flex-col">
+
+  <!-- Header -->
+  <header class="border-b border-slate-800 bg-slate-900/60 backdrop-blur sticky top-0 z-50">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center space-x-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center shadow-lg shadow-sky-500/20 font-bold text-xl text-white">
+          🪐
+        </div>
+        <div>
+          <h1 class="text-lg font-bold tracking-tight bg-gradient-to-r from-sky-400 to-indigo-300 bg-clip-text text-transparent">
+            Aether Minecraft Cockpit
+          </h1>
+          <p class="text-xs text-slate-400">Orchestrateur Python Flask & Runner Natif Rust (Tokio)</p>
+        </div>
+      </div>
+      <div class="flex items-center space-x-2">
+        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-950 text-emerald-400 border border-emerald-800">
+          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 mr-1.5 animate-pulse"></span>
+          Control-Plane En Ligne
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="flex-1 max-w-6xl mx-auto w-full px-6 py-8 grid grid-cols-1 lg:grid-cols-12 gap-8">
+    
+    <!-- Left: Server Generator Form -->
+    <div class="lg:col-span-7 bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl relative overflow-hidden">
+      <div class="absolute -top-24 -right-24 w-48 h-48 bg-sky-500/10 rounded-full blur-3xl pointer-events-none"></div>
+
+      <div class="mb-6">
+        <h2 class="text-xl font-bold text-white flex items-center gap-2">
+          <span>⚡</span> Nouveau Serveur Minecraft
+        </h2>
+        <p class="text-sm text-slate-400 mt-1">Configurez les paramètres. Le manifest sera automatiquement généré et prêt pour le runner Rust.</p>
+      </div>
+
+      <form hx-post="/api/v1/servers/generate" hx-target="#result-container" hx-indicator="#loading" class="space-y-5">
+        
+        <div>
+          <label class="block text-sm font-semibold text-slate-300 mb-1.5">Nom de l'Instance</label>
+          <input type="text" name="name" value="AetherCraft Survie" required
+                 class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500 transition">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1.5">Moteur de Jeu</label>
+            <select name="core_type" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-sky-500">
+              <option value="paper">PaperMC (Recommandé - Très stable)</option>
+              <option value="purpur">Purpur (Performance Extrême)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1.5">Version Minecraft</label>
+            <select name="mc_version" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white focus:outline-none focus:border-sky-500">
+              <option value="1.21.1">1.21.1 (Actuelle)</option>
+              <option value="1.20.4">1.20.4 (LTS)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- RAM Slider with Aikar preview -->
+        <div>
+          <div class="flex justify-between items-center mb-1.5">
+            <label class="text-sm font-semibold text-slate-300">Mémoire RAM Dédiée</label>
+            <span id="ram-display" class="text-sm font-mono font-bold text-sky-400 bg-sky-950/60 px-2 py-0.5 rounded border border-sky-800">4 Go</span>
+          </div>
+          <input type="range" name="ram_gb" min="2" max="16" value="4" step="1"
+                 oninput="document.getElementById('ram-display').textContent = this.value + ' Go'"
+                 class="w-full h-2 bg-slate-700 rounded-lg appearance-none cursor-pointer accent-sky-500">
+          <p class="text-xs text-slate-500 mt-1">💡 Les arguments Aikar G1GC sont auto-optimisés selon la RAM allouée.</p>
+        </div>
+
+        <!-- Port & Difficulty -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1.5">Port Serveur</label>
+            <input type="number" name="port" value="25565" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white">
+          </div>
+          <div>
+            <label class="block text-sm font-semibold text-slate-300 mb-1.5">Difficulté</label>
+            <select name="difficulty" class="w-full bg-slate-800/80 border border-slate-700 rounded-xl px-4 py-2.5 text-white">
+              <option value="hard">Difficile (Hard)</option>
+              <option value="normal" selected>Normal</option>
+              <option value="easy">Facile (Easy)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Plugins Pack -->
+        <div>
+          <label class="block text-sm font-semibold text-slate-300 mb-2">Pack d'Optimisations Pré-installé</label>
+          <div class="space-y-2">
+            <label class="flex items-center space-x-3 p-2.5 rounded-lg bg-slate-800/40 border border-slate-700/60 hover:bg-slate-800 cursor-pointer">
+              <input type="checkbox" name="plugins" value="chunky" checked class="w-4 h-4 text-sky-600 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+              <div class="text-xs">
+                <span class="font-bold text-slate-200 block">Chunky</span>
+                <span class="text-slate-400">Pré-génération rapide des chunks pour éviter tout lag d'exploration.</span>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-2.5 rounded-lg bg-slate-800/40 border border-slate-700/60 hover:bg-slate-800 cursor-pointer">
+              <input type="checkbox" name="plugins" value="spark" checked class="w-4 h-4 text-sky-600 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+              <div class="text-xs">
+                <span class="font-bold text-slate-200 block">Spark</span>
+                <span class="text-slate-400">Profiler haute précision de CPU et mémoire en temps réel.</span>
+              </div>
+            </label>
+            <label class="flex items-center space-x-3 p-2.5 rounded-lg bg-slate-800/40 border border-slate-700/60 hover:bg-slate-800 cursor-pointer">
+              <input type="checkbox" name="plugins" value="luckperms" class="w-4 h-4 text-sky-600 rounded bg-slate-700 border-slate-600 focus:ring-sky-500">
+              <div class="text-xs">
+                <span class="font-bold text-slate-200 block">LuckPerms</span>
+                <span class="text-slate-400">Gestion moderne des permissions et des grades de joueurs.</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-gradient-to-r from-sky-600 to-indigo-600 hover:from-sky-500 hover:to-indigo-500 text-white font-bold py-3.5 px-6 rounded-xl shadow-lg shadow-sky-600/20 transition flex items-center justify-center space-x-2">
+          <span>🚀 Générer le Manifest d'Installation</span>
+        </button>
+
+        <div id="loading" class="htmx-indicator flex items-center justify-center text-sm text-sky-400 gap-2 py-2">
+          <svg class="animate-spin h-5 w-5 text-sky-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>Calcul des dépendances et du build optimal...</span>
+        </div>
+      </form>
+    </div>
+
+    <!-- Right: Output & Launch Instruction -->
+    <div class="lg:col-span-5 flex flex-col space-y-6">
+      
+      <!-- Live Result Card -->
+      <div id="result-container" class="bg-slate-900/80 border border-slate-800 rounded-2xl p-6 shadow-xl flex-1 flex flex-col justify-center items-center text-center">
+        <div class="w-16 h-16 rounded-2xl bg-slate-800/80 border border-slate-700 flex items-center justify-center text-3xl mb-4 text-slate-500">
+          📦
+        </div>
+        <h3 class="text-base font-semibold text-slate-300">Aucun Manifest actif</h3>
+        <p class="text-xs text-slate-500 max-w-xs mt-1">
+          Complétez le formulaire à gauche pour générer l'instance et obtenir la commande de lancement Rust.
+        </p>
+      </div>
+
+      <!-- Quick Architecture Info -->
+      <div class="bg-slate-900/40 border border-slate-800/60 rounded-xl p-4 text-xs text-slate-400 space-y-2">
+        <div class="flex items-center text-slate-300 font-semibold gap-1.5">
+          <span>🦀</span> Runner Rust Asynchrone Tokio
+        </div>
+        <p>Le runner gère le téléchargement des chunks en mémoire, valide l'intégrité SHA-256 à la volée, configure <code>eula.txt</code> et lance la JVM avec isolation.</p>
+      </div>
+
+    </div>
+
+  </main>
+
+</body>
+</html>

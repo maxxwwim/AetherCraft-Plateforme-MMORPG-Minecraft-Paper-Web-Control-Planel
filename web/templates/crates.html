@@ -1,0 +1,713 @@
+{% extends "base.html" %}
+
+{% block title %}Caisses Mystiques & Déballage - AetherCraft{% endblock %}
+
+{% block content %}
+<div class="space-y-10 max-w-7xl mx-auto pb-16">
+
+  <!-- ========================================== -->
+  <!-- 1. EN-TÊTE DE LA ZONE DES CAISSES          -->
+  <!-- ========================================== -->
+  <div class="relative overflow-hidden rounded-3xl p-8 sm:p-12 border border-purple-500/30 shadow-2xl bg-gradient-to-br from-obsidian-950/95 via-purple-950/40 to-obsidian-900/95 backdrop-blur-xl">
+    <div class="absolute -right-16 -top-16 w-80 h-80 bg-purple-600/20 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="absolute -left-16 -bottom-16 w-80 h-80 bg-amber-500/15 rounded-full blur-3xl pointer-events-none"></div>
+    
+    <div class="relative z-10 flex flex-col lg:flex-row items-center justify-between gap-8">
+      <div class="space-y-4 max-w-2xl text-center lg:text-left">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 text-xs font-gaming font-bold tracking-wider uppercase">
+          <span class="animate-pulse">✨</span> Moteur RNG Certifié & Butins Instanciés
+        </div>
+        <h1 class="text-3xl sm:text-5xl font-black font-gaming tracking-tight text-white drop-shadow">
+          CAISSES <span class="bg-gradient-to-r from-amber-400 via-purple-300 to-indigo-400 bg-clip-text text-transparent">MYTHIQUES</span>
+        </h1>
+        <p class="text-sm sm:text-base text-slate-300 font-sans leading-relaxed">
+          Déverrouillez les coffres scellés de l'Archipel Céleste avec vos <strong class="text-purple-300">Clés Célestes</strong> et <strong class="text-amber-400">Clés Oméga</strong>. 
+          Chaque ouverture déclenche une roulette cinématique et livre directement vos récompenses en jeu sur le serveur Minecraft Paper 1.21.1 !
+        </p>
+      </div>
+
+      <!-- Clés du Joueur -->
+      <div class="w-full lg:w-auto flex flex-col sm:flex-row items-center gap-4 bg-obsidian-900/80 p-5 rounded-2xl border border-white/10 shadow-inner">
+        {% if current_user %}
+          <!-- Clés Célestes -->
+          <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-purple-950/60 border border-purple-500/30 w-full sm:w-auto">
+            <img src="/static/images/items/crate_chest_celestial.png" alt="Clé Céleste" class="w-10 h-10 object-contain drop-shadow">
+            <div>
+              <div class="text-[10px] uppercase font-gaming font-bold text-purple-300 tracking-wider">Clés Célestes</div>
+              <div class="text-xl font-black font-gaming text-white" id="user-celestial-keys">{{ user_keys.get('celestial', 0) }}</div>
+            </div>
+          </div>
+          <!-- Clés Oméga -->
+          <div class="flex items-center gap-3 px-4 py-2.5 rounded-xl bg-amber-950/60 border border-amber-500/30 w-full sm:w-auto">
+            <img src="/static/images/items/crate_chest_omega.png" alt="Clé Oméga" class="w-10 h-10 object-contain drop-shadow">
+            <div>
+              <div class="text-[10px] uppercase font-gaming font-bold text-amber-300 tracking-wider">Clés Oméga</div>
+              <div class="text-xl font-black font-gaming text-amber-400" id="user-omega-keys">{{ user_keys.get('omega', 0) }}</div>
+            </div>
+          </div>
+        {% else %}
+          <div class="text-center px-4 py-2">
+            <p class="text-xs text-slate-300 mb-2">Connectez-vous pour voir votre inventaire de clés</p>
+            <a href="/connexion" class="inline-block px-4 py-2 rounded-xl bg-amber-500 text-obsidian-950 font-gaming font-bold text-xs hover:bg-amber-400 transition shadow">
+              Se Connecter
+            </a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 2. PRÉSENTOIR DES DEUX CAISSES 3D          -->
+  <!-- ========================================== -->
+  <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+    
+    <!-- CARTE CAISSE CÉLESTE -->
+    <div class="relative group rounded-3xl p-7 border border-purple-500/30 bg-obsidian-950/80 backdrop-blur-md shadow-xl hover:border-purple-400/60 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+      <div class="absolute -right-20 -top-20 w-56 h-56 bg-purple-600/15 rounded-full blur-2xl group-hover:bg-purple-600/25 transition"></div>
+
+      <div>
+        <!-- Badge Type & Tier -->
+        <div class="flex items-center justify-between gap-2 mb-6">
+          <span class="px-3 py-1 rounded-full bg-purple-500/20 border border-purple-500/40 text-purple-300 font-gaming font-bold text-xs uppercase tracking-wider">
+            Tier Céleste
+          </span>
+          <span class="text-xs font-mono text-slate-400 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span> Prêt à l'ouverture
+          </span>
+        </div>
+
+        <!-- Visuel Coffre 3D Flottant -->
+        <div class="relative py-6 flex items-center justify-center">
+          <div class="absolute inset-0 bg-purple-500/10 rounded-full blur-2xl transform scale-75 group-hover:scale-90 transition"></div>
+          <img src="/static/images/items/crate_chest_celestial.png" alt="Caisse Céleste" class="w-48 h-48 object-contain z-10 transition duration-500 transform group-hover:scale-105 group-hover:-translate-y-2 drop-shadow-[0_15px_25px_rgba(168,85,247,0.35)]">
+        </div>
+
+        <!-- Titre & Lore -->
+        <div class="text-center space-y-2 mb-6">
+          <h2 class="text-2xl font-black font-gaming text-white">CAISSE CÉLESTE</h2>
+          <p class="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
+            Coffre forgé dans les nuées de l'Archipel. Contient des monnaies éthérées, des matériaux d'artisanat précieux et le grade VIP Céleste.
+          </p>
+        </div>
+
+        <!-- Tables de Rareté -->
+        <div class="space-y-2 mb-6 bg-obsidian-900/60 p-4 rounded-2xl border border-white/5">
+          <div class="text-[11px] font-gaming font-bold text-slate-400 uppercase tracking-wider mb-2 flex justify-between">
+            <span>Probabilités de Rareté</span>
+            <span class="text-purple-400">RNG Fixe 100%</span>
+          </div>
+          <div class="grid grid-cols-5 gap-1.5 text-center text-[10px] font-gaming">
+            <div class="p-1.5 rounded-lg bg-slate-800/60 border border-slate-700/50 text-slate-300">
+              <div class="opacity-70">Commun</div>
+              <div class="font-bold text-white">55%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-blue-950/60 border border-blue-500/30 text-blue-300">
+              <div class="opacity-70">Rare</div>
+              <div class="font-bold text-blue-200">28%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-purple-950/60 border border-purple-500/30 text-purple-300">
+              <div class="opacity-70">Épique</div>
+              <div class="font-bold text-purple-200">12%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-amber-950/60 border border-amber-500/30 text-amber-300">
+              <div class="opacity-70">Légende</div>
+              <div class="font-bold text-amber-200">4.2%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-rose-950/60 border border-rose-500/30 text-rose-300">
+              <div class="opacity-70">Mythique</div>
+              <div class="font-bold text-rose-200">0.8%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Bouton -->
+      <div>
+        {% if current_user %}
+          <button onclick="triggerOpenCrate('celestial')" 
+                  class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-purple-600 via-indigo-600 to-purple-700 hover:from-purple-500 hover:to-indigo-500 text-white font-gaming font-black text-sm tracking-wide shadow-lg shadow-purple-600/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+            <span>✨</span> OUVRIR LA CAISSE CÉLESTE
+          </button>
+        {% else %}
+          <a href="/connexion" class="w-full py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/20 text-slate-200 font-gaming font-bold text-sm text-center block transition">
+            Connexion Requise pour Ouvrir
+          </a>
+        {% endif %}
+      </div>
+    </div>
+
+    <!-- CARTE CAISSE OMÉGA (SUPRÊME) -->
+    <div class="relative group rounded-3xl p-7 border border-amber-500/40 bg-obsidian-950/80 backdrop-blur-md shadow-2xl hover:border-amber-400/70 transition-all duration-300 flex flex-col justify-between overflow-hidden">
+      <div class="absolute -right-20 -top-20 w-56 h-56 bg-amber-500/20 rounded-full blur-2xl group-hover:bg-amber-500/30 transition"></div>
+      
+      <!-- Ruban Jackpot Nano Banana -->
+      <div class="absolute top-4 right-4 z-20">
+        <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-gradient-to-r from-amber-500 to-rose-500 text-obsidian-950 font-gaming font-black text-[10px] uppercase tracking-wider shadow-lg animate-pulse">
+          🍌 JACKPOT NANO BANANE
+        </span>
+      </div>
+
+      <div>
+        <!-- Badge Type & Tier -->
+        <div class="flex items-center justify-between gap-2 mb-6">
+          <span class="px-3 py-1 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-gaming font-bold text-xs uppercase tracking-wider">
+            Tier Oméga Suprême
+          </span>
+          <span class="text-xs font-mono text-amber-400 flex items-center gap-1">
+            <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span> 0% Déchet (Rare+)
+          </span>
+        </div>
+
+        <!-- Visuel Coffre 3D Flottant -->
+        <div class="relative py-6 flex items-center justify-center">
+          <div class="absolute inset-0 bg-amber-500/15 rounded-full blur-2xl transform scale-75 group-hover:scale-90 transition"></div>
+          <img src="/static/images/items/crate_chest_omega.png" alt="Caisse Oméga" class="w-48 h-48 object-contain z-10 transition duration-500 transform group-hover:scale-105 group-hover:-translate-y-2 drop-shadow-[0_15px_30px_rgba(245,158,11,0.4)]">
+        </div>
+
+        <!-- Titre & Lore -->
+        <div class="text-center space-y-2 mb-6">
+          <h2 class="text-2xl font-black font-gaming text-amber-400">CAISSE OMÉGA</h2>
+          <p class="text-xs text-slate-300 leading-relaxed max-w-sm mx-auto">
+            La caisse suprême des souverains de l'Aether. Aucun drop commun. Chance d'obtenir le grade Légende et l'artefact mythique ultime : <strong class="text-amber-300">Nano Banane Quantique</strong>.
+          </p>
+        </div>
+
+        <!-- Tables de Rareté -->
+        <div class="space-y-2 mb-6 bg-obsidian-900/60 p-4 rounded-2xl border border-amber-500/20">
+          <div class="text-[11px] font-gaming font-bold text-amber-300/80 uppercase tracking-wider mb-2 flex justify-between">
+            <span>Probabilités Supérieures</span>
+            <span class="text-amber-400">Poids Garanti 1000/1000</span>
+          </div>
+          <div class="grid grid-cols-4 gap-2 text-center text-[10px] font-gaming">
+            <div class="p-1.5 rounded-lg bg-blue-950/60 border border-blue-500/30 text-blue-300">
+              <div class="opacity-70">Rare</div>
+              <div class="font-bold text-blue-200">50%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-purple-950/60 border border-purple-500/30 text-purple-300">
+              <div class="opacity-70">Épique</div>
+              <div class="font-bold text-purple-200">32%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-amber-950/60 border border-amber-500/30 text-amber-300">
+              <div class="opacity-70">Légendaire</div>
+              <div class="font-bold text-amber-200">15%</div>
+            </div>
+            <div class="p-1.5 rounded-lg bg-gradient-to-r from-rose-950 to-amber-950 border border-rose-500/50 text-rose-300">
+              <div class="opacity-70">Mythique</div>
+              <div class="font-bold text-rose-200">3.0%</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Action Bouton -->
+      <div>
+        {% if current_user %}
+          <button onclick="triggerOpenCrate('omega')" 
+                  class="w-full py-3.5 px-6 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-600 to-rose-600 hover:from-amber-400 hover:to-rose-500 text-obsidian-950 font-gaming font-black text-sm tracking-wide shadow-lg shadow-amber-500/30 transition transform active:scale-95 flex items-center justify-center gap-2">
+            <span>🔥</span> OUVRIR LA CAISSE OMÉGA
+          </button>
+        {% else %}
+          <a href="/connexion" class="w-full py-3.5 px-6 rounded-2xl bg-white/10 hover:bg-white/20 text-slate-200 font-gaming font-bold text-sm text-center block transition">
+            Connexion Requise pour Ouvrir
+          </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================== -->
+  <!-- 3. FLUX DES DERNIERS DÉBALLAGES MONDIAUX  -->
+  <!-- ========================================== -->
+  <div class="rounded-3xl p-6 border border-white/10 bg-obsidian-950/70 backdrop-blur-md shadow-xl space-y-4">
+    <div class="flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🌍</span>
+        <h3 class="text-lg font-gaming font-black text-white">DERNIERS TIRAGES DE L'ARCHIPEL</h3>
+      </div>
+      <span class="text-xs text-slate-400 font-mono">Actualisation en temps réel</span>
+    </div>
+
+    <div id="recent-openings-stream" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
+      {% for opening in recent_openings %}
+        <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition">
+          <div class="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+            {% if opening.image_url %}
+              <img src="{{ opening.image_url }}" alt="{{ opening.item_name }}" class="w-10 h-10 object-contain">
+            {% else %}
+              <span class="text-2xl">{{ opening.icon }}</span>
+            {% endif %}
+          </div>
+          <div class="min-w-0 flex-1">
+            <div class="text-[11px] font-bold text-slate-400 truncate">{{ opening.username }}</div>
+            <div class="text-xs font-gaming font-bold text-white truncate">{{ opening.item_name }}</div>
+            <div class="text-[10px] font-gaming font-bold 
+              {% if opening.rarity == 'MYTHIQUE' %}text-rose-400 animate-pulse
+              {% elif opening.rarity == 'LÉGENDAIRE' %}text-amber-400
+              {% elif opening.rarity == 'ÉPIQUE' %}text-purple-400
+              {% elif opening.rarity == 'RARE' %}text-blue-400
+              {% else %}text-slate-400{% endif %}">
+              {{ opening.rarity }}
+            </div>
+          </div>
+        </div>
+      {% else %}
+        <div class="col-span-4 text-center py-6 text-slate-400 text-xs font-mono">
+          Aucun déballage enregistré pour le moment. Soyez le premier à déverrouiller un coffre !
+        </div>
+      {% endfor %}
+    </div>
+  </div>
+
+</div>
+
+<!-- ============================================================== -->
+<!-- 4. MODAL THÉÂTRE D'ANIMATION (ROULETTE & DOS DE CARTE 3D)      -->
+<!-- ============================================================== -->
+<div id="unboxing-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-obsidian-950/90 backdrop-blur-2xl hidden opacity-0 transition-opacity duration-300">
+  
+  <div class="relative w-full max-w-4xl bg-obsidian-900 border border-purple-500/40 rounded-3xl p-6 sm:p-10 shadow-2xl flex flex-col items-center justify-center overflow-hidden text-center">
+    
+    <!-- Halos de fond -->
+    <div id="modal-ambient-glow" class="absolute inset-0 bg-purple-600/10 pointer-events-none transition-colors duration-700"></div>
+
+    <!-- PHASE 1: PRÉSENTATION DU DOS DE CARTE MYSTIQUE (BACK OPENING) -->
+    <div id="phase-card-back" class="flex flex-col items-center justify-center py-8 space-y-6">
+      <div class="text-xs font-gaming font-bold uppercase tracking-widest text-purple-300" id="back-opening-title">
+        Invocation Mystique en cours...
+      </div>
+
+      <div class="relative perspective-1000 group">
+        <div id="card-back-container" class="w-56 h-80 rounded-2xl p-2 bg-gradient-to-br from-purple-500/20 to-amber-500/20 border border-white/20 shadow-2xl flex items-center justify-center transform transition duration-700 animate-pulse">
+          <img id="card-back-img" src="/static/images/items/crate_card_back_celestial.png" alt="Dos de Carte" class="w-full h-full object-contain rounded-xl drop-shadow-[0_10px_20px_rgba(0,0,0,0.8)]">
+        </div>
+      </div>
+
+      <p class="text-xs text-slate-400 font-mono" id="back-opening-subtitle">Déverrouillage des sceaux dimensionnels...</p>
+    </div>
+
+    <!-- PHASE 2: LA ROULETTE CS:GO / MINECRAFT -->
+    <div id="phase-roulette" class="w-full py-4 space-y-6 hidden">
+      <div class="flex items-center justify-between text-xs font-gaming font-bold text-slate-300 px-4">
+        <span id="roulette-crate-label">CAISSE EN DÉFILEMENT</span>
+        <span class="text-amber-400 flex items-center gap-1">⚡ TIRAGE EN COURS...</span>
+      </div>
+
+      <!-- Fenêtre Roulette & Aiguille Centrale -->
+      <div class="relative w-full overflow-hidden rounded-2xl border-2 border-amber-500/40 bg-black/80 py-4 shadow-inner">
+        <!-- Aiguille centrale haut et bas -->
+        <div class="absolute left-1/2 -top-1 transform -translate-x-1/2 z-30 pointer-events-none">
+          <div class="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-t-[14px] border-t-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,1)]"></div>
+        </div>
+        <div class="absolute left-1/2 -bottom-1 transform -translate-x-1/2 z-30 pointer-events-none">
+          <div class="w-0 h-0 border-l-[10px] border-l-transparent border-r-[10px] border-r-transparent border-b-[14px] border-b-amber-400 drop-shadow-[0_0_8px_rgba(251,191,36,1)]"></div>
+        </div>
+        <!-- Ligne centrale d'alignement -->
+        <div class="absolute left-1/2 top-0 bottom-0 w-0.5 bg-amber-400/80 z-20 pointer-events-none shadow-[0_0_10px_rgba(251,191,36,0.8)]"></div>
+
+        <!-- Piste défilante (Roulette Track) -->
+        <div id="roulette-track" class="flex items-center gap-3 px-4 will-change-transform" style="transform: translateX(0px);">
+          <!-- Généré dynamiquement en JS (30 items) -->
+        </div>
+      </div>
+    </div>
+
+    <!-- PHASE 3: RÉVÉLATION FINALE DU LOT GAGNÉ -->
+    <div id="phase-reveal" class="w-full py-4 space-y-6 hidden">
+      <div class="inline-block px-4 py-1.5 rounded-full bg-amber-500/20 border border-amber-500/40 text-amber-300 font-gaming font-black text-xs uppercase tracking-widest animate-bounce">
+        🎉 FÉLICITATIONS ! BUTIN DÉBLOQUÉ
+      </div>
+
+      <div class="relative flex flex-col items-center justify-center">
+        <!-- Halo lumineux dynamique -->
+        <div id="reveal-halo" class="absolute w-64 h-64 rounded-full blur-3xl pointer-events-none bg-amber-500/30"></div>
+
+        <!-- Cadre Item Minecraft 3D -->
+        <div id="reveal-card" class="relative z-10 w-44 h-44 rounded-3xl p-4 bg-obsidian-950/90 border-2 border-amber-400 shadow-[0_0_35px_rgba(251,191,36,0.4)] flex items-center justify-center transform transition duration-500 scale-100">
+          <img id="reveal-img" src="/static/images/items/item_nano_banana.png" alt="Récompense" class="w-32 h-32 object-contain drop-shadow-[0_10px_15px_rgba(0,0,0,0.8)]">
+        </div>
+      </div>
+
+      <div class="space-y-2">
+        <div id="reveal-rarity-badge" class="inline-block text-xs font-gaming font-black px-3 py-1 rounded-full uppercase tracking-wider">
+          MYTHIQUE
+        </div>
+        <h3 id="reveal-name" class="text-2xl sm:text-3xl font-black font-gaming text-white">
+          Banane Quantique d'Or
+        </h3>
+        <p id="reveal-desc" class="text-xs text-slate-300 font-sans max-w-md mx-auto">
+          Objet ajouté instantanément à votre inventaire in-game sur Paper 1.21.1 !
+        </p>
+      </div>
+
+      <div class="pt-4 flex flex-col sm:flex-row items-center justify-center gap-4">
+        <button id="btn-reopen" onclick="reopenCurrentCrate()" 
+                class="w-full sm:w-auto px-6 py-3 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-gaming font-bold text-xs shadow-lg transition">
+          ⚡ OUVRIR À NOUVEAU
+        </button>
+        <button onclick="closeUnboxingModal()" 
+                class="w-full sm:w-auto px-6 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-obsidian-950 font-gaming font-black text-xs shadow-lg transition">
+          RÉCUPÉRER & FERMER
+        </button>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- Canvas Confettis pour Loots Légendaires / Mythiques -->
+<canvas id="confetti-canvas" class="fixed inset-0 pointer-events-none z-[60] hidden"></canvas>
+
+<!-- Styles Dédiés pour les animations 3D et roulette -->
+<style>
+.perspective-1000 {
+  perspective: 1000px;
+}
+.roulette-card {
+  width: 140px;
+  height: 180px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  transition: transform 0.2s;
+}
+.roulette-card.tier-mythique {
+  border-color: #f43f5e;
+  background: radial-gradient(circle, rgba(244, 63, 94, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
+  box-shadow: 0 0 15px rgba(244, 63, 94, 0.3);
+}
+.roulette-card.tier-legendaire {
+  border-color: #f59e0b;
+  background: radial-gradient(circle, rgba(245, 158, 11, 0.25) 0%, rgba(15, 23, 42, 0.95) 100%);
+  box-shadow: 0 0 15px rgba(245, 158, 11, 0.3);
+}
+.roulette-card.tier-epique {
+  border-color: #a855f7;
+  background: radial-gradient(circle, rgba(168, 85, 247, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+}
+.roulette-card.tier-rare {
+  border-color: #3b82f6;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.2) 0%, rgba(15, 23, 42, 0.95) 100%);
+}
+.roulette-card.tier-commun {
+  border-color: #64748b;
+  background: rgba(30, 41, 59, 0.8);
+}
+</style>
+
+<!-- Script Contrôleur d'Animation et Audio -->
+<script>
+let currentActiveCrateType = 'celestial';
+let isUnboxingActive = false;
+let audioClickInterval = null;
+
+function triggerOpenCrate(crateType) {
+  if (isUnboxingActive) return;
+  currentActiveCrateType = crateType;
+  
+  AudioSys.playClick();
+  
+  const modal = document.getElementById('unboxing-modal');
+  const phaseBack = document.getElementById('phase-card-back');
+  const phaseRoulette = document.getElementById('phase-roulette');
+  const phaseReveal = document.getElementById('phase-reveal');
+  const cardBackImg = document.getElementById('card-back-img');
+  const ambientGlow = document.getElementById('modal-ambient-glow');
+
+  // Ajustement visuel selon le type
+  if (crateType === 'omega') {
+    cardBackImg.src = '/static/images/items/crate_card_back_omega.png';
+    ambientGlow.className = 'absolute inset-0 bg-amber-500/15 pointer-events-none transition-colors duration-700';
+    document.getElementById('roulette-crate-label').innerText = 'CAISSE OMÉGA SUPRÊME';
+  } else {
+    cardBackImg.src = '/static/images/items/crate_card_back_celestial.png';
+    ambientGlow.className = 'absolute inset-0 bg-purple-600/15 pointer-events-none transition-colors duration-700';
+    document.getElementById('roulette-crate-label').innerText = 'CAISSE CÉLESTE';
+  }
+
+  // Affichage du modal (Phase 1: Card Back)
+  phaseBack.classList.remove('hidden');
+  phaseRoulette.classList.add('hidden');
+  phaseReveal.classList.add('hidden');
+  modal.classList.remove('hidden');
+  setTimeout(() => modal.classList.remove('opacity-0'), 10);
+
+  isUnboxingActive = true;
+
+  // Appel API Backend pour le tirage RNG
+  fetch('/api/crates/open', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ crate_type: crateType })
+  })
+  .then(res => res.json())
+  .then(data => {
+    if (!data.success) {
+      alert(data.error || 'Erreur lors de l\'ouverture de la caisse');
+      closeUnboxingModal();
+      return;
+    }
+
+    // Mise à jour instantanée du solde de clés dans la vue
+    updateKeyCounters(crateType, data.remaining_keys);
+
+    // Début de l'animation de déballage après 1.2s de suspens sur le dos de carte
+    setTimeout(() => {
+      startRoulettePhase(data);
+    }, 1200);
+  })
+  .catch(err => {
+    console.error('Erreur API crate:', err);
+    alert('Erreur de connexion au serveur');
+    closeUnboxingModal();
+  });
+}
+
+function updateKeyCounters(crateType, remaining) {
+  if (crateType === 'celestial') {
+    const el = document.getElementById('user-celestial-keys');
+    if (el) el.innerText = remaining;
+  } else {
+    const el = document.getElementById('user-omega-keys');
+    if (el) el.innerText = remaining;
+  }
+}
+
+function startRoulettePhase(crateData) {
+  const phaseBack = document.getElementById('phase-card-back');
+  const phaseRoulette = document.getElementById('phase-roulette');
+  const track = document.getElementById('roulette-track');
+
+  phaseBack.classList.add('hidden');
+  phaseRoulette.classList.remove('hidden');
+
+  // Vider et remplir la piste de roulette
+  track.innerHTML = '';
+  track.style.transition = 'none';
+  track.style.transform = 'translateX(0px)';
+
+  const cardWidth = 140;
+  const cardGap = 12; // gap-3 = 12px
+  const fullCardSize = cardWidth + cardGap;
+
+  crateData.roulette_items.forEach((item, index) => {
+    const card = document.createElement('div');
+    const rarityClass = 'tier-' + (item.rarity || 'commun').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+    card.className = `roulette-card ${rarityClass}`;
+    
+    const imgHtml = item.image_url 
+      ? `<img src="${item.image_url}" class="w-16 h-16 object-contain drop-shadow my-auto">`
+      : `<span class="text-4xl my-auto">${item.icon || '🎁'}</span>`;
+
+    card.innerHTML = `
+      <div class="text-[9px] font-gaming font-black uppercase text-slate-300 tracking-wider">${item.rarity}</div>
+      ${imgHtml}
+      <div class="text-[10px] font-gaming font-bold text-center text-white line-clamp-2 w-full">${item.name}</div>
+    `;
+    track.appendChild(card);
+  });
+
+  // Calcul du décalage pour arrêter la roulette au centre de la carte gagnante (index 25)
+  // Conteneur de roulette centré
+  const container = phaseRoulette.querySelector('.relative.w-full.overflow-hidden');
+  const containerWidth = container.offsetWidth;
+  const targetIndex = crateData.winning_index || 25;
+  
+  // Offset pour centrer la carte cible : (targetIndex * fullCardSize) + (cardWidth / 2) - (containerWidth / 2)
+  // Ajout d'une légère variation aléatoire de quelques pixels (-20px à +20px) pour l'authenticité
+  const randomJitter = (Math.random() - 0.5) * 40;
+  const targetOffset = (targetIndex * fullCardSize) + (cardWidth / 2) - (containerWidth / 2) + randomJitter;
+
+  // Lancement du défilement avec courbe d'inertie
+  setTimeout(() => {
+    track.style.transition = 'transform 5.2s cubic-bezier(0.1, 0.85, 0.15, 1)';
+    track.style.transform = `translateX(-${targetOffset}px)`;
+    
+    // Son de clics progressifs
+    simulateClickSounds(5200);
+
+    // À la fin de l'animation de roulette, déclencher la révélation
+    setTimeout(() => {
+      showRevealPhase(crateData.drop);
+    }, 5500);
+  }, 50);
+}
+
+function simulateClickSounds(durationMs) {
+  let elapsed = 0;
+  let interval = 70;
+  
+  function playTick() {
+    AudioSys.playClick();
+    elapsed += interval;
+    // Ralentissement exponentiel des bips de la roulette
+    interval = Math.min(600, interval * 1.07);
+    if (elapsed < durationMs - 400) {
+      setTimeout(playTick, interval);
+    }
+  }
+  playTick();
+}
+
+function showRevealPhase(drop) {
+  const phaseRoulette = document.getElementById('phase-roulette');
+  const phaseReveal = document.getElementById('phase-reveal');
+  const revealImg = document.getElementById('reveal-img');
+  const revealName = document.getElementById('reveal-name');
+  const revealDesc = document.getElementById('reveal-desc');
+  const revealRarity = document.getElementById('reveal-rarity-badge');
+  const revealCard = document.getElementById('reveal-card');
+  const revealHalo = document.getElementById('reveal-halo');
+
+  phaseRoulette.classList.add('hidden');
+  phaseReveal.classList.remove('hidden');
+
+  revealName.innerText = drop.name;
+  revealRarity.innerText = drop.rarity;
+
+  if (drop.image_url) {
+    revealImg.src = drop.image_url;
+  } else {
+    revealImg.src = '/static/images/items/crate_chest_celestial.png';
+  }
+
+  // Couleurs et lueurs selon rareté
+  const r = (drop.rarity || '').toUpperCase();
+  if (r === 'MYTHIQUE') {
+    revealRarity.className = 'inline-block text-xs font-gaming font-black px-4 py-1.5 rounded-full uppercase tracking-wider bg-rose-500 text-white shadow-lg shadow-rose-500/50 animate-pulse';
+    revealCard.style.borderColor = '#f43f5e';
+    revealHalo.style.backgroundColor = 'rgba(244, 63, 94, 0.5)';
+    launchConfetti();
+  } else if (r === 'LÉGENDAIRE') {
+    revealRarity.className = 'inline-block text-xs font-gaming font-black px-4 py-1.5 rounded-full uppercase tracking-wider bg-amber-500 text-obsidian-950 shadow-lg shadow-amber-500/50';
+    revealCard.style.borderColor = '#f59e0b';
+    revealHalo.style.backgroundColor = 'rgba(245, 158, 11, 0.4)';
+    launchConfetti();
+  } else if (r === 'ÉPIQUE') {
+    revealRarity.className = 'inline-block text-xs font-gaming font-black px-3 py-1 rounded-full uppercase tracking-wider bg-purple-500 text-white';
+    revealCard.style.borderColor = '#a855f7';
+    revealHalo.style.backgroundColor = 'rgba(168, 85, 247, 0.3)';
+  } else {
+    revealRarity.className = 'inline-block text-xs font-gaming font-black px-3 py-1 rounded-full uppercase tracking-wider bg-blue-500 text-white';
+    revealCard.style.borderColor = '#3b82f6';
+    revealHalo.style.backgroundColor = 'rgba(59, 130, 246, 0.2)';
+  }
+
+  AudioSys.playReward();
+
+  // Animation Flip / Scale
+  revealCard.style.transform = 'scale(0.8) rotateY(180deg)';
+  setTimeout(() => {
+    revealCard.style.transform = 'scale(1) rotateY(0deg)';
+  }, 100);
+
+  // Mettre à jour le flux d'activité en arrière-plan
+  refreshRecentOpenings();
+}
+
+function reopenCurrentCrate() {
+  const modal = document.getElementById('unboxing-modal');
+  modal.classList.add('opacity-0');
+  setTimeout(() => {
+    isUnboxingActive = false;
+    triggerOpenCrate(currentActiveCrateType);
+  }, 300);
+}
+
+function closeUnboxingModal() {
+  const modal = document.getElementById('unboxing-modal');
+  modal.classList.add('opacity-0');
+  setTimeout(() => {
+    modal.classList.add('hidden');
+    isUnboxingActive = false;
+    stopConfetti();
+  }, 300);
+}
+
+function refreshRecentOpenings() {
+  fetch('/api/crates/recent')
+    .then(r => r.json())
+    .then(data => {
+      if (data.success && data.openings) {
+        const stream = document.getElementById('recent-openings-stream');
+        if (!stream) return;
+        stream.innerHTML = data.openings.slice(0, 8).map(op => `
+          <div class="flex items-center gap-3 p-3 rounded-2xl bg-white/5 border border-white/10 hover:border-white/20 transition">
+            <div class="w-12 h-12 rounded-xl bg-black/40 border border-white/10 flex items-center justify-center overflow-hidden flex-shrink-0">
+              ${op.image_url ? `<img src="${op.image_url}" class="w-10 h-10 object-contain">` : `<span class="text-2xl">${op.icon || '🎁'}</span>`}
+            </div>
+            <div class="min-w-0 flex-1">
+              <div class="text-[11px] font-bold text-slate-400 truncate">${op.username}</div>
+              <div class="text-xs font-gaming font-bold text-white truncate">${op.item_name}</div>
+              <div class="text-[10px] font-gaming font-bold ${
+                op.rarity === 'MYTHIQUE' ? 'text-rose-400 animate-pulse' :
+                op.rarity === 'LÉGENDAIRE' ? 'text-amber-400' :
+                op.rarity === 'ÉPIQUE' ? 'text-purple-400' :
+                op.rarity === 'RARE' ? 'text-blue-400' : 'text-slate-400'
+              }">${op.rarity}</div>
+            </div>
+          </div>
+        `).join('');
+      }
+    })
+    .catch(() => {});
+}
+
+// Moteur de Confettis Canvas
+let confettiAnimationId = null;
+function launchConfetti() {
+  const canvas = document.getElementById('confetti-canvas');
+  if (!canvas) return;
+  canvas.classList.remove('hidden');
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  const ctx = canvas.getContext('2d');
+  
+  const colors = ['#f59e0b', '#fbbf24', '#f43f5e', '#a855f7', '#38bdf8', '#ffffff'];
+  const particles = Array.from({ length: 90 }, () => ({
+    x: Math.random() * canvas.width,
+    y: Math.random() * -canvas.height,
+    size: Math.random() * 8 + 4,
+    color: colors[Math.floor(Math.random() * colors.length)],
+    speedY: Math.random() * 4 + 3,
+    speedX: (Math.random() - 0.5) * 3,
+    rot: Math.random() * 360,
+    rotSpeed: (Math.random() - 0.5) * 8
+  }));
+
+  function render() {
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    particles.forEach(p => {
+      p.y += p.speedY;
+      p.x += p.speedX;
+      p.rot += p.rotSpeed;
+      if (p.y > canvas.height) p.y = -20;
+      
+      ctx.save();
+      ctx.translate(p.x, p.y);
+      ctx.rotate((p.rot * Math.PI) / 180);
+      ctx.fillStyle = p.color;
+      ctx.fillRect(-p.size / 2, -p.size / 2, p.size, p.size);
+      ctx.restore();
+    });
+    confettiAnimationId = requestAnimationFrame(render);
+  }
+  render();
+}
+
+function stopConfetti() {
+  if (confettiAnimationId) {
+    cancelAnimationFrame(confettiAnimationId);
+    confettiAnimationId = null;
+  }
+  const canvas = document.getElementById('confetti-canvas');
+  if (canvas) canvas.classList.add('hidden');
+}
+</script>
+{% endblock %}

@@ -1,0 +1,184 @@
+{% extends "base.html" %}
+
+{% block title %}Profils Joueurs & Classements — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+
+  <!-- Header -->
+  <div class="text-center max-w-2xl mx-auto mb-10">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/80 border border-amber-800 text-amber-400 text-xs font-gaming tracking-wide mb-3 shadow-inner">
+      <span>👥</span> ANNUAIRE DES AVENTURIERS
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-black font-gaming tracking-tight text-white">PROFILS & CLASSEMENTS</h1>
+    <p class="text-xs sm:text-sm text-slate-400 mt-2 font-normal">
+      Inspectez le skin 3D de n'importe quel joueur, consultez ses statistiques et découvrez les légendes du panthéon AetherCraft.
+    </p>
+  </div>
+
+  <!-- Search Bar with Neon Hover -->
+  <div class="max-w-xl mx-auto mb-12">
+    <form hx-post="/api/players/search" hx-target="#player-card-target" class="relative" onclick="if(window.AudioSys) AudioSys.playClick()">
+      <input type="text" name="username" placeholder="Entrez un pseudo Minecraft (ex: Steve, Alex)..." required
+             class="w-full bg-obsidian-900 border border-white/10 hover:border-amber-500/80 focus:border-amber-500 rounded-2xl px-5 py-4 text-xs sm:text-sm text-white placeholder-slate-500 shadow-2xl focus:outline-none focus:ring-1 focus:ring-amber-500 transition">
+      <button type="submit" 
+              class="absolute right-2.5 top-2.5 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-gaming font-black text-xs px-5 py-2.5 rounded-xl shadow-lg shadow-amber-500/25 transition active:scale-95">
+        INSPECTER
+      </button>
+    </form>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Player Profile Card Target (5 Cols) -->
+    <div class="lg:col-span-5 reveal-on-scroll" id="player-card-target">
+      {% if player %}
+        {% include "partials/player_card.html" %}
+      {% else %}
+        <div class="glass-panel border border-white/10 rounded-3xl p-6 shadow-2xl relative text-center py-12">
+          <div class="text-4xl mb-3">🔍</div>
+          <h3 class="text-lg font-gaming font-bold text-white">Aucun profil actif</h3>
+          <p class="text-xs text-slate-400 mt-1">Recherchez un joueur ci-dessus pour inspecter son profil.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    <!-- Leaderboards & Pantheon (7 Cols) -->
+    <div class="lg:col-span-7 space-y-6 reveal-on-scroll delay-100">
+      
+      <!-- Leaderboards Switcher Tabs -->
+      <div class="glass-panel border border-white/10 rounded-3xl p-6 shadow-xl spotlight-card">
+        
+        <div class="flex items-center justify-between pb-4 border-b border-white/10 mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">🏆</span>
+            <h3 class="font-gaming font-bold text-white text-base">PANTHÉON DES AVENTURIERS</h3>
+          </div>
+          <span class="text-[10px] font-mono text-slate-400 bg-white/5 px-2 py-0.5 rounded">
+            Mis à jour en direct
+          </span>
+        </div>
+
+        <!-- Leaderboard Tabs -->
+        <div class="flex flex-wrap gap-2 mb-4 font-gaming text-xs font-bold">
+          <button onclick="switchLbTab('rich')" id="lb-tab-rich" 
+                  class="lb-btn px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-md transition">
+            💰 FORTUNE
+          </button>
+          <button onclick="switchLbTab('hours')" id="lb-tab-hours" 
+                  class="lb-btn px-4 py-2 rounded-xl bg-white/5 text-slate-300 hover:text-white transition">
+            ⏳ TEMPS DE JEU
+          </button>
+          <button onclick="switchLbTab('kills')" id="lb-tab-kills" 
+                  class="lb-btn px-4 py-2 rounded-xl bg-white/5 text-slate-300 hover:text-white transition">
+            ⚔️ FRAGS / KILLS
+          </button>
+        </div>
+
+        <!-- Tab 1: Top Rich -->
+        <div id="lb-panel-rich" class="space-y-2.5">
+          {% for p in leaderboards.top_rich %}
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-amber-500/40 transition">
+            <div class="flex items-center gap-3">
+              <span class="w-6 text-center font-black font-gaming text-sm {% if loop.index == 1 %}text-amber-400{% elif loop.index == 2 %}text-slate-300{% elif loop.index == 3 %}text-amber-600{% else %}text-slate-500{% endif %}">
+                #{{ loop.index }}
+              </span>
+              <img src="https://mc-heads.net/avatar/{{ p.username }}/36" alt="{{ p.username }}" class="w-9 h-9 rounded-xl shadow-md border border-white/10">
+              <div>
+                <span class="font-gaming font-bold text-white text-xs block">{{ p.username }}</span>
+                <span class="text-[10px] text-slate-400">{{ p.guild }}</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-mono font-bold text-amber-300 text-xs">{{ "{:,}".format(p.total_wealth if p.total_wealth is defined and p.total_wealth is not none else p.balance).replace(',', ' ') }} 🪙</span>
+              <span class="block text-[10px] font-gaming text-slate-500">{{ p.rank }}</span>
+            </div>
+          </div>
+          {% else %}
+          <div class="text-center py-8 text-slate-500 font-gaming text-xs">
+            Aucun joueur classé pour le moment.
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Tab 2: Top Hours -->
+        <div id="lb-panel-hours" class="space-y-2.5 hidden">
+          {% for p in leaderboards.top_hours %}
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-amber-500/40 transition">
+            <div class="flex items-center gap-3">
+              <span class="w-6 text-center font-black font-gaming text-sm {% if loop.index == 1 %}text-amber-400{% elif loop.index == 2 %}text-slate-300{% elif loop.index == 3 %}text-amber-600{% else %}text-slate-500{% endif %}">
+                #{{ loop.index }}
+              </span>
+              <img src="https://mc-heads.net/avatar/{{ p.username }}/36" alt="{{ p.username }}" class="w-9 h-9 rounded-xl shadow-md border border-white/10">
+              <div>
+                <span class="font-gaming font-bold text-white text-xs block">{{ p.username }}</span>
+                <span class="text-[10px] text-slate-400">{{ p.guild }}</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-mono font-bold text-amber-300 text-xs">{{ p.hours_played }} Heures</span>
+              <span class="block text-[10px] font-gaming text-slate-500">{{ p.kills }} Frags</span>
+            </div>
+          </div>
+          {% else %}
+          <div class="text-center py-8 text-slate-500 font-gaming text-xs">
+            Aucun joueur classé pour le moment.
+          </div>
+          {% endfor %}
+        </div>
+
+        <!-- Tab 3: Top Kills -->
+        <div id="lb-panel-kills" class="space-y-2.5 hidden">
+          {% for p in leaderboards.top_kills %}
+          <div class="flex items-center justify-between p-3 rounded-2xl bg-black/30 border border-white/5 hover:border-amber-500/40 transition">
+            <div class="flex items-center gap-3">
+              <span class="w-6 text-center font-black font-gaming text-sm {% if loop.index == 1 %}text-amber-400{% elif loop.index == 2 %}text-slate-300{% elif loop.index == 3 %}text-amber-600{% else %}text-slate-500{% endif %}">
+                #{{ loop.index }}
+              </span>
+              <img src="https://mc-heads.net/avatar/{{ p.username }}/36" alt="{{ p.username }}" class="w-9 h-9 rounded-xl shadow-md border border-white/10">
+              <div>
+                <span class="font-gaming font-bold text-white text-xs block">{{ p.username }}</span>
+                <span class="text-[10px] text-slate-400">{{ p.guild }}</span>
+              </div>
+            </div>
+            <div class="text-right">
+              <span class="font-mono font-bold text-rose-400 text-xs">{{ p.kills }} Frags</span>
+              <span class="block text-[10px] font-gaming text-slate-500">Ratio K/D: {{ p.kd_ratio }}</span>
+            </div>
+          </div>
+          {% else %}
+          <div class="text-center py-8 text-slate-500 font-gaming text-xs">
+            Aucun joueur classé pour le moment.
+          </div>
+          {% endfor %}
+        </div>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+<script>
+  function switchLbTab(tab) {
+    if (window.AudioSys) AudioSys.playClick();
+    document.getElementById('lb-panel-rich').classList.toggle('hidden', tab !== 'rich');
+    document.getElementById('lb-panel-hours').classList.toggle('hidden', tab !== 'hours');
+    document.getElementById('lb-panel-kills').classList.toggle('hidden', tab !== 'kills');
+    
+    const tabs = ['rich', 'hours', 'kills'];
+    tabs.forEach(t => {
+      const btn = document.getElementById('lb-tab-' + t);
+      if (btn) {
+        if (t === tab) {
+          btn.className = 'lb-btn px-4 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-md transition';
+        } else {
+          btn.className = 'lb-btn px-4 py-2 rounded-xl bg-white/5 text-slate-300 hover:text-white transition';
+        }
+      }
+    });
+  }
+</script>
+{% endblock %}

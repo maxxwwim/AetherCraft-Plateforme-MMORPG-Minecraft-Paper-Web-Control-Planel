@@ -1,0 +1,77 @@
+{
+  "manifest_version": "1.0",
+  "server_id": "srv_aethercraft_1211_primordial",
+  "name": "AetherCraft Survie & Donjons Célestes",
+  "created_at": "2026-10-30T22:00:00Z",
+  "core": {
+    "type": "paper",
+    "mc_version": "1.21.1",
+    "build": 133,
+    "download_url": "https://fill-data.papermc.io/v1/objects/39bd8c00b9e18de91dcabd3cc3dcfa5328685a53b7187a2f63280c22e2d287b9/paper-1.21.1-133.jar",
+    "sha256": "39bd8c00b9e18de91dcabd3cc3dcfa5328685a53b7187a2f63280c22e2d287b9",
+    "target_jar": "paper-server.jar"
+  },
+  "runtime": {
+    "java_version_required": 21,
+    "heap_min": "4G",
+    "heap_max": "4G",
+    "aikar_flags": true,
+    "jvm_args": [
+      "-Xms4G",
+      "-Xmx4G",
+      "-XX:+UseG1GC",
+      "-XX:+ParallelRefProcEnabled",
+      "-XX:MaxGCPauseMillis=200",
+      "-XX:+UnlockExperimentalVMOptions",
+      "-XX:+DisableExplicitGC",
+      "-XX:+AlwaysPreTouch",
+      "-XX:G1NewSizePercent=30",
+      "-XX:G1MaxNewSizePercent=40",
+      "-XX:G1ReservePercent=20",
+      "-XX:SurvivorRatio=32",
+      "-XX:InitiatingHeapOccupancyPercent=15",
+      "-XX:G1MixedGCLiveThresholdPercent=90",
+      "-XX:G1RSetUpdatingPauseTimePercent=5"
+    ]
+  },
+  "plugins_and_mods": [
+    {
+      "name": "Chunky",
+      "version": "1.4.40",
+      "target_path": "plugins/Chunky-Bukkit-1.4.40.jar",
+      "download_url": "https://cdn.modrinth.com/data/fALzjamp/versions/1.4.40/Chunky-Bukkit-1.4.40.jar",
+      "sha256": ""
+    },
+    {
+      "name": "LuckPerms",
+      "version": "5.5.71",
+      "target_path": "plugins/LuckPerms-Bukkit-5.5.71.jar",
+      "download_url": "https://cdn.modrinth.com/data/Vebnzrzj/versions/5.5.71/LuckPerms-Bukkit-5.5.71.jar",
+      "sha256": ""
+    },
+    {
+      "name": "MapEngine",
+      "version": "1.8.12",
+      "target_path": "plugins/MapEngine-1.8.12-all.jar",
+      "download_url": "https://cdn.modrinth.com/data/fCDPz9mZ/versions/AgLc5SCG/MapEngine-1.8.12-all.jar",
+      "sha256": ""
+    },
+    {
+      "name": "MapBrowser",
+      "version": "1.0-beta3",
+      "target_path": "plugins/MapBrowser-1.0-beta3-all.jar",
+      "download_url": "https://cdn.modrinth.com/data/EuTLENTf/versions/1iEFGwBG/MapBrowser-1.0-beta3-all.jar",
+      "sha256": ""
+    }
+  ],
+  "configuration_files": [
+    {
+      "path": "eula.txt",
+      "content": "eula=true\n"
+    },
+    {
+      "path": "server.properties",
+      "content": "server-port=25565\nmotd=\u00a7a\u00a7lAETHERCRAFT \u00a77\u00a7l// \u00a7e\u00a7lSAISON 4 PRIMORDIALE \u00a7r\u00a78[1.20-1.21.1]\ndifficulty=hard\nonline-mode=true\nmax-players=200\nenable-rcon=true\nrcon.port=25575\nrcon.password=aether_secret_rcon_2026\nview-distance=10\nsimulation-distance=6\nnetwork-compression-threshold=256\n"
+    }
+  ]
+}

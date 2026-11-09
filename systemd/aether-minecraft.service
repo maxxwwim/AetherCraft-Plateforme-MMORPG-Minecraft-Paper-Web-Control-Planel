@@ -1,0 +1,17 @@
+[Unit]
+Description=AetherCraft Minecraft Paper Server
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/aethercraft/server
+ExecStart=/opt/aethercraft/server/run-server.sh
+Restart=on-failure
+RestartSec=10s
+StandardInput=null
+StandardOutput=journal
+StandardError=journal
+
+[Install]
+WantedBy=multi-user.target

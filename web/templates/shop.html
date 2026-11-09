@@ -1,0 +1,477 @@
+{% extends "base.html" %}
+
+{% block title %}Boutique Officielle — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-10 relative">
+
+  <!-- Mobile Floating Cart Pill Button -->
+  <a href="#cart-container" class="lg:hidden fixed bottom-6 left-6 z-40 bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-gaming font-black text-xs py-3 px-5 rounded-full shadow-2xl flex items-center gap-2 border border-amber-400/50 active:scale-95 transition">
+    <img src="/static/images/items/crate_chest_celestial.png" class="w-4 h-4 object-contain inline-block" alt="Panier"> <span>VOIR LE PANIER</span>
+  </a>
+
+  <!-- Header & Coins Balance Banner -->
+  <div class="text-center max-w-3xl mx-auto mb-8">
+    <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/80 border border-amber-800 text-amber-400 text-xs font-gaming tracking-wide mb-3 shadow-inner">
+      <span class="text-amber-400 text-sm">⛃</span> BOUTIQUE OFFICIELLE • MONNAIE UNIQUE PIÈCES (⛃)
+    </div>
+    <h1 class="text-3xl sm:text-5xl font-black font-gaming tracking-tight text-white">BOUTIQUE AETHERCRAFT</h1>
+    <p class="text-xs sm:text-sm text-slate-400 mt-2 font-normal">
+      Soutenez le serveur ou jouez pour gagner des Pièces (⛃) et débloquer tous les privilèges et magots librement.
+    </p>
+
+    <!-- Welcome Bonus & Coins Header Widget -->
+    <div class="mt-6 glass-panel-gold rounded-3xl p-5 border border-amber-500/40 shadow-xl flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-4 text-left">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center p-2 shadow-lg">
+          <img src="/static/images/items/magot_sac_pieces.png" class="w-10 h-10 object-contain drop-shadow" alt="Cadeau">
+        </div>
+        <div>
+          <div class="flex items-center gap-2">
+            <span class="text-xs font-gaming font-black text-amber-400 uppercase tracking-wide">CADEAU DE BIENVENUE</span>
+            <span class="px-2 py-0.2 rounded-full text-[10px] font-bold bg-amber-500 text-obsidian-950">1 000 ⛃</span>
+          </div>
+          <p class="text-sm font-bold text-white mt-0.5">1 000 ⛃ Pièces offertes à chaque nouvel arrivant</p>
+          <p class="text-[11px] text-slate-400">Jouez 30 minutes, accomplissez des quêtes ou achetez des Magots convertibles !</p>
+        </div>
+      </div>
+
+      <div class="bg-obsidian-950/80 px-6 py-3 rounded-2xl border border-amber-500/30 text-center sm:text-right w-full sm:w-auto">
+        <span class="text-[10px] text-slate-400 font-gaming uppercase tracking-wider block">Mon Solde de Pièces</span>
+        <div class="flex items-center justify-center sm:justify-end gap-1.5 text-2xl font-black font-mono text-amber-300">
+          <span class="text-xl text-amber-400">⛃</span>
+          <span id="current-user-points">{{ current_user.balance|int if current_user.balance is defined else (current_user.shop_points or 1000) }}</span>
+          <span class="text-xs text-amber-500 font-sans font-bold">Pièces</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 30-Minute Play-to-Earn Loyalty Chest Widget -->
+  <div class="mb-10 glass-panel rounded-3xl p-6 border border-purple-500/30 shadow-2xl relative overflow-hidden bg-gradient-to-r from-purple-950/40 via-obsidian-950 to-amber-950/30">
+    <div class="absolute -right-20 -bottom-20 w-64 h-64 bg-amber-500/10 rounded-full blur-3xl pointer-events-none"></div>
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+      
+      <!-- Chest Visual -->
+      <div class="md:col-span-3 flex justify-center">
+        <div class="relative group">
+          <div class="w-32 h-32 rounded-3xl bg-obsidian-900/80 border border-amber-500/30 flex items-center justify-center p-3 shadow-2xl">
+            <img src="/static/images/items/chest_reward.svg" alt="Coffre 30 minutes" class="w-24 h-24 filter drop-shadow-[0_10px_20px_rgba(245,158,11,0.4)] animate-float">
+          </div>
+          <span class="absolute -bottom-2.5 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full text-[10px] font-black font-gaming bg-amber-500 text-obsidian-950 shadow-md whitespace-nowrap">
+            +50 ⛃ PIÈCES
+          </span>
+        </div>
+      </div>
+
+      <!-- Chest Information -->
+      <div class="md:col-span-5 text-center md:text-left">
+        <div class="flex flex-wrap items-center justify-center md:justify-start gap-2 mb-2">
+          <span class="px-2.5 py-0.5 rounded-md text-[10px] font-gaming font-black uppercase tracking-wider bg-purple-500/20 text-purple-300 border border-purple-500/40">
+            PLAY-TO-EARN GRATUIT
+          </span>
+          <span class="px-2.5 py-0.5 rounded-md text-[10px] font-mono font-bold bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1">
+            <img src="/static/images/extracted_textures/blaze.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Flamme"> SÉRIE : x<span id="streak-counter">{{ reward_status.streak if reward_status else 1 }}</span>
+          </span>
+        </div>
+        <h2 class="text-xl sm:text-2xl font-black font-crest text-white">Coffre Céleste des 30 Minutes</h2>
+        <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+          Gagnez +50 ⛃ Pièces toutes les 30 minutes de présence en jeu ou sur le site web.
+          Les Pièces sont créditées instantanément sur votre compte joueur et annoncées en jeu !
+        </p>
+      </div>
+
+      <!-- Chest Claim Action & Real-time Countdown -->
+      <div class="md:col-span-4 flex flex-col items-center md:items-end justify-center">
+        <div class="w-full max-w-xs text-center">
+          
+          <div id="countdown-box" class="mb-3 {% if reward_status and reward_status.can_claim %}hidden{% endif %}">
+            <span class="text-[10px] text-slate-400 font-gaming uppercase tracking-wider block mb-1">Prochain coffre disponible dans :</span>
+            <div class="text-2xl font-black font-mono text-purple-400 bg-obsidian-900/90 py-2 px-4 rounded-xl border border-purple-500/30" id="timer-display">
+              --:--
+            </div>
+          </div>
+
+          <button id="btn-claim-reward" 
+                  onclick="claimRewardChest()"
+                  class="w-full py-3.5 px-6 rounded-2xl font-gaming font-black text-xs tracking-wider uppercase transition shadow-xl flex items-center justify-center gap-2 active:scale-95 {% if reward_status and reward_status.can_claim %}bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-obsidian-950 border border-amber-300 shadow-amber-500/30 animate-pulse{% else %}bg-white/5 text-slate-500 border border-white/10 cursor-not-allowed{% endif %}"
+                  {% if not reward_status or not reward_status.can_claim %}disabled{% endif %}>
+            <span class="text-sm">🎁</span>
+            <span id="claim-btn-text">
+              {% if reward_status and reward_status.can_claim %}
+                RÉCLAMER LE COFFRE (+{{ reward_status.next_reward_pts or 50 }} ⛃ PIÈCES) !
+              {% else %}
+                RECHARGE EN COURS...
+              {% endif %}
+            </span>
+          </button>
+
+          <p id="claim-feedback" class="text-[11px] text-emerald-400 mt-2 font-medium hidden"></p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Layout: Store Products + Cart Sidebar -->
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Products Column (8 Cols) -->
+    <div class="lg:col-span-8 space-y-6">
+
+      <!-- MMORPG In-Game Interface Preview Banner -->
+      <div class="glass-panel rounded-3xl p-4 sm:p-5 border border-purple-500/30 overflow-hidden relative group bg-gradient-to-r from-purple-950/30 via-obsidian-950/80 to-amber-950/20">
+        <div class="flex flex-col sm:flex-row items-center justify-between gap-4">
+          <div class="flex-1">
+            <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-purple-950/80 border border-purple-500/40 text-[10px] font-gaming font-black text-purple-300 mb-2">
+              🎮 INTERFACE GTA & SMARTPHONE EN JEU
+            </div>
+            <h3 class="text-base sm:text-lg font-black font-crest text-white">Banque Privée & Boutique Directe</h3>
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">
+              Ouvrez votre téléphone en jeu ou tapez <code class="px-1.5 py-0.5 bg-black/60 text-amber-300 rounded font-mono font-bold">/shop</code> ou <code class="px-1.5 py-0.5 bg-black/60 text-amber-300 rounded font-mono font-bold">/banque</code> pour gérer vos Pièces, coffres-forts et convertir vos Magots Habbo d'un simple Clic-Droit !
+            </p>
+          </div>
+          <div class="w-full sm:w-44 h-24 rounded-2xl overflow-hidden border border-amber-500/30 shadow-xl relative group-hover:scale-105 transition-transform duration-300 flex-shrink-0">
+            <img src="/static/images/mmo_ui_dashboard.png" alt="Aperçu UI MMO" class="w-full h-full object-cover">
+          </div>
+        </div>
+      </div>
+
+      <!-- Category Filter Tabs -->
+      <div class="flex flex-wrap gap-2 pb-2 font-gaming text-xs font-bold tracking-wide">
+        <a href="/boutique?cat=all" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition {% if current_cat == 'all' or not current_cat %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          TOUT
+        </a>
+        <a href="/boutique?cat=magots" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 {% if current_cat == 'magots' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          <span class="text-amber-400">🪙</span> MAGOTS & PIÈCES
+        </a>
+        <a href="/boutique?cat=grades" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 {% if current_cat == 'grades' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          <img src="/static/images/extracted_textures/golden_helmet.png" class="w-4 h-4 object-contain inline-block" alt="Grades"> GRADES VIP
+        </a>
+        <a href="/boutique?cat=keys" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 {% if current_cat == 'keys' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          <img src="/static/images/items/key_mystic.png" class="w-4 h-4 object-contain inline-block" alt="Clés"> CLÉS & CAISSES
+        </a>
+        <a href="/boutique?cat=cosmetics" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 {% if current_cat == 'cosmetics' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          <img src="/static/images/items/cosmetic_wings.png" class="w-4 h-4 object-contain inline-block" alt="Cosmétiques"> COSMÉTIQUES
+        </a>
+        <a href="/boutique?cat=pets" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 {% if current_cat == 'pets' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          <img src="/static/images/items/pet_dragon.png" class="w-4 h-4 object-contain inline-block" alt="Animaux"> ANIMAUX 3D
+        </a>
+        <a href="/boutique?cat=boosters" onclick="AudioSys.playClick()" 
+           class="px-4 py-2.5 rounded-xl transition flex items-center gap-1.5 {% if current_cat == 'boosters' %}bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 font-black shadow-lg shadow-amber-500/25{% else %}glass-panel text-slate-300 hover:text-white hover:bg-white/10{% endif %}">
+          <img src="/static/images/items/booster_mining.png" class="w-4 h-4 object-contain inline-block" alt="Boosters"> BOOSTERS
+        </a>
+      </div>
+
+      <!-- Items Grid with Real Images & Dual Pricing -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        {% for item in items %}
+        <div class="glass-panel {% if item.popular %}border-amber-500/60 shadow-xl shadow-amber-500/10{% else %}border-white/10{% endif %} rounded-3xl p-6 flex flex-col justify-between relative group glass-card-hover spotlight-card reveal-on-scroll">
+          
+          {% if item.popular %}
+          <div class="absolute -top-3 right-6 bg-gradient-to-r from-amber-500 to-amber-600 text-obsidian-950 text-[10px] font-gaming font-black uppercase tracking-wider px-3 py-1 rounded-full shadow-lg z-10 flex items-center gap-1.5">
+            <img src="/static/images/extracted_textures/blaze.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Flamme"> PLUS POPULAIRE
+          </div>
+          {% endif %}
+
+          <div>
+            <!-- Item Visual & Image Display (Item Frame Minecraft & Vitrine 3D Animaux) -->
+            <div class="mc-item-frame {% if item.popular %}mc-item-frame-gold{% elif item.rarity == 'MYTHIQUE' %}mc-item-frame-amethyst{% endif %} w-full {% if item.category == 'pets' %}h-56{% else %}h-48{% endif %} flex items-center justify-center p-4 mb-4 transition group-hover:scale-[1.02]">
+              <div class="absolute inset-0 bg-radial-at-c from-amber-500/10 to-transparent pointer-events-none"></div>
+              <img src="{{ item.image_url }}?v=3d2" alt="{{ item.name }}" class="{% if item.category == 'pets' %}max-h-48{% else %}max-h-36{% endif %} max-w-full object-contain filter drop-shadow-[0_8px_16px_rgba(0,0,0,0.8)] group-hover:scale-110 transition transform duration-300 {% if item.rarity in ['MYTHIQUE', 'LÉGENDAIRE'] %}mc-enchanted{% endif %}">
+              {% if item.category == 'pets' %}
+              <span class="absolute bottom-2 left-3 px-2 py-0.5 rounded bg-purple-950/90 border border-purple-500/40 text-[9px] font-mono font-bold text-purple-200">
+                🐾 SCULPTURE 3D ARTICULÉE IN-GAME
+              </span>
+              {% endif %}
+              
+              <!-- Rarity Badge (Top-Left) -->
+              <span class="absolute top-3 left-3 px-2 py-0.5 rounded text-[9px] font-gaming font-black uppercase tracking-wider
+                {% if item.rarity == 'MYTHIQUE' %}bg-amber-950/90 text-amber-300 border border-amber-600
+                {% elif item.rarity == 'LÉGENDAIRE' %}bg-rose-950/90 text-rose-300 border border-rose-600
+                {% elif item.rarity == 'ÉPIQUE' %}bg-sky-950/90 text-sky-300 border border-sky-600
+                {% elif item.rarity == 'RARE' %}bg-purple-950/90 text-purple-300 border border-purple-600
+                {% else %}bg-slate-900/90 text-slate-300 border border-slate-700{% endif %}">
+                {{ item.rarity }}
+              </span>
+
+              <!-- Owned Badge (Top-Right) -->
+              {% if unlocked_item_ids and item.id in unlocked_item_ids %}
+              <span class="absolute top-3 right-3 px-2 py-0.5 rounded text-[9px] font-mono font-bold uppercase tracking-wider bg-emerald-500/90 text-white border border-emerald-400 shadow-md">
+                ✓ DÉBLOQUÉ
+              </span>
+              {% endif %}
+
+              <!-- Hotbar Stack Badge Minecraft Réel -->
+              <span class="mc-stack-badge">
+                {% if 'omega' in item.id %}x12
+                {% elif 'mystic' in item.id %}x5
+                {% elif 'pass' in item.id %}x3
+                {% else %}x1{% endif %}
+              </span>
+            </div>
+
+            <!-- Item Title & Dual Pricing -->
+            <div class="flex items-start justify-between gap-2 mb-2">
+              <div>
+                <h3 class="text-lg font-bold font-gaming text-white leading-tight flex items-center gap-2">
+                  <img src="{{ item.image_url }}" alt="{{ item.name }}" class="w-6 h-6 object-contain inline-block filter drop-shadow"> {{ item.name }}
+                </h3>
+                <span class="text-[10px] text-amber-400 font-mono font-bold">{{ item.badge }}</span>
+              </div>
+              <div class="text-right flex flex-col items-end">
+                <span class="text-xl font-black text-white font-mono tracking-tight">{{ "%.2f"|format(item.price) }} €</span>
+                <span class="text-xs font-bold text-amber-400 font-mono flex items-center gap-1">
+                  <span class="text-amber-400 font-bold">⛃</span> {{ item.price_points }} Pièces
+                </span>
+              </div>
+            </div>
+
+            <p class="text-xs text-slate-300 mt-1 leading-relaxed">{{ item.description }}</p>
+
+            <!-- Perks List (Lore Box Minecraft) -->
+            <div class="mc-lore-box p-3 my-4">
+              <span class="text-[10px] font-gaming font-bold text-amber-300 block mb-2 uppercase tracking-wide">✦ Propriétés & Avantages In-Game :</span>
+              <div class="space-y-1.5">
+                {% for perk in item.perks %}
+                <div class="flex items-start gap-2 text-xs">
+                  <span class="text-purple-400 font-bold font-mono">§b•</span>
+                  <span class="leading-tight text-[11px] text-slate-200">{{ perk }}</span>
+                </div>
+                {% endfor %}
+              </div>
+            </div>
+          </div>
+
+          <!-- Dual Currency Action Buttons -->
+          <div class="mt-4 pt-2 space-y-2">
+            {% if unlocked_item_ids and item.id in unlocked_item_ids %}
+              <div class="w-full py-2 px-3 rounded-xl bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 font-gaming font-bold text-[11px] text-center flex items-center justify-center gap-1.5 shadow-sm">
+                <img src="/static/images/extracted_textures/beacon.png" class="w-3.5 h-3.5 object-contain inline-block" alt="Débloqué"> DÉJÀ DÉBLOQUÉ SUR VOTRE PERSONNAGE
+              </div>
+            {% endif %}
+
+            <!-- 1. Add to EUR Cart -->
+            <form hx-post="/api/store/cart/add" hx-target="#cart-container" onclick="AudioSys.playClick()">
+              <input type="hidden" name="item_id" value="{{ item.id }}">
+              <button type="submit" 
+                      class="w-full py-2.5 px-4 rounded-xl font-gaming font-bold text-xs bg-white/5 hover:bg-white/15 text-slate-200 hover:text-white border border-white/10 hover:border-white/30 transition flex items-center justify-center gap-2 active:scale-95 shadow-sm">
+                <img src="/static/images/items/crate_chest_celestial.png" class="w-4 h-4 object-contain inline-block" alt="Panier"> <span>{% if unlocked_item_ids and item.id in unlocked_item_ids %}OFFRIR À NOUVEAU ({{ "%.2f"|format(item.price) }} €){% else %}AJOUTER AU PANIER ({{ "%.2f"|format(item.price) }} €){% endif %}</span>
+              </button>
+            </form>
+
+            <!-- 2. Instant Buy with Coins Button -->
+            {% if not unlocked_item_ids or item.id not in unlocked_item_ids %}
+            {% set user_bal = current_user.balance|int if current_user.balance is defined else (current_user.shop_points or 1000) %}
+            <button onclick="confirmBuyWithPoints('{{ item.id }}', '{{ item.name }}', {{ item.price_points }})" 
+                    class="w-full py-2.5 px-4 rounded-xl font-gaming font-black text-xs transition flex items-center justify-center gap-2 active:scale-95 shadow-md
+                    {% if user_bal >= item.price_points %}
+                      bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 border border-amber-400/50
+                    {% else %}
+                      bg-obsidian-900/60 text-slate-500 border border-white/5 hover:border-amber-500/30
+                    {% endif %}">
+              <span class="text-amber-400 text-sm font-bold">⛃</span> <span>ACHETER AVEC {{ item.price_points }} ⛃ PIÈCES</span>
+            </button>
+            {% endif %}
+          </div>
+
+        </div>
+        {% endfor %}
+      </div>
+
+    </div>
+
+    <!-- Cart Column (4 Cols) -->
+    <div class="lg:col-span-4 sticky top-24">
+      <div id="cart-container" class="glass-panel border border-white/10 rounded-3xl p-6 shadow-2xl">
+        {% include "partials/cart.html" %}
+      </div>
+
+      <!-- Trust Badges -->
+      <div class="mt-4 glass-panel rounded-2xl p-4 text-xs text-slate-400 space-y-2 border border-white/5">
+        <div class="flex items-center gap-2 text-slate-300 font-gaming font-bold text-xs">
+          <img src="/static/images/extracted_textures/tripwire_hook.png" class="w-4 h-4 object-contain inline-block" alt="Sécurisé"> LIVRAISON IMMÉDIATE RCON
+        </div>
+        <p class="text-[11px] leading-relaxed">
+          Que vous achetiez en Euros (€) ou directement avec vos Pièces (⛃), tous les privilèges et magots sont livrés instantanément sur votre inventaire joueur.
+        </p>
+      </div>
+    </div>
+
+  </div>
+
+</div>
+
+<!-- Modal Confirmation Achat en Pièces -->
+<div id="points-modal" class="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md hidden p-4">
+  <div class="glass-panel p-8 rounded-3xl border border-amber-500/40 max-w-md w-full shadow-2xl relative text-center">
+    <div class="w-16 h-16 rounded-2xl bg-amber-500/20 border border-amber-500/40 flex items-center justify-center mx-auto mb-4 p-2 shadow-lg">
+      <span class="text-3xl text-amber-400">⛃</span>
+    </div>
+    <h3 class="text-xl font-black font-crest text-white">Confirmer l'Achat en Pièces</h3>
+    <p class="text-xs text-slate-300 mt-2">
+      Voulez-vous débloquer <span id="modal-item-name" class="font-bold text-amber-300"></span> pour <span id="modal-item-points" class="font-mono font-bold text-amber-400"></span> ⛃ Pièces ?
+    </p>
+
+    <div class="mt-6 flex items-center gap-3">
+      <button onclick="closePointsModal()" class="flex-1 py-3 rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 font-gaming font-bold text-xs border border-white/10 transition">
+        ANNULER
+      </button>
+      <button id="modal-confirm-btn" onclick="executePointsPurchase()" class="flex-1 py-3 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-gaming font-black text-xs shadow-lg shadow-amber-500/25 transition">
+        CONFIRMER L'ACHAT
+      </button>
+    </div>
+  </div>
+</div>
+
+<script>
+  let secondsRemaining = {{ reward_status.seconds_remaining if reward_status else 1800 }};
+  let canClaim = {{ 'true' if reward_status and reward_status.can_claim else 'false' }};
+  let selectedItemId = null;
+
+  // Mise à jour de l'affichage du timer
+  function updateTimerUI() {
+    const timerDisplay = document.getElementById("timer-display");
+    const claimBtn = document.getElementById("btn-claim-reward");
+    const claimBtnText = document.getElementById("claim-btn-text");
+    const countdownBox = document.getElementById("countdown-box");
+
+    if (canClaim || secondsRemaining <= 0) {
+      if (timerDisplay) timerDisplay.textContent = "00:00";
+      if (countdownBox) countdownBox.classList.add("hidden");
+      if (claimBtn) {
+        claimBtn.disabled = false;
+        claimBtn.className = "w-full py-3.5 px-6 rounded-2xl font-gaming font-black text-xs tracking-wider uppercase transition shadow-xl flex items-center justify-center gap-2 active:scale-95 bg-gradient-to-r from-amber-400 via-amber-500 to-amber-600 text-obsidian-950 border border-amber-300 shadow-amber-500/30 animate-pulse";
+      }
+      if (claimBtnText) claimBtnText.textContent = "RÉCLAMER LE COFFRE (+50 ⛃ PIÈCES) !";
+    } else {
+      if (countdownBox) countdownBox.classList.remove("hidden");
+      const mins = Math.floor(secondsRemaining / 60);
+      const secs = secondsRemaining % 60;
+      const str = (mins < 10 ? "0" : "") + mins + ":" + (secs < 10 ? "0" : "") + secs;
+      if (timerDisplay) timerDisplay.textContent = str;
+      if (claimBtn) {
+        claimBtn.disabled = true;
+        claimBtn.className = "w-full py-3.5 px-6 rounded-2xl font-gaming font-black text-xs tracking-wider uppercase transition shadow-xl flex items-center justify-center gap-2 bg-white/5 text-slate-500 border border-white/10 cursor-not-allowed";
+      }
+      if (claimBtnText) claimBtnText.textContent = "RECHARGE EN COURS (" + str + ")";
+    }
+  }
+
+  // Décrémentation chaque seconde
+  setInterval(() => {
+    if (!canClaim && secondsRemaining > 0) {
+      secondsRemaining--;
+      if (secondsRemaining <= 0) {
+        canClaim = true;
+      }
+      updateTimerUI();
+    }
+  }, 1000);
+
+  updateTimerUI();
+
+  // Réclamation du Coffre 30 min
+  async function claimRewardChest() {
+    AudioSys.playClick();
+    const btn = document.getElementById("btn-claim-reward");
+    const feedback = document.getElementById("claim-feedback");
+    btn.disabled = true;
+
+    try {
+      const res = await fetch("/api/store/claim-reward", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === "ok") {
+        if (typeof AudioSys.playLevelUp === "function") AudioSys.playLevelUp();
+        
+        // Mise à jour de l'affichage du solde de pièces
+        const curPts = document.getElementById("current-user-points");
+        if (curPts) curPts.textContent = data.new_balance;
+        
+        const navPoints = document.getElementById("nav-user-points");
+        if (navPoints) navPoints.textContent = data.new_balance;
+
+        // Reset du compte à rebours
+        secondsRemaining = data.seconds_remaining || 1800;
+        canClaim = false;
+        updateTimerUI();
+
+        // Feedback positif
+        if (feedback) {
+          feedback.textContent = "🎉 " + data.message;
+          feedback.classList.remove("hidden");
+          setTimeout(() => feedback.classList.add("hidden"), 6000);
+        }
+      } else {
+        alert(data.message || "Erreur lors de la réclamation du coffre.");
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Une erreur de communication est survenue.");
+    }
+  }
+
+  // Modal Achat en Pièces
+  function confirmBuyWithPoints(itemId, itemName, pointsCost) {
+    AudioSys.playClick();
+    selectedItemId = itemId;
+    document.getElementById("modal-item-name").textContent = itemName;
+    document.getElementById("modal-item-points").textContent = pointsCost;
+    document.getElementById("points-modal").classList.remove("hidden");
+  }
+
+  function closePointsModal() {
+    document.getElementById("points-modal").classList.add("hidden");
+    selectedItemId = null;
+  }
+
+  async function executePointsPurchase() {
+    if (!selectedItemId) return;
+    const btn = document.getElementById("modal-confirm-btn");
+    btn.disabled = true;
+    btn.textContent = "LIVRAISON EN COURS...";
+
+    try {
+      const formData = new FormData();
+      formData.append("item_id", selectedItemId);
+
+      const res = await fetch("/api/store/buy-points", {
+        method: "POST",
+        body: formData
+      });
+      const data = await res.json();
+
+      if (res.ok && data.status === "ok") {
+        if (typeof AudioSys.playLevelUp === "function") AudioSys.playLevelUp();
+        const curPts = document.getElementById("current-user-points");
+        if (curPts) curPts.textContent = data.new_balance;
+        const navPoints = document.getElementById("nav-user-points");
+        if (navPoints) navPoints.textContent = data.new_balance;
+
+        closePointsModal();
+        alert("🎉 " + data.message);
+        window.location.reload();
+      } else {
+        alert(data.message || "Erreur lors de l'achat en pièces.");
+        btn.disabled = false;
+        btn.textContent = "CONFIRMER L'ACHAT";
+      }
+    } catch (e) {
+      console.error(e);
+      alert("Une erreur réseau est survenue.");
+      btn.disabled = false;
+      btn.textContent = "CONFIRMER L'ACHAT";
+    }
+  }
+</script>
+{% endblock %}

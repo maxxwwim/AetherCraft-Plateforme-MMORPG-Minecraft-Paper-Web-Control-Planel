@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Connexion — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-md mx-auto py-16 px-4 sm:px-6">
+  <div class="glass-panel p-8 rounded-3xl border border-amber-500/20 shadow-2xl relative overflow-hidden">
+    <!-- Glow d'ambiance -->
+    <div class="absolute -top-16 -right-16 w-36 h-36 bg-amber-500/20 rounded-full blur-3xl pointer-events-none"></div>
+
+    <div class="text-center mb-8">
+      <div class="w-16 h-16 mx-auto mb-3 rounded-2xl bg-gradient-to-tr from-amber-500 to-purple-600 p-[1px] shadow-lg shadow-amber-500/20">
+        <div class="w-full h-full bg-obsidian-950 rounded-[15px] flex items-center justify-center text-3xl">
+          🪐
+        </div>
+      </div>
+      <h1 class="text-2xl font-black font-crest bg-gradient-to-r from-amber-200 via-amber-400 to-purple-300 bg-clip-text text-transparent">
+        CONNEXION JOUEUR
+      </h1>
+      <p class="text-xs text-slate-400 mt-1">Accédez à votre compte, à la boutique et à vos statistiques.</p>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div class="mb-6 space-y-2">
+          {% for category, msg in messages %}
+            <div class="p-3 rounded-xl text-xs font-semibold flex items-center gap-2 {% if category == 'danger' %}bg-rose-950/80 text-rose-300 border border-rose-800{% elif category == 'warning' %}bg-amber-950/80 text-amber-300 border border-amber-800{% else %}bg-emerald-950/80 text-emerald-300 border border-emerald-800{% endif %}">
+              <span>⚠️</span>
+              <span>{{ msg }}</span>
+            </div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form method="POST" action="/connexion" class="space-y-4">
+      <div>
+        <label class="block text-xs font-bold text-slate-300 mb-1 font-gaming">EMAIL OU PSEUDO MINECRAFT</label>
+        <input type="text" name="identifier" required placeholder="ex: Steve ou joueur@email.com"
+               class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition font-sans">
+      </div>
+
+      <div>
+        <label class="block text-xs font-bold text-slate-300 mb-1 font-gaming">MOT DE PASSE</label>
+        <input type="password" name="password" required placeholder="••••••••••••"
+               class="w-full px-4 py-3 rounded-xl bg-obsidian-900 border border-white/10 text-slate-100 placeholder-slate-500 text-sm focus:outline-none focus:border-amber-400 focus:ring-1 focus:ring-amber-400 transition font-sans">
+      </div>
+
+      <button type="submit"
+              class="w-full mt-2 py-3.5 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-black font-gaming tracking-wider text-sm shadow-lg shadow-amber-500/25 transition transform active:scale-95 flex items-center justify-center gap-2">
+        <span>⚡</span> SE CONNECTER
+      </button>
+    </form>
+
+    <div class="mt-6 pt-6 border-t border-white/10 text-center">
+      <p class="text-xs text-slate-400">
+        Pas encore membre de l'Aether ?
+        <a href="/inscription" class="text-amber-400 font-bold hover:underline ml-1">Créer un compte & être Whitelisté</a>
+      </p>
+    </div>
+  </div>
+</div>
+{% endblock %}

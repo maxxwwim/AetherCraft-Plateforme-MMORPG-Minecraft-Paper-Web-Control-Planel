@@ -1,0 +1,196 @@
+{% extends "base.html" %}
+
+{% block title %}Cockpit Créateur & Administration — AetherCraft{% endblock %}
+
+{% block content %}
+<div class="max-w-7xl mx-auto px-4 sm:px-6 py-10">
+
+  <!-- Header -->
+  <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 border-b border-white/10 pb-6 mb-8">
+    <div>
+      <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-amber-950/80 border border-amber-800 text-amber-400 text-xs font-gaming tracking-wide mb-2">
+        <span>⚙️</span> CONSOLE TECHNIQUE & MANIFEST
+      </div>
+      <h1 class="text-2xl sm:text-4xl font-black font-gaming tracking-tight text-white">COCKPIT CRÉATEUR DE SERVEUR</h1>
+      <p class="text-xs text-slate-400 mt-1">
+        Configurez votre instance Minecraft, générez des manifests de déploiement et suivez les achats de la boutique en direct.
+      </p>
+    </div>
+
+    <div class="flex items-center gap-2">
+      <span class="inline-flex items-center px-3 py-1.5 rounded-xl bg-emerald-950 text-emerald-400 border border-emerald-800 text-xs font-gaming font-bold">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 mr-2 animate-ping"></span>
+        RUNNER TOKIO CONNECTABLE
+      </span>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+    
+    <!-- Left: Server Generator (7 Cols) -->
+    <div class="lg:col-span-7 glass-panel rounded-3xl p-6 shadow-2xl relative overflow-hidden border border-white/10">
+      <div class="mb-6">
+        <h2 class="text-lg font-bold font-gaming text-white flex items-center gap-2">
+          <span>⚡</span> Générateur d'Instance & Tuning JVM Aikar
+        </h2>
+        <p class="text-xs text-slate-400 mt-1">Créez une configuration optimale servie via notre API REST pour le runner natif en Rust.</p>
+      </div>
+
+      <form hx-post="/api/v1/servers/generate" hx-target="#result-container" hx-indicator="#loading" class="space-y-4 text-xs">
+        
+        <div>
+          <label class="block font-gaming font-bold text-slate-300 mb-1">NOM DE L'INSTANCE</label>
+          <input type="text" name="name" value="AetherCraft Survie" required
+                 class="w-full bg-black/50 border border-white/10 rounded-xl px-3.5 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:border-sky-500">
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-gaming font-bold text-slate-300 mb-1">MOTEUR MINECRAFT</label>
+            <select name="core_type" class="w-full bg-black/50 border border-white/10 rounded-xl px-3.5 py-2.5 text-white">
+              <option value="paper">PaperMC 1.21.1 (Stable & Optimisé)</option>
+              <option value="purpur">Purpur 1.21.1 (Ultra Performance)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-gaming font-bold text-slate-300 mb-1">VERSION</label>
+            <select name="mc_version" class="w-full bg-black/50 border border-white/10 rounded-xl px-3.5 py-2.5 text-white">
+              <option value="1.21.1">1.21.1 (Actuelle)</option>
+              <option value="1.20.4">1.20.4 (LTS)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- RAM Slider -->
+        <div>
+          <div class="flex justify-between items-center mb-1">
+            <label class="font-gaming font-bold text-slate-300">MÉMOIRE RAM DÉDIÉE</label>
+            <span id="ram-display" class="font-mono font-bold text-amber-300 bg-amber-950 px-2.5 py-0.5 rounded border border-amber-800">4 Go</span>
+          </div>
+          <input type="range" name="ram_gb" min="2" max="16" value="4" step="1"
+                 oninput="document.getElementById('ram-display').textContent = this.value + ' Go'"
+                 class="w-full h-2 bg-slate-800 rounded-lg appearance-none cursor-pointer accent-amber-500">
+          <p class="text-[10px] text-slate-500 mt-1">💡 Flags JVM Aikar (G1GC, MaxGCPauseMillis, SurvivorRatio) calculés automatiquement.</p>
+        </div>
+
+        <!-- Port & Difficulty -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div>
+            <label class="block font-gaming font-bold text-slate-300 mb-1">PORT RÉSEAU</label>
+            <input type="number" name="port" value="25565" class="w-full bg-black/50 border border-white/10 rounded-xl px-3.5 py-2.5 text-white">
+          </div>
+          <div>
+            <label class="block font-gaming font-bold text-slate-300 mb-1">DIFFICULTÉ</label>
+            <select name="difficulty" class="w-full bg-black/50 border border-white/10 rounded-xl px-3.5 py-2.5 text-white">
+              <option value="hard" selected>Difficile (Hardcore)</option>
+              <option value="normal">Normal</option>
+              <option value="easy">Facile</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Plugins Pack -->
+        <div>
+          <label class="block font-gaming font-bold text-slate-300 mb-1.5 uppercase">Pack d'Optimisations Pré-installé</label>
+          <div class="grid grid-cols-1 sm:grid-cols-3 gap-2">
+            <label class="flex items-center space-x-2 p-3 rounded-xl bg-black/40 border border-white/5 cursor-pointer">
+              <input type="checkbox" name="plugins" value="chunky" checked class="w-3.5 h-3.5 text-amber-500 rounded bg-slate-700 border-slate-600 focus:ring-amber-500">
+              <span class="text-[11px] font-bold text-slate-200">Chunky (Pré-gen)</span>
+            </label>
+            <label class="flex items-center space-x-2 p-3 rounded-xl bg-black/40 border border-white/5 cursor-pointer">
+              <input type="checkbox" name="plugins" value="spark" checked class="w-3.5 h-3.5 text-amber-500 rounded bg-slate-700 border-slate-600 focus:ring-amber-500">
+              <span class="text-[11px] font-bold text-slate-200">Spark (Profiler)</span>
+            </label>
+            <label class="flex items-center space-x-2 p-3 rounded-xl bg-black/40 border border-white/5 cursor-pointer">
+              <input type="checkbox" name="plugins" value="luckperms" checked class="w-3.5 h-3.5 text-amber-500 rounded bg-slate-700 border-slate-600 focus:ring-amber-500">
+              <span class="text-[11px] font-bold text-slate-200">LuckPerms (Grades)</span>
+            </label>
+          </div>
+        </div>
+
+        <button type="submit" 
+                class="w-full bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-obsidian-950 font-gaming font-black py-3.5 px-4 rounded-xl shadow-lg shadow-amber-500/25 transition active:scale-95 flex items-center justify-center space-x-2">
+          <span>🚀</span> <span>GÉNÉRER LE MANIFEST DE DÉPLOIEMENT</span>
+        </button>
+
+        <div id="loading" class="htmx-indicator flex items-center justify-center text-xs text-amber-400 gap-2 py-1">
+          <svg class="animate-spin h-4 w-4 text-amber-400" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8H4z"></path>
+          </svg>
+          <span>Résolution des builds PaperMC et des dépendances...</span>
+        </div>
+      </form>
+
+      <!-- Live Result Card -->
+      <div id="result-container" class="mt-6 pt-6 border-t border-white/10">
+        <div class="bg-black/30 border border-white/5 rounded-2xl p-5 text-center text-xs text-slate-500 font-medium">
+          Cliquez sur "Générer le Manifest de Déploiement" pour obtenir l'URL et la commande de lancement du runner Rust.
+        </div>
+      </div>
+    </div>
+
+    <!-- Right: Recent Shop Orders & Activity (5 Cols) -->
+    <div class="lg:col-span-5 space-y-6">
+      
+      <!-- Orders Stream -->
+      <div class="glass-panel border border-white/10 rounded-3xl p-6 shadow-2xl">
+        <div class="flex items-center justify-between mb-4">
+          <div class="flex items-center gap-2">
+            <span class="text-xl">💳</span>
+            <h3 class="font-gaming font-bold text-white text-base">TRANSACTIONS EN DIRECT</h3>
+          </div>
+          <span class="px-2 py-0.5 rounded text-[10px] font-gaming font-bold bg-emerald-950 text-emerald-400 border border-emerald-800">
+            RCON CONNECTÉ
+          </span>
+        </div>
+
+        {% if orders %}
+        <div class="space-y-3 max-h-96 overflow-y-auto pr-1">
+          {% for order in orders %}
+          <div class="p-3.5 rounded-2xl bg-black/40 border border-white/5 text-xs space-y-1.5">
+            <div class="flex items-center justify-between">
+              <span class="font-mono text-sky-400 font-bold">#{{ order.order_id }}</span>
+              <span class="font-bold text-white font-mono">{{ "%.2f"|format(order.total) }} €</span>
+            </div>
+            <div class="flex items-center gap-2">
+              <img src="https://mc-heads.net/avatar/{{ order.username }}/24" class="w-6 h-6 rounded-lg border border-white/10">
+              <span class="font-gaming font-bold text-slate-200">{{ order.username }}</span>
+              <span class="text-slate-500">• {{ order.items_count or (order.products|length if order.products is defined else 1) }} article(s)</span>
+            </div>
+            <div class="text-[10px] font-mono text-emerald-400 bg-black/60 p-2.5 rounded-xl border border-white/5">
+              {% for cmd in order.command_to_run %}
+              <div>✓ {{ cmd }}</div>
+              {% endfor %}
+            </div>
+          </div>
+          {% endfor %}
+        </div>
+        {% else %}
+        <div class="py-10 text-center text-slate-500 text-xs">
+          <div class="text-3xl mb-2">📦</div>
+          <p class="font-gaming">Aucune transaction enregistrée</p>
+          <p class="text-[10px] text-slate-600 mt-1">Les achats réalisés dans la boutique apparaîtront ici.</p>
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Quick Runner CLI Guide -->
+      <div class="glass-panel border border-white/10 rounded-3xl p-6 shadow-2xl text-xs space-y-3">
+        <div class="flex items-center gap-2 text-white font-gaming font-bold">
+          <span>🦀</span> RUNNER ASYNCHRONE TOKIO
+        </div>
+        <p class="text-slate-400 leading-relaxed text-[11px]">
+          Pour démarrer l'instance compilée avec téléchargement multithread et validation SHA-256 :
+        </p>
+        <div class="bg-black/60 p-3.5 rounded-2xl border border-white/10 font-mono text-emerald-400 text-[11px] select-all">
+          cargo run -p aether-mc-runner -- doctor
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+{% endblock %}

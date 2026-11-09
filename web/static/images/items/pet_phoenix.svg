@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="100%" height="100%">
+  <defs>
+    <radialGradient id="phoenixGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#f59e0b" stop-opacity="0.65"/>
+      <stop offset="50%" stop-color="#ea580c" stop-opacity="0.3"/>
+      <stop offset="100%" stop-color="#06070b" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="phoenixFlame" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="30%" stop-color="#f59e0b"/>
+      <stop offset="70%" stop-color="#ea580c"/>
+      <stop offset="100%" stop-color="#991b1b"/>
+    </linearGradient>
+    <linearGradient id="wingFire" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f97316"/>
+      <stop offset="100%" stop-color="#b91c1c"/>
+    </linearGradient>
+    <filter id="shadowPhoenix" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="12" stdDeviation="15" flood-color="#f59e0b" flood-opacity="0.65"/>
+    </filter>
+  </defs>
+
+  <circle cx="200" cy="200" r="185" fill="url(#phoenixGlow)"/>
+
+  <!-- Solar Corona Ring -->
+  <circle cx="200" cy="200" r="150" fill="none" stroke="#f59e0b" stroke-width="2" stroke-opacity="0.4" stroke-dasharray="10 8"/>
+
+  <!-- Phoenix Wings & Feathers -->
+  <g filter="url(#shadowPhoenix)">
+    <!-- Left Flaming Wing -->
+    <path d="M180 200 C130 110 60 90 25 120 C40 160 80 210 130 230 C80 220 50 250 60 280 C95 285 140 260 185 220 Z" 
+          fill="url(#wingFire)" stroke="#fef08a" stroke-width="2"/>
+    
+    <!-- Right Flaming Wing -->
+    <path d="M220 200 C270 110 340 90 375 120 C360 160 320 210 270 230 C320 220 350 250 340 280 C305 285 260 260 215 220 Z" 
+          fill="url(#wingFire)" stroke="#fef08a" stroke-width="2"/>
+
+    <!-- Flaming Tail Plumes -->
+    <path d="M190 260 C170 330 140 340 120 360 C150 340 180 310 195 270 Z" fill="url(#phoenixFlame)"/>
+    <path d="M200 260 C200 340 200 360 200 380 C205 350 205 310 205 270 Z" fill="#fef08a"/>
+    <path d="M210 260 C230 330 260 340 280 360 C250 340 220 310 205 270 Z" fill="url(#phoenixFlame)"/>
+
+    <!-- Phoenix Body & Chest -->
+    <path d="M180 180 C170 220 180 260 200 270 C220 260 230 220 220 180 Z" 
+          fill="url(#phoenixFlame)" stroke="#fef08a" stroke-width="2"/>
+
+    <!-- Head & Beak -->
+    <circle cx="200" cy="140" r="22" fill="#ea580c" stroke="#fef08a" stroke-width="2"/>
+    <polygon points="194,145 206,145 200,165" fill="#fef08a" stroke="#d97706" stroke-width="1.5"/>
+
+    <!-- Eyes -->
+    <circle cx="191" cy="136" r="3.5" fill="#ffffff" filter="drop-shadow(0 0 4px #fef08a)"/>
+    <circle cx="209" cy="136" r="3.5" fill="#ffffff" filter="drop-shadow(0 0 4px #fef08a)"/>
+
+    <!-- Blazing Head Crest (3 Feathers) -->
+    <path d="M200 120 C190 90 170 80 160 85 C175 100 185 110 195 125 Z" fill="#fef08a" stroke="#f97316" stroke-width="1"/>
+    <path d="M200 120 C200 80 200 65 200 60 C205 80 205 100 205 125 Z" fill="#ffffff" stroke="#f59e0b" stroke-width="1.5"/>
+    <path d="M200 120 C210 90 230 80 240 85 C225 100 215 110 205 125 Z" fill="#fef08a" stroke="#f97316" stroke-width="1"/>
+
+    <!-- Rebirth Heart Orb -->
+    <circle cx="200" cy="205" r="14" fill="#7f1d1d" stroke="#fef08a" stroke-width="2.5"/>
+    <circle cx="200" cy="205" r="8" fill="#ffffff" filter="drop-shadow(0 0 8px #f59e0b)"/>
+  </g>
+
+  <!-- Sparks & Solar Flares -->
+  <polygon points="200,35 203,47 215,50 203,53 200,65 197,53 185,50 197,47" fill="#ffffff"/>
+  <circle cx="90" cy="90" r="4" fill="#fef08a" filter="drop-shadow(0 0 5px #f59e0b)"/>
+  <circle cx="310" cy="90" r="4" fill="#fef08a" filter="drop-shadow(0 0 5px #f59e0b)"/>
+</svg>

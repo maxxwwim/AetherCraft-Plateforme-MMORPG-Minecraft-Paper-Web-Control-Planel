@@ -1,0 +1,38 @@
+{
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "item/heart_of_the_sea"
+  },
+  "overrides": [
+    {
+      "predicate": {
+        "custom_model_data": 3002
+      },
+      "model": "item/cosmetic_dragon"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3003
+      },
+      "model": "item/pet_capybara"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3004
+      },
+      "model": "item/pet_fox"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3005
+      },
+      "model": "item/pet_goat"
+    },
+    {
+      "predicate": {
+        "custom_model_data": 3006
+      },
+      "model": "item/pet_phoenix"
+    }
+  ]
+}
