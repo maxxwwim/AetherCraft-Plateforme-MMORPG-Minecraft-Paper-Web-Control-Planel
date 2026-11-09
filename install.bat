@@ -256,9 +256,7 @@ echo   [SUCCES] INSTALLATION D'AETHERCRAFT TERMINEE AVEC SUCCES !
 echo ===================================================================
 echo.
 echo   Tout est pret pour demarrer votre infrastructure :
-echo   - Lancer l'ensemble (Web + Minecraft) : start-all.bat (ou lunchall.bat)
-echo   - Lancer le client joueur             : launch-client.bat
-echo   - Lancer uniquement le Web            : start-web.bat
+echo   - Double-cliquez sur : lunchall.bat
 echo.
 echo   - Boutique et Dashboard Web : http://127.0.0.1:5000
 echo   - Serveur Minecraft Paper   : 127.0.0.1:25565

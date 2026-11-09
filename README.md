@@ -1,5 +1,11 @@
 # 🌌 AetherCraft — Plateforme MMORPG Minecraft Paper & Web Control Plane
 
+<p align="center">
+  <img src="Capture.PNG" alt="AetherCraft Architecture & Dashboard" width="100%">
+</p>
+
+> 🛡️ **Développé et audité avec [AetherScope SAST 150 CWE MCP](https://github.com/maxxwwim/AetherScope-SAST-150-CWE-MCP)** — Moteur d'intelligence architecturale, pare-feu IA temps réel (< 50 ms) et gouvernance automatisée 150+ règles CWE / OWASP.
+
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-Paper_1.21.1-brightgreen.svg)](https://papermc.io/)
 [![Java](https://img.shields.io/badge/Java-21_LTS-orange.svg)](https://adoptium.net/)
 [![Python](https://img.shields.io/badge/Python-3.10+-blue.svg)](https://www.python.org/)
@@ -8,38 +14,35 @@
 [![Runner](https://img.shields.io/badge/Runner-Rust_Tokio_Async-red.svg)](https://www.rust-lang.org/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 
-> **AetherCraft** est une suite serveur Minecraft MMORPG moderne et complète combinant :
-> - Un serveur haute-performance **PaperMC 1.21.1** piloté par le plugin exclusif **AetherVisuals** (54 classes Java 21, interfaces 3D, hôtel des ventes, banques, donjons, familiers et web display in-game).
-> - Une **Plateforme Web Joueur & Boutique** (Python Flask + Waitress sur le port 5000) reliée en temps réel au serveur via un **bridge RCON sécurisé avec file d'attente hors-ligne**.
-> - Une **base de données SQLite unifiée** partagée entre le web et le jeu (`server/data/aethercraft.db`).
-> - Un **superviseur & installeur Rust asynchrone** (`aether-mc-runner`) basé sur Tokio.
-> - Des scripts d'installation et de lancement automatisés en 1 clic pour Windows et Linux.
-
 ---
 
-## ⚡ Démarrage Rapide en 2 Clics (Nouveau PC / Déploiement)
+## ⚡ Démarrage Rapide en 2 Clics (Windows)
 
-### Sur Windows
-1. Double-cliquez sur **`install.bat`** (configure automatiquement Java 21, Python, pip, SQLite, la compilation du plugin et le rendu des assets 3D).
-2. Double-cliquez sur **`start-all.bat`** (ou `lunchall.bat`) pour démarrer simultanément le serveur Minecraft et la plateforme Web.
-3. Pour lancer le client joueur : double-cliquez sur **`launch-client.bat`**.
+Pour installer et lancer l'ensemble de l'infrastructure sur un nouveau PC :
 
-Votre navigateur s'ouvre automatiquement sur :
+```
+1. Double-cliquez sur : install.bat   (Configure l'environnement Java 21, Python, la DB et compile le plugin)
+2. Double-cliquez sur : lunchall.bat  (Démarre la Boutique Web, le serveur PaperMC 1.21.1 et le Client)
+```
+
+Dès le lancement, votre navigateur et vos services sont opérationnels :
 - **Boutique & Dashboard Web :** [http://127.0.0.1:5000](http://127.0.0.1:5000)
 - **Connexion Minecraft :** `127.0.0.1:25565` (ou `localhost`)
+- **Console RCON Sécurisée :** `127.0.0.1:25575`
 
 ---
 
-### Sur Linux / Serveur Dédié
+## 🐧 Démarrage sur Linux / Serveur Dédié
+
 ```bash
-# 1. Rendre les scripts exécutables et lancer l'installateur
+# 1. Rendre exécutable et installer les dépendances (Java 21, Python venv, DB, Paper)
 chmod +x *.sh server/*.sh
 ./install.sh
 
-# 2. Démarrer l'ensemble des services en arrière-plan (session tmux/screen gérée automatiquement)
-./start-all.sh   # ou ./lunchall.sh
+# 2. Démarrer le serveur Paper et le Web en arrière-plan (session tmux/screen gérée)
+./lunchall.sh
 
-# 3. Arrêter proprement tous les services à tout moment
+# 3. Arrêter proprement les services
 ./stop-all.sh
 ```
 
@@ -62,7 +65,7 @@ chmod +x *.sh server/*.sh
 graph TD
     subgraph Client ["🎮 Client Joueur (1.21.1)"]
         MC["Minecraft 1.21.1\n(Vanilla / NeoForge)"]
-        CL["launch-client.bat\n(Auto-détection Launcher)"]
+        CL["lunchall.bat\n(Auto-détection & Lancement)"]
         CL --> MC
     end
 
@@ -113,16 +116,12 @@ graph TD
 
 ```
 aethercraft/
-├── README.md                      # Guide officiel complet d'architecture et d'utilisation
-├── install.bat                    # Installateur automatique Windows 1-clic (Java, Python, DB, Plugin)
-├── install.sh                     # Installateur automatique Linux (Debian, Ubuntu, RHEL)
-├── start-all.bat                  # Lanceur principal global Windows (Web + PaperMC + Navigateur)
-├── start-all.sh                   # Lanceur principal global Linux (Tmux / Screen / Nohup)
-├── lunchall.bat                   # Alias Windows de compatibilité vers start-all.bat
-├── lunchall.sh                    # Alias Linux de compatibilité vers start-all.sh
-├── launch-client.bat              # Détection automatique du launcher et lancement du jeu
-├── start-web.bat                  # Lancement autonome de la plateforme Web sous Windows
-├── start-web.sh                   # Lancement autonome de la plateforme Web sous Linux
+├── Capture.PNG                    # Aperçu de l'architecture et du dashboard
+├── README.md                      # Ce guide officiel complet
+├── install.bat                    # Installateur 1-clic Windows (Java 21, Python, SQLite, Plugin)
+├── lunchall.bat                   # Lanceur tout-en-un Windows (Web + Serveur Paper + Client)
+├── install.sh                     # Installateur automatique Linux
+├── lunchall.sh                    # Lanceur global Linux (Tmux / Screen / Nohup)
 ├── stop-all.sh                    # Arrêt propre de tous les services sous Linux
 │
 ├── config/                        # Manifestes de déploiement
@@ -193,9 +192,10 @@ aethercraft/
 
 ### 1. Le Client Minecraft & Le Superviseur Rust
 
-#### A. Lanceur Client (`launch-client.bat`)
-Le script client automatise entièrement l'installation et l'accès pour les joueurs :
-- **Synchronisation automatique :** Si un dossier `client-mods/` est présent, les mods (FancyMenu, Konkrete, Melody) et les configurations de menus personnalisés sont instantanément synchronisés vers `%APPDATA%\.minecraft`.
+#### A. Lanceur Tout-en-Un (`lunchall.bat`)
+Le script `lunchall.bat` centralise l'expérience complète :
+- **Vérification automatique :** S'assure que `server.jar` est prêt (déclenche `install.bat` si nécessaire).
+- **Synchronisation automatique :** Si un dossier `client-mods/` est présent, les mods (`FancyMenu`, `Konkrete`, `Melody`) et les configurations d'écrans MMORPG sont synchronisés vers `%APPDATA%\.minecraft`.
 - **Détection intelligente du launcher :**
   1. Launcher officiel Xbox / Windows Store (`C:\XboxGames\Minecraft Launcher\Content\Minecraft.exe`)
   2. Launcher officiel LocalAppData (`%LOCALAPPDATA%\Programs\Minecraft Launcher\MinecraftLauncher.exe`)
@@ -285,20 +285,12 @@ Propulsée par **Python 3 / Flask** et le serveur WSGI de production **Waitress*
 
 ---
 
-## ⚙️ Détail des Scripts de Gestion
+## ⚙️ Les Deux Fichiers Essentiels sous Windows
 
-| Script | Plateforme | Rôle |
-| :--- | :--- | :--- |
-| **`install.bat`** | Windows | Installateur complet 1-clic : vérifie Java 21, Python 3, pip, SQLite, compile le plugin et génère les blocs 3D |
-| **`install.sh`** | Linux | Installateur équivalent sous Linux (gestionnaire de paquets apt/dnf, venv Python, EULA, Paper) |
-| **`start-all.bat`** | Windows | Lanceur global : démarre la console Web (port 5000), la console Minecraft (port 25565), ouvre le navigateur et démarre le client |
-| **`start-all.sh`** | Linux | Lanceur global Linux : gère automatiquement des sessions `tmux` ou `screen` indépendantes |
-| **`lunchall.bat`** | Windows | Alias de compatibilité redirigeant directement vers `start-all.bat` |
-| **`lunchall.sh`** | Linux | Alias de compatibilité redirigeant directement vers `start-all.sh` |
-| **`launch-client.bat`** | Windows | Lanceur joueur : synchronise les mods client FancyMenu et lance le launcher Minecraft officiel ou Modrinth |
-| **`start-web.bat`** | Windows | Lance uniquement la plateforme Web sous Waitress (idéal pour tester ou modifier l'interface) |
-| **`start-web.sh`** | Linux | Lance uniquement la plateforme Web sous Linux |
-| **`stop-all.sh`** | Linux | Arrête proprement les sessions tmux/screen ou processus nohup du serveur Minecraft et du Web |
+| Fichier | Rôle Principal |
+| :--- | :--- |
+| **`install.bat`** | **Installateur automatique 1-clic :** installe Java 21 portable si absent, vérifie Python, installe les dépendances pip, initialise la base SQLite, compile le plugin Java 21 via ECJ et génère les blocs 3D isométriques. |
+| **`lunchall.bat`** | **Lanceur unique & tout-en-un :** vérifie l'installation, lance le serveur Web Waitress (port 5000), le serveur Minecraft Paper (port 25565), ouvre le navigateur web et lance automatiquement le client joueur Minecraft. |
 
 ---
 
@@ -342,5 +334,6 @@ Le fichier `server/plugins/AetherVisuals.jar` sera immédiatement recompilé et 
 
 ## 📜 Licence & Crédits
 
-- Projet développé par l'équipe **AetherCraft**.
+- Développé et audité avec [AetherScope SAST 150 CWE MCP](https://github.com/maxxwwim/AetherScope-SAST-150-CWE-MCP).
+- Suite logicielle développée par l'équipe **AetherCraft**.
 - Distribué sous licence **MIT**.
