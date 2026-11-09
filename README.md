@@ -1,12 +1,12 @@
 # 🌌 AetherCraft — Plateforme MMORPG Minecraft Paper & Web Control Plane
-
+# C'est une *demo*!
 <p align="center">
   <img src="Capture.PNG" alt="AetherCraft Architecture & Dashboard" width="100%">
 </p>
 
 > 🛡️ **Développé et audité avec [AetherScope SAST 150 CWE MCP](https://github.com/maxxwwim/AetherScope-SAST-150-CWE-MCP)** — Moteur d'intelligence architecturale, pare-feu IA temps réel (< 50 ms) et gouvernance automatisée 150+ règles CWE / OWASP.
 
-> 🌐 **Démo en ligne (GitHub Pages) :** [https://maxxwwim.github.io/AetherCraft-Plateforme-MMORPG-Minecraft-Paper-Web-Control-Planel/](https://maxxwwim.github.io/AetherCraft-Plateforme-MMORPG-Minecraft-Paper-Web-Control-Planel/)
+
 
 
 [![Minecraft Version](https://img.shields.io/badge/Minecraft-Paper_1.21.1-brightgreen.svg)](https://papermc.io/)
